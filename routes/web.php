@@ -17,6 +17,10 @@ Route::middleware(['auth', 'verified'])->get('/inventory', function () {
     return Inertia::render('Inventory');
 })->name('inventory');
 
+Route::middleware(['auth', 'verified'])->get('/production', function () {
+    return Inertia::render('Production');
+})->name('production');
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
