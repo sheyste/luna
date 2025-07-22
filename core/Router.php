@@ -9,7 +9,7 @@ class Router
     {
         require BASE_PATH . '/app/routes.php';
 
-        $request = trim($_SERVER['REQUEST_URI']);
+        $request = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
         if (array_key_exists($request, routes)) {
             $controller = routes[$request][0];

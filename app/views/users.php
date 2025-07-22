@@ -41,6 +41,13 @@
                         <input type="email" class="form-control" name="email" id="email" required>
                     </div>
                     <div class="mb-3">
+                        <label for="user_type" class="form-label">User Type (*)</label>
+                        <select class="form-select" name="user_type" id="user_type" required>
+                            <option value="Admin">Admin</option>
+                            <option value="User">User</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="password" class="form-label">Password (*)</label>
                         <input type="password" class="form-control" name="password" id="password" required>
                     </div>

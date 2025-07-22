@@ -92,6 +92,9 @@
             <a href="/inventory" class="list-group-item list-group-item-action">
                 <i class="fa fa-boxes-stacked me-2"></i> <span>Inventory</span>
             </a>
+            <a href="/production" class="list-group-item list-group-item-action">
+                <i class="fa fa-industry me-2"></i> <span>Production</span>
+            </a>
         </div>
     </nav>
     <!-- /#sidebar-wrapper -->

@@ -63,11 +63,11 @@ class UserModel extends Model
 
         if ($conn)
         {
-            $sql = "INSERT INTO {$this->table} (first_name, last_name, email, password)
-                    VALUES (?,?,?,?)";
+            $sql = "INSERT INTO {$this->table} (first_name, last_name, email, user_type, password)
+                    VALUES (?,?,?,?,?)";
 
             $result = $conn->prepare($sql)->execute([
-              $data['first_name'], $data['last_name'], $data['email'], $data['password']
+              $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['password']
             ]);
         }
         return $result;
@@ -81,18 +81,18 @@ class UserModel extends Model
         if ($conn) {
             // If password is provided, update it; otherwise, leave it unchanged
             if (!empty($data['password'])) {
-                $sql = "UPDATE {$this->table}
-                        SET first_name=?, last_name=?, email=?, password=?
+                $sql = "UPDATE {$this->table} 
+                        SET first_name=?, last_name=?, email=?, user_type=?, password=?
                         WHERE id=?";
                 $result = $conn->prepare($sql)->execute([
-                    $data['first_name'], $data['last_name'], $data['email'], $data['password'], $data['id']
+                    $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['password'], $data['id']
                 ]);
             } else {
-                $sql = "UPDATE {$this->table}
-                        SET first_name=?, last_name=?, email=?
+                $sql = "UPDATE {$this->table} 
+                        SET first_name=?, last_name=?, email=?, user_type=?
                         WHERE id=?";
                 $result = $conn->prepare($sql)->execute([
-                    $data['first_name'], $data['last_name'], $data['email'], $data['id']
+                    $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['id']
                 ]);
             }
         }

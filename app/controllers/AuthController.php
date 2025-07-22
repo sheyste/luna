@@ -48,6 +48,7 @@ class AuthController extends Controller
                     // Start session
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['user_name'] = $user['first_name'];
+                    $_SESSION['user_type'] = $user['user_type'];
                     header('Location: /home');
                     exit;
                 } else {

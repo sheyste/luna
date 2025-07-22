@@ -1,10 +1,13 @@
 <?php
-include_once __DIR__ . '/../config.php';
+require BASE_PATH . '/core/Controller.php';
+require_once BASE_PATH . '/app/config.php';
 
-class InventoryController {
+class InventoryController extends Controller {
     private $conn;
 
     public function __construct() {
+        parent::__construct();
+        $this->checkAuth();
         $this->conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
         if ($this->conn->connect_error) {
             die('Database connection failed: ' . $this->conn->connect_error);
@@ -17,19 +20,18 @@ class InventoryController {
         while ($row = $result->fetch_assoc()) {
             $items[] = $row;
         }
-        // Make $items available in the view
-        include __DIR__ . '/../views/inventory.php';
+        $this->loadView('inventory.php', ['items' => $items]);
     }
 
     public function add() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = $_POST['name'];
-            $sku = $_POST['sku'];
+            $sku = str_replace('.', '', microtime(true));
             $quantity = intval($_POST['quantity']);
-            $location = $_POST['location'];
+            $unit = $_POST['unit'];
 
-            $stmt = $this->conn->prepare("INSERT INTO inventory (name, sku, quantity, location) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssis", $name, $sku, $quantity, $location);
+            $stmt = $this->conn->prepare("INSERT INTO inventory (name, sku, quantity, unit) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("ssis", $name, $sku, $quantity, $unit);
             $stmt->execute();
             $stmt->close();
 
@@ -42,12 +44,11 @@ class InventoryController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = intval($_POST['id']);
             $name = $_POST['name'];
-            $sku = $_POST['sku'];
             $quantity = intval($_POST['quantity']);
-            $location = $_POST['location'];
+            $unit = $_POST['unit'];
 
-            $stmt = $this->conn->prepare("UPDATE inventory SET name=?, sku=?, quantity=?, location=? WHERE id=?");
-            $stmt->bind_param("ssisi", $name, $sku, $quantity, $location, $id);
+            $stmt = $this->conn->prepare("UPDATE inventory SET name=?, quantity=?, unit=? WHERE id=?");
+            $stmt->bind_param("sisi", $name, $quantity, $unit, $id);
             $stmt->execute();
             $stmt->close();
 
@@ -108,7 +109,7 @@ class InventoryController {
         header('Content-Disposition: attachment;filename=inventory.csv');
         $result = $this->conn->query("SELECT * FROM inventory");
         $output = fopen('php://output', 'w');
-        fputcsv($output, ['ID', 'Name', 'SKU', 'Quantity', 'Location', 'Created At']);
+        fputcsv($output, ['ID', 'Name', 'SKU', 'Quantity', 'Unit', 'Created At']);
         while ($row = $result->fetch_assoc()) {
             fputcsv($output, $row);
         }
