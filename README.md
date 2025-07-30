@@ -20,10 +20,10 @@ A simple, lightweight inventory and user management system built with PHP using 
 
 1.  **Clone the repository:**
     -    Download this repository
-    -    Export the contents in htdocs in xampp
+    -    Export the contents in `htdocs` in xampp
 
 3.  **Import the Database Schema:**
-    -   Import 'luna.sql' file to workbench.
+    -   Import `luna.sql` file to workbench.
 
 4.  **Configure Database Connection:**
     -   Open the file `core/Model.php`.
