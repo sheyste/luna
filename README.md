@@ -13,44 +13,17 @@ A simple, lightweight inventory and user management system built with PHP using 
 
 ## Requirements
 
--   PHP 7.4 or higher
--   MySQL / MariaDB
--   Web Server (Apache, Nginx) - XAMPP or WAMP is recommended for local development.
+-   XAMPP latest
+-   MySQL / Workbench
 
 ## Installation and Setup
 
 1.  **Clone the repository:**
-    ```bash
-    git clone <repository-url>
-    cd <project-directory>
-    ```
-
-2.  **Create a Database:**
-    -   Create a new database in your MySQL server (e.g., via phpMyAdmin). Let's name it `luna_db`.
+    -    Download this repository
+    -    Export the contents in htdocs in xampp
 
 3.  **Import the Database Schema:**
-    -   Create a file named `database.sql` in the root of the project and add the following SQL to create the necessary `user` table and a default admin user.
-
-    ```sql
-    CREATE DATABASE IF NOT EXISTS `luna_db`;
-    USE `luna_db`;
-
-    CREATE TABLE `user` (
-      `id` int(11) NOT NULL AUTO_INCREMENT,
-      `first_name` varchar(50) NOT NULL,
-      `last_name` varchar(50) NOT NULL,
-      `email` varchar(100) NOT NULL,
-      `password` varchar(255) NOT NULL,
-      PRIMARY KEY (`id`),
-      UNIQUE KEY `email` (`email`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-    -- Insert a default admin user
-    -- Password is 'password'
-    INSERT INTO `user` (`first_name`, `last_name`, `email`, `password`) VALUES
-    ('Admin', 'User', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
-    ```
-    -   Import this `database.sql` file into your `luna_db` database.
+    -   Import 'luna.sql' file to workbench.
 
 4.  **Configure Database Connection:**
     -   Open the file `core/Model.php`.
@@ -58,23 +31,11 @@ A simple, lightweight inventory and user management system built with PHP using 
 
 5.  **Run the Application:**
     -   Place the project folder inside your web server's root directory (e.g., `htdocs` for XAMPP).
-    -   Open your web browser and navigate to `http://localhost/your-project-folder/`.
+    -   Open your web browser and navigate to `http://localhost/`.
     -   You should see the login page.
 
 ## Default Login Credentials
 
--   **Email:** `admin@example.com`
--   **Password:** `password`
+-   **Email:** `admin@admin.com`
+-   **Password:** `admin`
 
-## Project Structure
-
-```
-./
-├── app/
-│   ├── controllers/
-│   ├── models/
-│   └── views/
-├── assets/
-├── core/
-└── routes.php
-```
