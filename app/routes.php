@@ -12,6 +12,7 @@ const routes = array(
     '/inventory/edit' => array('InventoryController', 'edit'),
     '/inventory/delete' => array('InventoryController', 'delete'),
     '/inventory/getDetail' => array('InventoryController', 'getDetail'),
+    '/inventory/getAll' => array('InventoryController', 'getAll'),
     '/production'    => array('ProductionController', 'index'),
     '/production/add' => array('ProductionController', 'add'),
     '/production/edit' => array('ProductionController', 'edit'),
@@ -23,4 +24,9 @@ const routes = array(
     '/users/add'    => array('UserController', 'add'),
     '/users/edit'   => array('UserController', 'edit'),
     '/users/delete' => array('UserController', 'delete'),
+    '/menu'         => array('MenuController', 'index'),
+    '/menu/add'     => array('MenuController', 'add'),
+    '/menu/edit'    => array('MenuController', 'edit'),
+    '/menu/delete'  => array('MenuController', 'delete'),
+    '/menu/getDetail' => array('MenuController', 'getDetail'),
 );

@@ -19,19 +19,21 @@ class UserController extends Controller
     public function index()
     {
         $users = $this->model->getAll();
-        $this->loadView('users.php', ['users' => $users]);
+        $this->view('users', ['users' => $users]);
     }
 
     public function load()
     {
         $users = $this->model->getAll();
-        $this->loadView('user_grid.php', ['users' => $users]);
+        $this->view('user_grid', ['users' => $users]);
     }
+
 
     public function getDetail()
     {
-        $response = array();
-        $id = filter_var(trim($_POST['id']), FILTER_SANITIZE_STRING);
+        $response = [];
+        $id = isset($_POST['id']) ? filter_var(trim($_POST['id']), FILTER_SANITIZE_STRING) : '';
+
 
         if (!empty($id)) {
             $response = $this->model->getByID($id);
@@ -40,17 +42,20 @@ class UserController extends Controller
         echo json_encode($response);
     }
 
+
+
     public function add()
     {
         $response = array('success' => false);
         $data = array(
+            'username' => filter_var(trim($_POST['username']), FILTER_SANITIZE_STRING),
             'first_name' => filter_var(trim($_POST['first_name']), FILTER_SANITIZE_STRING),
             'last_name' => filter_var(trim($_POST['last_name']), FILTER_SANITIZE_STRING),
             'email' => filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL),
             'user_type' => filter_var(trim($_POST['user_type']), FILTER_SANITIZE_STRING),
             'password' => password_hash(trim($_POST['password']), PASSWORD_DEFAULT) // Hash password on add
         );
-        if (!empty($data['first_name']) && !empty($data['last_name']) && !empty($data['email']) && !empty($data['user_type']) && !empty($_POST['password'])) {
+        if (!empty($data['username']) && !empty($data['first_name']) && !empty($data['last_name']) && !empty($data['email']) && !empty($data['user_type']) && !empty($_POST['password'])) {
             $response['success'] = $this->model->insert($data);
         }
         echo json_encode($response);
@@ -61,6 +66,7 @@ class UserController extends Controller
         $response = array('success' => false);
         $data = array(
             'id' => filter_var(trim($_POST['id']), FILTER_SANITIZE_STRING),
+            'username' => filter_var(trim($_POST['username']), FILTER_SANITIZE_STRING),
             'first_name' => filter_var(trim($_POST['first_name']), FILTER_SANITIZE_STRING),
             'last_name' => filter_var(trim($_POST['last_name']), FILTER_SANITIZE_STRING),
             'email' => filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL),

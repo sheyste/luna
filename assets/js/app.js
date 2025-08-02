@@ -1,30 +1,31 @@
-
 class UserApp {
 
 	show(btn) {
-
-		const id		= btn.id;
-		const data	= {"id" : id}
+		const id = btn.id;
+		const data = { "id": id };
 
 		$.ajax({
 			url: '/users/show',
 			type: 'POST',
 			dataType: 'JSON',
 			data: data,
-			success:function(response){
+			success: function(response) {
+				$('#username').val(response.username); 
 				$('#first_name').val(response.first_name);
 				$('#last_name').val(response.last_name);
 				$('#email').val(response.email);
 				$('#id').val(id);
 				$('#edit_mode').val('1');
 				$('#modalUserForm').modal('show');
-			},error: function(error) {
+			},
+			error: function(error) {
 				console.warn('error ' + error);
 				$('#modalUserForm .alert-danger p').text('Error trying load');
 				$('#modalUserForm .alert-danger').show();
 			}
 		});
 	}
+
 
 	confirm(btn) {
 
@@ -61,7 +62,8 @@ class UserApp {
 
 		const form = $("#userForm").serializeArray();
 
-		if ($.trim($('#first_name').val()) === ''
+		if ($.trim($('#username').val()) === ''
+			|| $.trim($('#first_name').val()) === ''
 			|| $.trim($('#last_name').val()) === ''
 			|| $.trim($('#email').val()) === ''
 		) {
@@ -121,3 +123,4 @@ $(document).ready(function() {
 		$('#users_grid').DataTable();
 	}
 });
+

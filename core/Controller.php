@@ -11,9 +11,9 @@ class Controller
         }
     }
 
-    public function loadView($view, $data = [])
+    public function view($view, $data = [])
     {
-        $filePath = BASE_PATH . '/app/views/' . $view;
+        $filePath = BASE_PATH . '/app/views/' . $view . '.php';
         if (file_exists($filePath)) {
             extract($data);
             include $filePath;

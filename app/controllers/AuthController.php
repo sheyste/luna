@@ -21,7 +21,7 @@ class AuthController extends Controller
             header('Location: /home');
             exit;
         }
-        $this->loadView('login.php');
+        $this->view('login');
     }
 
     /**
@@ -30,16 +30,14 @@ class AuthController extends Controller
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = trim($_POST['email'] ?? '');
+            $username = trim($_POST['username'] ?? '');
             $password = trim($_POST['password'] ?? '');
             $error = '';
 
-            if (empty($email) || empty($password)) {
-                $error = 'Email and password are required.';
-            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $error = 'Please enter a valid email address.';
+            if (empty($username) || empty($password)) {
+                $error = 'Username and password are required.';
             } else {
-                $user = $this->userModel->getByEmail($email);
+                $user = $this->userModel->getByUsername($username);
 
                 if ($user && password_verify($password, $user['password'])) {
                     // Password is correct, regenerate session ID to prevent session fixation
@@ -54,12 +52,12 @@ class AuthController extends Controller
                 } else {
                     // Invalid credentials
                     // Use a generic error message to prevent user enumeration
-                    $error = 'Invalid email or password.';
+                    $error = 'Invalid username or password.';
                 }
             }
 
             // If login fails, show login page with error
-            $this->loadView('login.php', ['error' => $error]);
+            $this->view('login', ['error' => $error]);
         } else {
             // Redirect to login if accessed directly via GET
             header('Location: /');

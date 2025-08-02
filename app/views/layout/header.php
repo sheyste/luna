@@ -78,7 +78,7 @@
     <!-- Sidebar -->
     <nav class="border-end" id="sidebar-wrapper">
         <div class="sidebar-heading text-center py-4 px-3">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="/home">
                 <i class="fa-solid fa-cube"></i> <span>LUNA</span>
             </a>
         </div>
@@ -91,6 +91,9 @@
             </a>
             <a href="/inventory" class="list-group-item list-group-item-action">
                 <i class="fa fa-boxes-stacked me-2"></i> <span>Inventory</span>
+            </a>
+            <a href="/menu" class="list-group-item list-group-item-action">
+                <i class="fa fa-utensils me-2"></i> <span>Menu</span>
             </a>
             <a href="/production" class="list-group-item list-group-item-action">
                 <i class="fa fa-industry me-2"></i> <span>Production</span>

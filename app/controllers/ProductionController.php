@@ -21,7 +21,7 @@ class ProductionController extends Controller {
         while ($row = $result->fetch_assoc()) {
             $items[] = $row;
         }
-        $this->loadView('production.php', ['items' => $items]);
+        $this->view('production', ['items' => $items]);
     }
 
     public function add() {

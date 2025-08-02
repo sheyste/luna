@@ -29,6 +29,10 @@
                     <input type="hidden" name="edit_mode" id="edit_mode" value="0" readonly>
                     <input type="hidden" name="id" id="id" value="" readonly>
                     <div class="mb-3">
+                        <label for="username" class="form-label">Username (*)</label>
+                        <input type="text" class="form-control" name="username" id="username" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="first_name" class="form-label">First Name (*)</label>
                         <input type="text" class="form-control" name="first_name" id="first_name" required>
                     </div>

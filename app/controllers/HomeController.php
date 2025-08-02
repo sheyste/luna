@@ -6,7 +6,6 @@ require BASE_PATH . '/core/Controller.php';
 
 class HomeController extends Controller
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -15,6 +14,6 @@ class HomeController extends Controller
 
     public function index()
     {
-        $this->loadView('home.php');
+        $this->view('home');
     }
 }

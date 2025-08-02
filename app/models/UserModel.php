@@ -56,18 +56,31 @@ class UserModel extends Model
         return $result;
     }
 
+    public function getByUsername($username)
+    {
+        $conn = $this->connectDB();
+        $result = null;
+
+        if ($conn) {
+            $sql = "SELECT * FROM {$this->table} WHERE username = :username LIMIT 1";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(['username' => $username]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        return $result;
+    }
+
     public function insert($data = array())
     {
         $conn   = $this->connectDB();
         $result = false;
 
-        if ($conn)
-        {
-            $sql = "INSERT INTO {$this->table} (first_name, last_name, email, user_type, password)
-                    VALUES (?,?,?,?,?)";
+        if ($conn) {
+            $sql = "INSERT INTO {$this->table} (username, first_name, last_name, email, user_type, password)
+                    VALUES (?,?,?,?,?,?)";
 
             $result = $conn->prepare($sql)->execute([
-              $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['password']
+              $data['username'], $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['password']
             ]);
         }
         return $result;
@@ -82,17 +95,17 @@ class UserModel extends Model
             // If password is provided, update it; otherwise, leave it unchanged
             if (!empty($data['password'])) {
                 $sql = "UPDATE {$this->table} 
-                        SET first_name=?, last_name=?, email=?, user_type=?, password=?
+                        SET username=?, first_name=?, last_name=?, email=?, user_type=?, password=?
                         WHERE id=?";
                 $result = $conn->prepare($sql)->execute([
-                    $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['password'], $data['id']
+                    $data['username'], $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['password'], $data['id']
                 ]);
             } else {
                 $sql = "UPDATE {$this->table} 
-                        SET first_name=?, last_name=?, email=?, user_type=?
+                        SET username=?, first_name=?, last_name=?, email=?, user_type=?
                         WHERE id=?";
                 $result = $conn->prepare($sql)->execute([
-                    $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['id']
+                    $data['username'], $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['id']
                 ]);
             }
         }

@@ -2,6 +2,7 @@
                     <thead class="text-center table-dark fw-bold">
                         <tr>
                             <th width="5%">ID</th>
+                            <th width="15%">Username</th>
                             <th width="15%">First Name</th>
                             <th width="15%">Last Name</th>
                             <th width="20%">Email</th>
@@ -15,6 +16,7 @@
                             <?php foreach ($data['users'] as $row): ?>
                             <tr>
                                 <td><?= htmlspecialchars($row['id']) ?></td>
+                                <td><?= htmlspecialchars($row['username'] ?? '') ?></td>
                                 <td><?= htmlspecialchars($row['first_name']) ?></td>
                                 <td><?= htmlspecialchars($row['last_name']) ?></td>
                                 <td><?= htmlspecialchars($row['email']) ?></td>
