@@ -56,7 +56,7 @@
         <div class="mb-3">
           <label for="menuName" class="form-label">Menu Name</label>
           <input type="text" class="form-control" id="menuName" name="name" required>
-        </div>
+        </div> 
         <hr>
         <h5>Ingredients</h5>
         <div id="add-ingredients-container">
@@ -66,7 +66,7 @@
             <i class="fa fa-plus"></i> Add Ingredient
         </button>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer"> 
         <button type="submit" class="btn btn-success">Save Menu</button>
       </div>
     </form>
@@ -86,7 +86,7 @@
         <div class="mb-3">
           <label for="editMenuName" class="form-label">Menu Name</label>
           <input type="text" class="form-control" id="editMenuName" name="name" required>
-        </div>
+        </div> 
         <hr>
         <h5>Ingredients</h5>
         <div id="edit-ingredients-container">
@@ -127,14 +127,14 @@
 <div id="ingredient-row-template" style="display: none;">
     <div class="row ingredient-row mb-2 align-items-center">
         <div class="col-5">
-            <select class="form-select ingredient-select" name="ingredients[][inventory_id]" required>
+            <select class="form-select ingredient-select" name="ingredients[inventory_id][]" required>
                 <option value="" selected disabled>Select Ingredient</option>
                 <!-- Options populated by JS -->
             </select>
         </div>
         <div class="col-3">
-            <input type="number" class="form-control" name="ingredients[][quantity]" placeholder="Quantity" min="0" step="any" required>
-        </div>
+            <input type="number" class="form-control" name="ingredients[quantity][]" placeholder="Quantity" min="0" step="any" required>
+        </div> 
         <div class="col-2">
             <span class="unit-span"></span>
         </div>
@@ -153,7 +153,7 @@
         <h5 class="modal-title">Menu Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body"> 
         <h6 id="menuName"></h6>
         <table class="table">
           <thead>
@@ -297,7 +297,7 @@ $(document).ready(function() {
                         populateIngredientSelect(select);
                         
                         select.val(ing.inventory_id);
-                        template.find('input[name="ingredients[][quantity]"]').val(ing.quantity);
+                        template.find('input[name="ingredients[quantity][]"]').val(ing.quantity);
                         template.find('.unit-span').text(ing.unit || '');
                         
                         container.append(template);

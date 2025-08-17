@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,7 +20,7 @@
             background-color: #f8f9fc;
         }
         #sidebar-wrapper {
-            background: #000000ff;
+            background: #000;
             min-height: 100vh;
             box-shadow: 2px 0 8px rgba(0,0,0,0.05);
         }
@@ -75,27 +74,27 @@
 </head>
 <body>
 <div class="d-flex" id="wrapper">
-    <!-- Sidebar -->
-    <nav class="border-end" id="sidebar-wrapper">
+    <!-- Sidebar (collapse enabled) -->
+    <nav class="border-end collapse d-lg-block" id="sidebar-wrapper">
         <div class="sidebar-heading text-center py-4 px-3">
             <a class="navbar-brand" href="/home">
                 <i class="fa-solid fa-cube"></i> <span>LUNA</span>
             </a>
-        </div>
+        </div> 
         <div class="list-group list-group-flush px-2">
-            <a href="/home" class="list-group-item list-group-item-action">
+            <a href="/home" class="list-group-item list-group-item-action <?php if (strpos($_SERVER['REQUEST_URI'], '/home') !== false) echo 'active'; ?>">
                 <i class="fa fa-home me-2"></i> <span>Home</span>
             </a>
-            <a href="/users" class="list-group-item list-group-item-action">
+            <a href="/users" class="list-group-item list-group-item-action <?php if (strpos($_SERVER['REQUEST_URI'], '/users') !== false) echo 'active'; ?>">
                 <i class="fa fa-users me-2"></i> <span>Users</span>
             </a>
-            <a href="/inventory" class="list-group-item list-group-item-action">
+            <a href="/inventory" class="list-group-item list-group-item-action <?php if (strpos($_SERVER['REQUEST_URI'], '/inventory') !== false) echo 'active'; ?>">
                 <i class="fa fa-boxes-stacked me-2"></i> <span>Inventory</span>
             </a>
-            <a href="/menu" class="list-group-item list-group-item-action">
+            <a href="/menu" class="list-group-item list-group-item-action <?php if (strpos($_SERVER['REQUEST_URI'], '/menu') !== false) echo 'active'; ?>">
                 <i class="fa fa-utensils me-2"></i> <span>Menu</span>
             </a>
-            <a href="/production" class="list-group-item list-group-item-action">
+            <a href="/production" class="list-group-item list-group-item-action <?php if (strpos($_SERVER['REQUEST_URI'], '/production') !== false) echo 'active'; ?>">
                 <i class="fa fa-industry me-2"></i> <span>Production</span>
             </a>
         </div>
@@ -107,7 +106,11 @@
         <!-- Topbar -->
         <nav class="topbar d-flex align-items-center justify-content-between">
             <div>
-                <button class="btn btn-link d-lg-none text-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar-wrapper" aria-controls="sidebar-wrapper">
+                <!-- Hamburger button for small screens -->
+                <button class="btn btn-link d-lg-none text-primary" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#sidebar-wrapper"
+                        aria-controls="sidebar-wrapper" aria-expanded="false"
+                        aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
             </div>

@@ -44,13 +44,15 @@ class Menu extends Model
             $menuId = $this->db->lastInsertId();
 
             if (!empty($data['ingredients'])) {
+                $inventoryIds = $data['ingredients']['inventory_id'];
+                $quantities = $data['ingredients']['quantity'];
                 $ingStmt = $this->db->prepare("INSERT INTO menu_ingredients (menu_id, inventory_id, quantity) VALUES (:menu_id, :inventory_id, :quantity)");
-                foreach ($data['ingredients'] as $ingredient) {
-                    if (!empty($ingredient['inventory_id']) && !empty($ingredient['quantity'])) {
+                for ($i = 0; $i < count($inventoryIds); $i++) {
+                    if (!empty($inventoryIds[$i]) && !empty($quantities[$i])) {
                         $ingStmt->execute([
                             'menu_id' => $menuId,
-                            'inventory_id' => $ingredient['inventory_id'],
-                            'quantity' => $ingredient['quantity']
+                            'inventory_id' => $inventoryIds[$i],
+                            'quantity' => $quantities[$i]
                         ]);
                     }
                 }
@@ -79,13 +81,15 @@ class Menu extends Model
             $delStmt->execute(['menu_id' => $data['id']]);
 
             if (!empty($data['ingredients'])) {
+                $inventoryIds = $data['ingredients']['inventory_id'];
+                $quantities = $data['ingredients']['quantity'];
                 $ingStmt = $this->db->prepare("INSERT INTO menu_ingredients (menu_id, inventory_id, quantity) VALUES (:menu_id, :inventory_id, :quantity)");
-                foreach ($data['ingredients'] as $ingredient) {
-                    if (!empty($ingredient['inventory_id']) && !empty($ingredient['quantity'])) {
+                for ($i = 0; $i < count($inventoryIds); $i++) {
+                    if (!empty($inventoryIds[$i]) && !empty($quantities[$i])) {
                         $ingStmt->execute([
                             'menu_id' => $data['id'],
-                            'inventory_id' => $ingredient['inventory_id'],
-                            'quantity' => $ingredient['quantity']
+                            'inventory_id' => $inventoryIds[$i],
+                            'quantity' => $quantities[$i]
                         ]);
                     }
                 }

@@ -3,7 +3,7 @@
 <div class="container mt-4">
     <div class="row justify-content-between align-items-center mb-3">
         <div class="col">
-            <h2>Users</h2>
+            <h1>Users</h1>
         </div>
         <div class="col-auto">
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalUserForm">
@@ -11,7 +11,9 @@
             </button>
         </div>
     </div>
-    <div class="table-responsive" id="grid_container">
+    <hr>
+    
+    <div id="grid_container">
         <?php include_once __DIR__ . "/user_grid.php"; ?>
     </div>
 </div>
