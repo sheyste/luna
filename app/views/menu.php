@@ -1,5 +1,12 @@
 <?php include_once __DIR__ . '/layout/header.php'; ?>
 
+<style>
+
+  tr:hover {
+  cursor: pointer; /* Changes the cursor to a hand pointer */
+}
+</style>
+
 <div class="container mt-4">
     <div class="row justify-content-between align-items-center mb-3">
         <div class="col">
@@ -17,6 +24,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Barcode</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -26,6 +34,7 @@
                         <tr class="menu-row" data-id="<?= $menu['id'] ?>">
                             <td><?= htmlspecialchars($menu['id']) ?></td>
                             <td><?= htmlspecialchars($menu['name']) ?></td>
+                            <td><?= htmlspecialchars($menu['barcode']) ?></td>
                             <td>
                                 <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
                                     <i class="fa fa-edit"></i>
@@ -57,6 +66,10 @@
           <label for="menuName" class="form-label">Menu Name</label>
           <input type="text" class="form-control" id="menuName" name="name" required>
         </div> 
+        <div class="mb-3">
+          <label for="menuBarcode" class="form-label">Menu Barcode</label>
+          <input type="text" class="form-control" id="menuBarcode" name="barcode" readonly>
+        </div>
         <hr>
         <h5>Ingredients</h5>
         <div id="add-ingredients-container">
@@ -87,6 +100,10 @@
           <label for="editMenuName" class="form-label">Menu Name</label>
           <input type="text" class="form-control" id="editMenuName" name="name" required>
         </div> 
+         <div class="mb-3">
+          <label for="editMenuBarcode" class="form-label">Menu Barcode</label>
+          <input type="text" class="form-control" id="editMenuBarcode" name="barcode" readonly>
+        </div>
         <hr>
         <h5>Ingredients</h5>
         <div id="edit-ingredients-container">
@@ -249,6 +266,10 @@ $(document).ready(function() {
 
     // --- Add Modal ---
     $('#addMenuModal').on('shown.bs.modal', function () {
+        // Generate SKU
+        const sku = Date.now();
+        $('#menuBarcode').val(sku);
+
         fetchInventory().done(function() {
             const container = $('#add-ingredients-container');
             container.empty(); // Clear previous
@@ -286,6 +307,7 @@ $(document).ready(function() {
             if(data) {
                 $('#editMenuId').val(data.id);
                 $('#editMenuName').val(data.name);
+                $('#editMenuBarcode').val(data.barcode);
 
                 const container = $('#edit-ingredients-container');
                 container.empty();

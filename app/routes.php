@@ -28,5 +28,6 @@ const routes = array(
     '/menu/add'     => array('MenuController', 'add'),
     '/menu/edit'    => array('MenuController', 'edit'),
     '/menu/delete'  => array('MenuController', 'delete'),
+    '/menu/getMenus' => array('MenuController', 'getMenus'),
     '/menu/getDetail' => array('MenuController', 'getDetail'),
 );

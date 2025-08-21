@@ -21,7 +21,7 @@ class Menu extends Model
         $menuStmt->execute(['id' => $id]);
         $menu = $menuStmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($menu) {
+       if ($menu) {
             $ingredientsStmt = $this->db->prepare("
                 SELECT mi.inventory_id, mi.quantity, i.unit, i.name 
                 FROM menu_ingredients mi
@@ -39,8 +39,8 @@ class Menu extends Model
     {
         $this->db->beginTransaction();
         try {
-            $stmt = $this->db->prepare("INSERT INTO menus (name) VALUES (:name)");
-            $stmt->execute(['name' => $data['name']]);
+            $stmt = $this->db->prepare("INSERT INTO menus (name, barcode) VALUES (:name, :barcode)");
+            $stmt->execute(['name' => $data['name'], 'barcode' => $data['barcode']]);
             $menuId = $this->db->lastInsertId();
 
             if (!empty($data['ingredients'])) {
@@ -71,9 +71,10 @@ class Menu extends Model
     {
         $this->db->beginTransaction();
         try {
-            $stmt = $this->db->prepare("UPDATE menus SET name = :name WHERE id = :id");
+            $stmt = $this->db->prepare("UPDATE menus SET name = :name, barcode = :barcode WHERE id = :id");
             $stmt->execute([
                 'name' => $data['name'],
+                'barcode' => $data['barcode'],
                 'id' => $data['id']
             ]);
 

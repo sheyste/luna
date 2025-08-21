@@ -107,14 +107,25 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `production`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `production` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `menu_name` varchar(255) NOT NULL,
-  `quantity_produced` int NOT NULL,
-  `quantity_available` int NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE production (
+  id INT NOT NULL AUTO_INCREMENT,
+  menu_id INT NOT NULL,
+  quantity_produced INT NOT NULL,
+  quantity_available INT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_production_menu FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE
+);
+
+CREATE TABLE production_menu (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  production_id INT NOT NULL,
+  menu_id INT NOT NULL,
+  FOREIGN KEY (production_id) REFERENCES production(id) ON DELETE CASCADE,
+  FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE
+);
+
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

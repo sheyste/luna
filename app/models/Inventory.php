@@ -25,7 +25,7 @@ class Inventory extends Model
     public function create($data)
     {
         // Generate a unique SKU
-        $sku = 'SKU' . time() . rand(100, 999);
+        $sku = time() . rand(100, 999);
         $stmt = $this->db->prepare("INSERT INTO inventory (name, sku, quantity, unit) VALUES (:name, :sku, :quantity, :unit)");
         return $stmt->execute([
             'name' => $data['name'],

@@ -17,6 +17,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Menu</th>
+                    <th>Barcode</th>
                     <th>Produced</th>
                     <th>Available</th>
                     <th>Actions</th>
@@ -28,6 +29,7 @@
                         <tr>
                             <td><?= htmlspecialchars($item['id']) ?></td>
                             <td><?= htmlspecialchars($item['menu_name']) ?></td>
+                            <td><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
                             <td><?= htmlspecialchars($item['quantity_produced']) ?></td>
                             <td><?= htmlspecialchars($item['quantity_available']) ?></td>
                             <td>
@@ -55,9 +57,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+
         <div class="mb-3">
-          <label for="menuName" class="form-label">Menu</label>
-          <input type="text" class="form-control" id="menuName" name="menu_name" required>
+          <label for="menuId" class="form-label">Menu</label>
+          <select class="form-select" id="menuId" name="menu_id" required>
+            <option value="">-- Select Menu --</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="barcode" class="form-label">Barcode</label>
+          <input type="text" class="form-control" id="barcode" name="barcode" readonly>
         </div>
         <div class="mb-3">
           <label for="quantityProduced" class="form-label">Produced</label>
@@ -86,8 +95,14 @@
       <div class="modal-body">
         <input type="hidden" id="editItemId" name="id">
         <div class="mb-3">
-          <label for="editMenuName" class="form-label">Menu</label>
-          <input type="text" class="form-control" id="editMenuName" name="menu_name" required>
+          <label for="editMenuId" class="form-label">Menu</label>
+          <select class="form-select" id="editMenuId" name="menu_id" required>
+            <option value="">-- Select Menu --</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="editBarcode" class="form-label">Barcode</label>
+          <input type="text" class="form-control" id="editBarcode" name="barcode" readonly>
         </div>
         <div class="mb-3">
           <label for="editQuantityProduced" class="form-label">Produced</label>
@@ -130,21 +145,78 @@
 <script>
 $(document).ready(function() {
     $('#productionTable').DataTable();
+    var menuData = []; // To hold menu data for auto-populating fields
+
+    // Load menus into dropdowns
+    function loadMenus(selectId, selectedValue = null) {
+        $.ajax({
+            url: '/menu/getMenus',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                menuData = data; // Store menu data
+                var $select = $(selectId);
+                $select.empty().append('<option value="">-- Select Menu --</option>');
+                data.forEach(function(menu) {
+                    var selected = (menu.id == selectedValue) ? 'selected' : '';
+                    $select.append('<option value="' + menu.id + '" ' + selected + '>' + menu.name + '</option>');
+                });
+            }
+        });
+    }
+
+    // Populate when opening Add Production Modal
+    $('#addProductionModal').on('show.bs.modal', function() {
+        loadMenus('#menuId');
+        // Reset form fields
+        $('#addProductionModal form')[0].reset();
+    });
+
+    // Auto-populate barcode and sku when a menu is selected in the Add modal
+    $('#menuId').on('change', function() {
+        var selectedMenuId = $(this).val();
+        if (selectedMenuId) {
+            var selectedMenu = menuData.find(menu => menu.id == selectedMenuId);
+            if (selectedMenu) {
+                // Assuming menu object has barcode and sku properties
+                $('#barcode').val(selectedMenu.barcode || '');
+            }
+        } else {
+            $('#barcode').val('');
+        }
+    });
+
+    // Auto-populate barcode when a menu is selected in the Edit modal
+    $('#editMenuId').on('change', function() {
+        var selectedMenuId = $(this).val();
+        if (selectedMenuId) {
+            var selectedMenu = menuData.find(menu => menu.id == selectedMenuId);
+            if (selectedMenu) {
+                $('#editBarcode').val(selectedMenu.barcode || '');
+            }
+        } else {
+            $('#editBarcode').val('');
+        }
+    });
 
     // Handle Edit button click
     $('#productionTable').on('click', '.edit-btn', function() {
         var itemId = $(this).data('id');
-        
+
         $.ajax({
             url: '/production/getDetail?id=' + itemId,
             method: 'GET',
             dataType: 'json',
             success: function(data) {
-                if(data) {
+                if (data) {
                     $('#editItemId').val(data.id);
-                    $('#editMenuName').val(data.menu_name);
+                    $('#editBarcode').val(data.barcode);
                     $('#editQuantityProduced').val(data.quantity_produced);
                     $('#editQuantityAvailable').val(data.quantity_available);
+
+                    // Load menus and pre-select current
+                    loadMenus('#editMenuId', data.menu_id);
+
                     $('#editProductionModal').modal('show');
                 }
             },
@@ -161,4 +233,6 @@ $(document).ready(function() {
         $('#deleteProductionModal').modal('show');
     });
 });
+
+
 </script>

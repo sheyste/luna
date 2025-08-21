@@ -10,6 +10,7 @@ class MenuController extends Controller
     public function __construct()
     {
         parent::__construct();
+        $this->checkAuth(); 
         $this->menuModel = new Menu();
     }
 
@@ -53,5 +54,11 @@ class MenuController extends Controller
             header('Content-Type: application/json');
             echo json_encode($menu);
         }
+    }
+
+    public function getMenus()
+    {
+        header('Content-Type: application/json');
+        echo json_encode($this->menuModel->getAll());
     }
 }

@@ -24,28 +24,27 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if (!empty($items)): ?>
-                    <?php foreach ($items as $item): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($item['id']) ?></td>
-                            <td><?= htmlspecialchars($item['name']) ?></td>
-                            <td><?= htmlspecialchars($item['sku']) ?></td>
-                            <td><?= htmlspecialchars($item['quantity']) ?></td>
-                            <td><?= htmlspecialchars($item['unit'] ?? '') ?></td>
-                            <td>
-                                <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr><td colspan="6" class="text-center">No inventory items found.</td></tr>
-                <?php endif; ?>
+              <?php if (!empty($items)): ?>
+                  <?php foreach ($items as $item): ?>
+                      <tr>
+                          <td><?= htmlspecialchars($item['id']) ?></td>
+                          <td><?= htmlspecialchars($item['name'] ?? '') ?></td>
+                          <td><?= htmlspecialchars($item['sku'] ?? '') ?></td>
+                          <td><?= htmlspecialchars($item['quantity'] ?? '') ?></td>
+                          <td><?= htmlspecialchars($item['unit'] ?? '') ?></td>
+                          <td>
+                              <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
+                                  <i class="fa fa-edit"></i>
+                              </button>
+                              <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
+                                  <i class="fa fa-trash"></i>
+                              </button>
+                          </td>
+                      </tr>
+                  <?php endforeach; ?>
+              <?php endif; ?>
             </tbody>
+
         </table>
     </div>
 </div>
@@ -129,7 +128,7 @@
 
 <!-- Delete Inventory Modal -->
 <div class="modal fade" id="deleteInventoryModal" tabindex="-1" aria-labelledby="deleteInventoryModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+    <div class="modal-dialog">
     <form class="modal-content" method="post" action="/inventory/delete">
       <div class="modal-header">
         <h5 class="modal-title" id="deleteInventoryModalLabel">Delete Inventory Item</h5>
@@ -150,31 +149,35 @@
 <?php include_once __DIR__ . '/layout/footer.php' ?>
 
 <script>
-$(document).ready(function() {
-    $('#inventoryTable').DataTable();
+  $(document).ready(function() {
+    $('#inventoryTable').DataTable({
+      "language": {
+        "emptyTable": "No inventory items found"
+      }
+    });
 
-    // Handle Edit button click
+    //Handle Edit button click
     $('#inventoryTable').on('click', '.edit-btn', function() {
-        var itemId = $(this).data('id');
-        
-        $.ajax({
-            url: '/inventory/getDetail?id=' + itemId,
-            method: 'GET',
-            dataType: 'json',
-            success: function(data) {
-                if(data) {
-                    $('#editItemId').val(data.id);
-                    $('#editItemName').val(data.name);
-                    $('#editItemSKU').val(data.sku);
-                    $('#editItemQty').val(data.quantity);
-                    $('#editItemUnit').val(data.unit);
-                    $('#editInventoryModal').modal('show');
-                }
-            },
-            error: function() {
-                alert('Could not fetch item details.');
-            }
-        });
+      var itemId = $(this).data('id');
+
+      $.ajax({
+        url: '/inventory/getDetail?id=' + itemId,
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          if (data) {
+            $('#editItemId').val(data.id);
+            $('#editItemName').val(data.name);
+            $('#editItemSKU').val(data.sku);
+            $('#editItemQty').val(data.quantity);
+            $('#editItemUnit').val(data.unit);
+            $('#editInventoryModal').modal('show');
+          }
+        },
+        error: function() {
+          alert('Could not fetch item details.');
+        }
+      });
     });
 
     // Handle Delete button click
@@ -185,3 +188,8 @@ $(document).ready(function() {
     });
 });
 </script>
+
+<!--
+[PROMPT_SUGGESTION]How can I add client side validation to the add inventory modal?[/PROMPT_SUGGESTION]
+[PROMPT_SUGGESTION]Can you add a search bar to the inventory table?[/PROMPT_SUGGESTION]
+-->
