@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `luna` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `luna`;
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: luna
@@ -33,7 +31,7 @@ CREATE TABLE `inventory` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sku` (`sku`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +40,7 @@ CREATE TABLE `inventory` (
 
 LOCK TABLES `inventory` WRITE;
 /*!40000 ALTER TABLE `inventory` DISABLE KEYS */;
-INSERT INTO `inventory` VALUES (8,'bendev','1753197058764',76,'Kg','2025-07-22 15:10:58'),(9,'wdasd','SKU1754113006770',21,'mg','2025-08-02 05:36:46');
+INSERT INTO `inventory` VALUES (10,'Romaine lettuce','SKU1755532210971',80,'g','2025-08-18 15:50:10'),(11,'Parmesan cheese','SKU1755532224659',20,'g','2025-08-18 15:50:24'),(12,'Garlic croutons','SKU1755532233228',30,'g','2025-08-18 15:50:33');
 /*!40000 ALTER TABLE `inventory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -63,7 +61,7 @@ CREATE TABLE `menu_ingredients` (
   KEY `inventory_id` (`inventory_id`),
   CONSTRAINT `menu_ingredients_ibfk_1` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE,
   CONSTRAINT `menu_ingredients_ibfk_2` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,6 +70,7 @@ CREATE TABLE `menu_ingredients` (
 
 LOCK TABLES `menu_ingredients` WRITE;
 /*!40000 ALTER TABLE `menu_ingredients` DISABLE KEYS */;
+INSERT INTO `menu_ingredients` VALUES (9,5,12,12.00);
 /*!40000 ALTER TABLE `menu_ingredients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,8 +85,9 @@ CREATE TABLE `menus` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `barcode` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,7 +96,7 @@ CREATE TABLE `menus` (
 
 LOCK TABLES `menus` WRITE;
 /*!40000 ALTER TABLE `menus` DISABLE KEYS */;
-INSERT INTO `menus` VALUES (1,'dwads','2025-08-02 05:21:38');
+INSERT INTO `menus` VALUES (5,'dawsdasd','2025-08-18 16:43:19','1755535392310');
 /*!40000 ALTER TABLE `menus` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,25 +107,17 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `production`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE production (
-  id INT NOT NULL AUTO_INCREMENT,
-  menu_id INT NOT NULL,
-  quantity_produced INT NOT NULL,
-  quantity_available INT NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_production_menu FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE
-);
-
-CREATE TABLE production_menu (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  production_id INT NOT NULL,
-  menu_id INT NOT NULL,
-  FOREIGN KEY (production_id) REFERENCES production(id) ON DELETE CASCADE,
-  FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE
-);
-
-
+CREATE TABLE `production` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `menu_id` int NOT NULL,
+  `quantity_produced` int NOT NULL,
+  `quantity_available` int NOT NULL,
+  `barcode` varchar(225) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_production_menu` (`menu_id`),
+  CONSTRAINT `fk_production_menu` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,8 +126,36 @@ CREATE TABLE production_menu (
 
 LOCK TABLES `production` WRITE;
 /*!40000 ALTER TABLE `production` DISABLE KEYS */;
-INSERT INTO `production` VALUES (1,'wadsd',3211,321,'2025-07-22 15:35:56');
+INSERT INTO `production` VALUES (4,5,21,800,'1755535392310','2025-08-21 03:36:47');
 /*!40000 ALTER TABLE `production` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `production_menu`
+--
+
+DROP TABLE IF EXISTS `production_menu`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `production_menu` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `production_id` int NOT NULL,
+  `menu_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `production_id` (`production_id`),
+  KEY `menu_id` (`menu_id`),
+  CONSTRAINT `production_menu_ibfk_1` FOREIGN KEY (`production_id`) REFERENCES `production` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `production_menu_ibfk_2` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `production_menu`
+--
+
+LOCK TABLES `production_menu` WRITE;
+/*!40000 ALTER TABLE `production_menu` DISABLE KEYS */;
+/*!40000 ALTER TABLE `production_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -164,7 +184,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (10,'admin','Sheyste','Bene','sheystebenerable@gmail.com','$2y$10$5hH3u9wG9HQN2n9UJl5fturO7r8C6J9dD5C17VpAopT1cFjTF6/Su','Admin','2025-07-22 21:38:42'),(11,'user','dwads','dawdsda','user@user.com','$2y$10$h1ScMsffBUI6OCOTBNxleekiRRtVxvWcbMGBWl5yZrl3PSMEbbs6y','Admin','2025-08-02 11:48:48');
+INSERT INTO `user` VALUES (10,'admin','Sheyste','Bene','sheystebenerable@gmail.com','$2y$10$5hH3u9wG9HQN2n9UJl5fturO7r8C6J9dD5C17VpAopT1cFjTF6/Su','Admin','2025-07-22 21:38:42'),(11,'user','dwads','dawdsda','user@user.com','$2y$10$SHjJQub0F4rcnH0YZzEzLuUl8Y6Y/vr.UMKHDCFHt9aLunOGv5HOS','Admin','2025-08-02 11:48:48');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -177,4 +197,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-08-03 11:36:05
+-- Dump completed on 2025-08-21 18:59:06
