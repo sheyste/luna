@@ -1,20 +1,30 @@
 <?php include_once __DIR__ . '/layout/header.php'; ?>
 
-<div class="container mt-4">
-    <div class="row justify-content-between align-items-center mb-3">
-        <div class="col">
-            <h1>Users</h1>
-        </div>
-        <div class="col-auto">
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalUserForm">
-                <i class="fa fa-user-plus"></i> Add User
-            </button>
-        </div>
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Users</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Users</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Main Content Card -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 fw-bold text-primary">User List</h6>
+        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalUserForm">
+            <i class="fa fa-user-plus me-1"></i> Add User
+        </button>
     </div>
-    <hr>
-    
-    <div id="grid_container">
-        <?php include_once __DIR__ . "/user_grid.php"; ?>
+    <div class="card-body">
+        <div class="table-responsive">
+            <div id="grid_container">
+                <?php include_once __DIR__ . "/user_grid.php"; ?>
+            </div>
+        </div>
     </div>
 </div>
 

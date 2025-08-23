@@ -1,55 +1,62 @@
 <?php include_once __DIR__ . '/layout/header.php'; ?>
 
 <style>
-
   tr:hover {
-  cursor: pointer; /* Changes the cursor to a hand pointer */
-}
+    cursor: pointer; /* Changes the cursor to a hand pointer */
+  }
 </style>
 
-<div class="container mt-4">
-    <div class="row justify-content-between align-items-center mb-3">
-        <div class="col">
-            <h2>Menus</h2>
-        </div>
-        <div class="col-auto">
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMenuModal">
-                <i class="fa fa-plus"></i> Add Menu
-            </button>
-        </div>
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Menus</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Menus</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Main Content Card -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 fw-bold text-primary">Menu List</h6>
+        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addMenuModal">
+            <i class="fa fa-plus me-1"></i> Add Menu
+        </button>
     </div>
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped" id="menuTable">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Barcode</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($menus)): ?>
-                    <?php foreach ($menus as $menu): ?>
-                        <tr class="menu-row" data-id="<?= $menu['id'] ?>">
-                            <td><?= htmlspecialchars($menu['id']) ?></td>
-                            <td><?= htmlspecialchars($menu['name']) ?></td>
-                            <td><?= htmlspecialchars($menu['barcode']) ?></td>
-                            <td>
-                                <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
-
-
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="menuTable" width="100%" cellspacing="0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Barcode</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($menus)): ?>
+                        <?php foreach ($menus as $menu): ?>
+                            <tr class="menu-row" data-id="<?= $menu['id'] ?>">
+                                <td><?= htmlspecialchars($menu['id']) ?></td>
+                                <td><?= htmlspecialchars($menu['name']) ?></td>
+                                <td><?= htmlspecialchars($menu['barcode']) ?></td>
+                                <td>
+                                    <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

@@ -1,51 +1,60 @@
 <?php include_once __DIR__ . '/layout/header.php'; ?>
 
-<div class="container mt-4">
-    <div class="row justify-content-between align-items-center mb-3">
-        <div class="col">
-            <h2>Inventory</h2>
-        </div>
-        <div class="col-auto">
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addInventoryModal">
-                <i class="fa fa-plus"></i> Add Item
-            </button>
-        </div>
-    </div>
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped" id="inventoryTable">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>SKU (Barcode)</th>
-                    <th>Quantity</th>
-                    <th>Unit</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-              <?php if (!empty($items)): ?>
-                  <?php foreach ($items as $item): ?>
-                      <tr>
-                          <td><?= htmlspecialchars($item['id']) ?></td>
-                          <td><?= htmlspecialchars($item['name'] ?? '') ?></td>
-                          <td><?= htmlspecialchars($item['sku'] ?? '') ?></td>
-                          <td><?= htmlspecialchars($item['quantity'] ?? '') ?></td>
-                          <td><?= htmlspecialchars($item['unit'] ?? '') ?></td>
-                          <td>
-                              <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
-                                  <i class="fa fa-edit"></i>
-                              </button>
-                              <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
-                                  <i class="fa fa-trash"></i>
-                              </button>
-                          </td>
-                      </tr>
-                  <?php endforeach; ?>
-              <?php endif; ?>
-            </tbody>
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Inventory</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Inventory</li>
+        </ol>
+    </nav>
+</div>
 
-        </table>
+<!-- Main Content Card -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 fw-bold text-primary">Inventory List</h6>
+        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addInventoryModal">
+            <i class="fa fa-plus me-1"></i> Add Item
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="inventoryTable" width="100%" cellspacing="0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>SKU (Barcode)</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  <?php if (!empty($items)): ?>
+                      <?php foreach ($items as $item): ?>
+                          <tr>
+                              <td><?= htmlspecialchars($item['id']) ?></td>
+                              <td><?= htmlspecialchars($item['name'] ?? '') ?></td>
+                              <td><?= htmlspecialchars($item['sku'] ?? '') ?></td>
+                              <td><?= htmlspecialchars($item['quantity'] ?? '') ?></td>
+                              <td><?= htmlspecialchars($item['unit'] ?? '') ?></td>
+                              <td>
+                                  <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
+                                      <i class="fa fa-edit"></i>
+                                  </button>
+                                  <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
+                                      <i class="fa fa-trash"></i>
+                                  </button>
+                              </td>
+                          </tr>
+                      <?php endforeach; ?>
+                  <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
