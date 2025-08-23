@@ -24,23 +24,30 @@
             <table class="table table-bordered" id="inventoryTable" width="100%" cellspacing="0">
                 <thead class="table-dark">
                     <tr>
-                        <th>ID</th>
                         <th>Name</th>
-                        <th>SKU (Barcode)</th>
+                        <th>Barcode</th>
                         <th>Quantity</th>
                         <th>Unit</th>
+                        <th>Price (Per Unit)</th>
+                        <th>Total Price</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                   <?php if (!empty($items)): ?>
                       <?php foreach ($items as $item): ?>
+                          <?php
+                              $quantity = (float)($item['quantity'] ?? 0);
+                              $price = (float)($item['price'] ?? 0);
+                              $totalPrice = $quantity * $price;
+                          ?>
                           <tr>
-                              <td><?= htmlspecialchars($item['id']) ?></td>
                               <td><?= htmlspecialchars($item['name'] ?? '') ?></td>
-                              <td><?= htmlspecialchars($item['sku'] ?? '') ?></td>
+                              <td><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
                               <td><?= htmlspecialchars($item['quantity'] ?? '') ?></td>
                               <td><?= htmlspecialchars($item['unit'] ?? '') ?></td>
+                              <td>&#8369;<?= htmlspecialchars(number_format($price, 2)) ?></td>
+                              <td>&#8369;<?= htmlspecialchars(number_format($totalPrice, 2)) ?></td>
                               <td>
                                   <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
                                       <i class="fa fa-edit"></i>
@@ -86,6 +93,10 @@
             <option value="ml">ml</option>
           </select>
         </div>
+        <div class="mb-3">
+          <label for="itemPrice" class="form-label">Price (Per Unit)</label>
+          <input type="number" class="form-control" id="itemPrice" name="price" min="0" step="0.01" required>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-success">Add Item</button>
@@ -109,8 +120,8 @@
           <input type="text" class="form-control" id="editItemName" name="name" required>
         </div>
         <div class="mb-3">
-          <label for="editItemSKU" class="form-label">SKU (Barcode)</label>
-          <input type="text" class="form-control" id="editItemSKU" name="sku" readonly>
+          <label for="editItemBARCODE" class="form-label">Barcode</label>
+          <input type="text" class="form-control" id="editItemBARCODE" name="barcode" readonly>
         </div>
         <div class="mb-3">
           <label for="editItemQty" class="form-label">Quantity</label>
@@ -126,6 +137,10 @@
             <option value="L">L</option>
             <option value="ml">ml</option>
           </select>
+        </div>
+        <div class="mb-3">
+          <label for="editItemPrice" class="form-label">Price (Per Unit)</label>
+          <input type="number" class="form-control" id="editItemPrice" name="price" min="0" step="0.01" required>
         </div>
       </div>
       <div class="modal-footer">
@@ -165,7 +180,7 @@
       }
     });
 
-    //Handle Edit button click
+    // Handle Edit button click
     $('#inventoryTable').on('click', '.edit-btn', function() {
       var itemId = $(this).data('id');
 
@@ -177,9 +192,10 @@
           if (data) {
             $('#editItemId').val(data.id);
             $('#editItemName').val(data.name);
-            $('#editItemSKU').val(data.sku);
+            $('#editItemBARCODE').val(data.barcode);
             $('#editItemQty').val(data.quantity);
             $('#editItemUnit').val(data.unit);
+            $('#editItemPrice').val(data.price);
             $('#editInventoryModal').modal('show');
           }
         },
@@ -197,8 +213,3 @@
     });
 });
 </script>
-
-<!--
-[PROMPT_SUGGESTION]How can I add client side validation to the add inventory modal?[/PROMPT_SUGGESTION]
-[PROMPT_SUGGESTION]Can you add a search bar to the inventory table?[/PROMPT_SUGGESTION]
--->

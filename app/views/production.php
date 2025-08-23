@@ -5,7 +5,7 @@
     <h1 class="h3 mb-0 text-gray-800">Production</h1>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+            <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page">Production</li>
         </ol>
     </nav>
@@ -24,7 +24,6 @@
             <table class="table table-bordered" id="productionTable" width="100%" cellspacing="0">
                 <thead class="table-dark">
                     <tr>
-                        <th>ID</th>
                         <th>Menu</th>
                         <th>Barcode</th>
                         <th>Produced</th>
@@ -36,7 +35,6 @@
                     <?php if (!empty($items)): ?>
                         <?php foreach ($items as $item): ?>
                             <tr>
-                                <td><?= htmlspecialchars($item['id']) ?></td>
                                 <td><?= htmlspecialchars($item['menu_name']) ?></td>
                                 <td><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
                                 <td><?= htmlspecialchars($item['quantity_produced']) ?></td>

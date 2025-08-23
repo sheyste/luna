@@ -11,19 +11,19 @@ class Menu extends Model
 
     public function getAll()
     {
-        $stmt = $this->db->query("SELECT * FROM menus ORDER BY name ASC");
+        $stmt = $this->db->query("SELECT id, name, barcode, price FROM menus ORDER BY name ASC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getById($id)
     {
-        $menuStmt = $this->db->prepare("SELECT * FROM menus WHERE id = :id");
+        $menuStmt = $this->db->prepare("SELECT id, name, barcode, price FROM menus WHERE id = :id");
         $menuStmt->execute(['id' => $id]);
         $menu = $menuStmt->fetch(PDO::FETCH_ASSOC);
 
        if ($menu) {
             $ingredientsStmt = $this->db->prepare("
-                SELECT mi.inventory_id, mi.quantity, i.unit, i.name 
+                SELECT mi.inventory_id, mi.quantity, i.unit, i.name, i.price
                 FROM menu_ingredients mi
                 JOIN inventory i ON mi.inventory_id = i.id
                 WHERE mi.menu_id = :menu_id
@@ -39,8 +39,12 @@ class Menu extends Model
     {
         $this->db->beginTransaction();
         try {
-            $stmt = $this->db->prepare("INSERT INTO menus (name, barcode) VALUES (:name, :barcode)");
-            $stmt->execute(['name' => $data['name'], 'barcode' => $data['barcode']]);
+            $stmt = $this->db->prepare("INSERT INTO menus (name, barcode, price) VALUES (:name, :barcode, :price)");
+            $stmt->execute([
+                'name' => $data['name'],
+                'barcode' => $data['barcode'],
+                'price' => $data['price'] ?? 0.00
+            ]);
             $menuId = $this->db->lastInsertId();
 
             if (!empty($data['ingredients'])) {
@@ -71,10 +75,11 @@ class Menu extends Model
     {
         $this->db->beginTransaction();
         try {
-            $stmt = $this->db->prepare("UPDATE menus SET name = :name, barcode = :barcode WHERE id = :id");
+            $stmt = $this->db->prepare("UPDATE menus SET name = :name, barcode = :barcode, price = :price WHERE id = :id");
             $stmt->execute([
                 'name' => $data['name'],
                 'barcode' => $data['barcode'],
+                'price' => $data['price'] ?? 0.00,
                 'id' => $data['id']
             ]);
 

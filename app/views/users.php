@@ -5,7 +5,7 @@
     <h1 class="h3 mb-0 text-gray-800">Users</h1>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+            <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page">Users</li>
         </ol>
     </nav>

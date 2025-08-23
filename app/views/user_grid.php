@@ -1,7 +1,6 @@
 <table class="table table-hover table-bordered table-striped table-sm" id="users_grid">
                     <thead class="text-center table-dark fw-bold">
                         <tr>
-                            <th width="5%">ID</th>
                             <th width="15%">Username</th>
                             <th width="15%">First Name</th>
                             <th width="15%">Last Name</th>
@@ -15,7 +14,6 @@
                         <?php if (!empty($data['users'])): ?>
                             <?php foreach ($data['users'] as $row): ?>
                             <tr>
-                                <td><?= htmlspecialchars($row['id']) ?></td>
                                 <td><?= htmlspecialchars($row['username'] ?? '') ?></td>
                                 <td><?= htmlspecialchars($row['first_name']) ?></td>
                                 <td><?= htmlspecialchars($row['last_name']) ?></td>

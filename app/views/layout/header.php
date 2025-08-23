@@ -152,14 +152,36 @@
             body.sidebar-toggled #sidebar {
                 margin-left: 0;
             }
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 1029; /* Below sidebar (1030) */
+                display: none;
+            }
+            body.sidebar-toggled .sidebar-overlay {
+                display: block;
+            }
         }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const toggler = document.getElementById('sidebar-toggler');
+            const overlay = document.querySelector('.sidebar-overlay');
+            const body = document.body;
+
             if (toggler) {
                 toggler.addEventListener('click', function() {
-                    document.body.classList.toggle('sidebar-toggled');
+                    body.classList.toggle('sidebar-toggled');
+                });
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', function() {
+                    body.classList.remove('sidebar-toggled');
                 });
             }
         });
@@ -167,6 +189,7 @@
 </head>
 <body>
 <div class="page-wrapper">
+    <div class="sidebar-overlay"></div>
     <!-- Sidebar -->
     <nav id="sidebar">
         <div class="sidebar-header">

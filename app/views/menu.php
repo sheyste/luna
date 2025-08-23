@@ -30,9 +30,9 @@
             <table class="table table-bordered" id="menuTable" width="100%" cellspacing="0">
                 <thead class="table-dark">
                     <tr>
-                        <th>ID</th>
                         <th>Name</th>
                         <th>Barcode</th>
+                        <th>Price</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -40,9 +40,9 @@
                     <?php if (!empty($menus)): ?>
                         <?php foreach ($menus as $menu): ?>
                             <tr class="menu-row" data-id="<?= $menu['id'] ?>">
-                                <td><?= htmlspecialchars($menu['id']) ?></td>
                                 <td><?= htmlspecialchars($menu['name']) ?></td>
                                 <td><?= htmlspecialchars($menu['barcode']) ?></td>
+                                <td>&#8369;<?= htmlspecialchars(number_format($menu['price'] ?? 0, 2)) ?></td>
                                 <td>
                                     <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
                                         <i class="fa fa-edit"></i>
@@ -69,16 +69,26 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="mb-3">
-          <label for="menuName" class="form-label">Menu Name</label>
-          <input type="text" class="form-control" id="menuName" name="name" required>
-        </div> 
+        <div class="row">
+            <div class="col-md-8">
+                <div class="mb-3">
+                  <label for="menuName" class="form-label">Menu Name</label>
+                  <input type="text" class="form-control" id="menuName" name="name" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                  <label for="menuPrice" class="form-label">Selling Price</label>
+                  <input type="number" class="form-control" id="menuPrice" name="price" required min="0" step="0.01">
+                </div>
+            </div>
+        </div>
         <div class="mb-3">
           <label for="menuBarcode" class="form-label">Menu Barcode</label>
           <input type="text" class="form-control" id="menuBarcode" name="barcode" readonly>
         </div>
         <hr>
-        <h5>Ingredients</h5>
+        <h5>Ingredients <span class="float-end">Total Cost: <span id="add-total-cost" class="fw-bold">0.00</span></span></h5>
         <div id="add-ingredients-container">
             <!-- Ingredient rows will be added here by JS -->
         </div>
@@ -103,16 +113,26 @@
       </div>
       <div class="modal-body">
         <input type="hidden" id="editMenuId" name="id">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="mb-3">
+                  <label for="editMenuName" class="form-label">Menu Name</label>
+                  <input type="text" class="form-control" id="editMenuName" name="name" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                  <label for="editMenuPrice" class="form-label">Selling Price</label>
+                  <input type="number" class="form-control" id="editMenuPrice" name="price" required min="0" step="0.01">
+                </div>
+            </div>
+        </div>
         <div class="mb-3">
-          <label for="editMenuName" class="form-label">Menu Name</label>
-          <input type="text" class="form-control" id="editMenuName" name="name" required>
-        </div> 
-         <div class="mb-3">
           <label for="editMenuBarcode" class="form-label">Menu Barcode</label>
           <input type="text" class="form-control" id="editMenuBarcode" name="barcode" readonly>
         </div>
         <hr>
-        <h5>Ingredients</h5>
+        <h5>Ingredients <span class="float-end">Total Cost: <span id="edit-total-cost" class="fw-bold">0.00</span></span></h5>
         <div id="edit-ingredients-container">
             <!-- Ingredient rows will be added here by JS -->
         </div>
@@ -150,17 +170,20 @@
 <!-- Ingredient Row Template -->
 <div id="ingredient-row-template" style="display: none;">
     <div class="row ingredient-row mb-2 align-items-center">
-        <div class="col-5">
+        <div class="col-4">
             <select class="form-select ingredient-select" name="ingredients[inventory_id][]" required>
                 <option value="" selected disabled>Select Ingredient</option>
                 <!-- Options populated by JS -->
             </select>
         </div>
-        <div class="col-3">
-            <input type="number" class="form-control" name="ingredients[quantity][]" placeholder="Quantity" min="0" step="any" required>
-        </div> 
+        <div class="col-2">
+            <input type="number" class="form-control ingredient-quantity" name="ingredients[quantity][]" placeholder="Qty" min="0" step="any" required>
+        </div>
         <div class="col-2">
             <span class="unit-span"></span>
+        </div>
+        <div class="col-2">
+            <span class="cost-span fw-bold">0.00</span>
         </div>
         <div class="col-2">
             <button type="button" class="btn btn-danger btn-sm remove-ingredient-btn"><i class="fa fa-trash"></i></button>
@@ -177,17 +200,29 @@
         <h5 class="modal-title">Menu Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body"> 
-        <h6 id="menuName"></h6>
-        <table class="table">
+      <div class="modal-body">
+        <div class="d-flex justify-content-between">
+            <h6 id="menuDetailName"></h6>
+            <h6 id="menuDetailPrice" class="text-success fw-bold"></h6>
+        </div>
+        <hr class="mt-1">
+        <h6>Recipe:</h6>
+        <table class="table table-sm">
           <thead>
             <tr>
               <th>Ingredient</th>
               <th>Quantity</th>
               <th>Unit</th>
+              <th>Cost</th>
             </tr>
           </thead>
           <tbody id="ingredientList"></tbody>
+          <tfoot>
+              <tr>
+                  <th colspan="3" class="text-end">Total Ingredient Cost:</th>
+                  <th id="totalIngredientCost"></th>
+              </tr>
+          </tfoot>
         </table>
       </div>
     </div>
@@ -206,23 +241,30 @@ document.querySelectorAll('.menu-row').forEach(row => {
     fetch(`/menu/getDetail?id=${menuId}`)
       .then(response => response.json())
       .then(data => {
-        document.getElementById('menuName').textContent = data.name;
+        document.getElementById('menuDetailName').textContent = data.name;
+        document.getElementById('menuDetailPrice').textContent = `Price: ${parseFloat(data.price || 0).toFixed(2)}`;
         const ingredientList = document.getElementById('ingredientList');
         ingredientList.innerHTML = '';
+        let totalCost = 0;
 
         if (data.ingredients && data.ingredients.length > 0) {
           data.ingredients.forEach(ing => {
+            const cost = (parseFloat(ing.price) || 0) * (parseFloat(ing.quantity) || 0);
+            totalCost += cost;
             const tr = document.createElement('tr');
             tr.innerHTML = `
               <td>${ing.name}</td>
               <td>${ing.quantity}</td>
               <td>${ing.unit}</td>
+              <td>${cost.toFixed(2)}</td>
             `;
             ingredientList.appendChild(tr);
           });
         } else {
-          ingredientList.innerHTML = '<tr><td colspan="3">No ingredients found.</td></tr>';
+          ingredientList.innerHTML = '<tr><td colspan="4">No ingredients found.</td></tr>';
         }
+
+        document.getElementById('totalIngredientCost').textContent = totalCost.toFixed(2);
 
         const modal = new bootstrap.Modal(document.getElementById('menuDetailModal'));
         modal.show();
@@ -230,10 +272,6 @@ document.querySelectorAll('.menu-row').forEach(row => {
   });
 });
 </script>
-
-
-
-
 <?php include_once __DIR__ . '/layout/footer.php' ?>
 
 <script>
@@ -260,7 +298,7 @@ $(document).ready(function() {
     function populateIngredientSelect(selectElement) {
         selectElement.empty().append('<option value="" selected disabled>Select Ingredient</option>');
         inventoryItems.forEach(function(item) {
-            selectElement.append(`<option value="${item.id}" data-unit="${item.unit}">${item.name} (${item.unit})</option>`);
+            selectElement.append(`<option value="${item.id}" data-unit="${item.unit}" data-price="${item.price || 0}">${item.name} (${item.unit})</option>`);
         });
     }
 
@@ -269,6 +307,25 @@ $(document).ready(function() {
         const select = template.find('.ingredient-select');
         populateIngredientSelect(select);
         container.append(template);
+    }
+
+    function calculateTotalCost(containerSelector) {
+        let totalCost = 0;
+        $(`${containerSelector} .ingredient-row`).each(function() {
+            const select = $(this).find('.ingredient-select');
+            const quantityInput = $(this).find('.ingredient-quantity');
+            const costSpan = $(this).find('.cost-span');
+
+            const price = parseFloat(select.find('option:selected').data('price')) || 0;
+            const quantity = parseFloat(quantityInput.val()) || 0;
+            const rowCost = price * quantity;
+
+            costSpan.text(rowCost.toFixed(2));
+            totalCost += rowCost;
+        });
+
+        const totalCostSelector = containerSelector.includes('add') ? '#add-total-cost' : '#edit-total-cost';
+        $(totalCostSelector).text(totalCost.toFixed(2));
     }
 
     // --- Add Modal ---
@@ -280,6 +337,7 @@ $(document).ready(function() {
         fetchInventory().done(function() {
             const container = $('#add-ingredients-container');
             container.empty(); // Clear previous
+            $('#add-total-cost').text('0.00');
             addIngredientRow(container);
         });
     });
@@ -289,11 +347,14 @@ $(document).ready(function() {
     });
 
     $('#add-ingredients-container, #edit-ingredients-container').on('click', '.remove-ingredient-btn', function() {
+        const containerSelector = $(this).closest('#add-ingredients-container').length ? '#add-ingredients-container' : '#edit-ingredients-container';
         $(this).closest('.ingredient-row').remove();
+        calculateTotalCost(containerSelector);
     });
 
-    $('#add-ingredients-container, #edit-ingredients-container').on('change', '.ingredient-select', function() {
+    $('#add-ingredients-container, #edit-ingredients-container').on('change keyup', '.ingredient-select, .ingredient-quantity', function() {
         const selectedOption = $(this).find('option:selected');
+        const containerSelector = $(this).closest('#add-ingredients-container').length ? '#add-ingredients-container' : '#edit-ingredients-container';
         const unit = selectedOption.data('unit');
         $(this).closest('.ingredient-row').find('.unit-span').text(unit || '');
     });
@@ -315,6 +376,7 @@ $(document).ready(function() {
                 $('#editMenuId').val(data.id);
                 $('#editMenuName').val(data.name);
                 $('#editMenuBarcode').val(data.barcode);
+                $('#editMenuPrice').val(parseFloat(data.price || 0).toFixed(2));
 
                 const container = $('#edit-ingredients-container');
                 container.empty();
@@ -326,7 +388,7 @@ $(document).ready(function() {
                         populateIngredientSelect(select);
                         
                         select.val(ing.inventory_id);
-                        template.find('input[name="ingredients[quantity][]"]').val(ing.quantity);
+                        template.find('.ingredient-quantity').val(ing.quantity);
                         template.find('.unit-span').text(ing.unit || '');
                         
                         container.append(template);
@@ -335,6 +397,7 @@ $(document).ready(function() {
                     addIngredientRow(container);
                 }
 
+                calculateTotalCost('#edit-ingredients-container');
                 $('#editMenuModal').modal('show');
             }
         }).fail(function() {
@@ -351,6 +414,12 @@ $(document).ready(function() {
         var menuId = $(this).data('id');
         $('#deleteMenuId').val(menuId);
         $('#deleteMenuModal').modal('show');
+    });
+
+    // Recalculate cost on ingredient change or quantity change
+    $('#add-ingredients-container, #edit-ingredients-container').on('change input', '.ingredient-select, .ingredient-quantity', function() {
+        const containerSelector = $(this).closest('#add-ingredients-container').length ? '#add-ingredients-container' : '#edit-ingredients-container';
+        calculateTotalCost(containerSelector);
     });
 });
 </script>

@@ -24,25 +24,37 @@ class Inventory extends Model
 
     public function create($data)
     {
-        // Generate a unique SKU
-        $sku = time() . rand(100, 999);
-        $stmt = $this->db->prepare("INSERT INTO inventory (name, sku, quantity, unit) VALUES (:name, :sku, :quantity, :unit)");
+        // Generate a unique barcode
+        $barcode = time() . rand(100, 999);
+
+        $stmt = $this->db->prepare("
+            INSERT INTO inventory (name, barcode, quantity, unit, price) 
+            VALUES (:name, :barcode, :quantity, :unit, :price)
+        ");
+
         return $stmt->execute([
-            'name' => $data['name'],
-            'sku' => $sku,
+            'name'     => $data['name'],
+            'barcode'  => $barcode,
             'quantity' => $data['quantity'],
-            'unit' => $data['unit']
+            'unit'     => $data['unit'],
+            'price'    => $data['price']
         ]);
     }
 
     public function update($data)
     {
-        $stmt = $this->db->prepare("UPDATE inventory SET name = :name, quantity = :quantity, unit = :unit WHERE id = :id");
+        $stmt = $this->db->prepare("
+            UPDATE inventory 
+            SET name = :name, quantity = :quantity, unit = :unit, price = :price 
+            WHERE id = :id
+        ");
+
         return $stmt->execute([
-            'id' => $data['id'],
-            'name' => $data['name'],
+            'id'       => $data['id'],
+            'name'     => $data['name'],
             'quantity' => $data['quantity'],
-            'unit' => $data['unit']
+            'unit'     => $data['unit'],
+            'price'    => $data['price']
         ]);
     }
 
