@@ -5,7 +5,7 @@
     <h1 class="h3 mb-0 text-gray-800">Inventory</h1>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+            <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page">Inventory</li>
         </ol>
     </nav>
@@ -26,10 +26,12 @@
                     <tr>
                         <th>Name</th>
                         <th>Barcode</th>
-                        <th>Quantity</th>
+                        <th>Stock Quantity</th>
+                        <th>Max Quantity</th>
                         <th>Unit</th>
                         <th>Price (Per Unit)</th>
                         <th>Total Price</th>
+                        <th>Purchase Date</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -38,16 +40,23 @@
                       <?php foreach ($items as $item): ?>
                           <?php
                               $quantity = (float)($item['quantity'] ?? 0);
+                              $max_quantity = (float)($item['max_quantity'] ?? 0);
                               $price = (float)($item['price'] ?? 0);
                               $totalPrice = $quantity * $price;
+                              $lowStockClass = '';
+                              if ($max_quantity > 0 && ($quantity / $max_quantity) <= 0.2) {
+                                  $lowStockClass = 'table-danger';
+                              }
                           ?>
-                          <tr>
+                          <tr class="<?= $lowStockClass ?>">
                               <td><?= htmlspecialchars($item['name'] ?? '') ?></td>
                               <td><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
                               <td><?= htmlspecialchars($item['quantity'] ?? '') ?></td>
+                              <td><?= htmlspecialchars($item['max_quantity'] ?? '') ?></td>
                               <td><?= htmlspecialchars($item['unit'] ?? '') ?></td>
                               <td>&#8369;<?= htmlspecialchars(number_format($price, 2)) ?></td>
                               <td>&#8369;<?= htmlspecialchars(number_format($totalPrice, 2)) ?></td>
+                              <td><?= htmlspecialchars(isset($item['purchase_date']) ? date('Y-m-d', strtotime($item['purchase_date'])) : '') ?></td>
                               <td>
                                   <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
                                       <i class="fa fa-edit"></i>
@@ -88,7 +97,11 @@
         </div>
         <div class="mb-3">
           <label for="itemQty" class="form-label">Quantity</label>
-          <input type="number" class="form-control" id="itemQty" name="quantity" min="0" required>
+          <input type="number" step="0.01" class="form-control" id="itemQty" name="quantity" min="0" required>
+        </div>
+        <div class="mb-3">
+          <label for="itemMaxQty" class="form-label">Max Quantity</label>
+          <input type="number" step="0.01" class="form-control" id="itemMaxQty" name="max_quantity" min="0" required>
         </div>
         <div class="mb-3">
           <label for="itemUnit" class="form-label">Unit</label>
@@ -104,6 +117,10 @@
         <div class="mb-3">
           <label for="itemPrice" class="form-label">Price (Per Unit)</label>
           <input type="number" class="form-control" id="itemPrice" name="price" min="0" step="0.01" required>
+        </div>
+        <div class="mb-3">
+          <label for="itemPurchaseDate" class="form-label">Purchase Date</label>
+          <input type="date" class="form-control" id="itemPurchaseDate" name="purchase_date" required>
         </div>
       </div>
       <div class="modal-footer">
@@ -133,7 +150,11 @@
         </div>
         <div class="mb-3">
           <label for="editItemQty" class="form-label">Quantity</label>
-          <input type="number" class="form-control" id="editItemQty" name="quantity" min="0" required>
+          <input type="number" step="0.01" class="form-control" id="editItemQty" name="quantity" min="0" required>
+        </div>
+        <div class="mb-3">
+          <label for="editItemMaxQty" class="form-label">Max Quantity</label>
+          <input type="number" step="0.01" class="form-control" id="editItemMaxQty" name="max_quantity" min="0" required>
         </div>
         <div class="mb-3">
           <label for="editItemUnit" class="form-label">Unit</label>
@@ -149,6 +170,10 @@
         <div class="mb-3">
           <label for="editItemPrice" class="form-label">Price (Per Unit)</label>
           <input type="number" class="form-control" id="editItemPrice" name="price" min="0" step="0.01" required>
+        </div>
+        <div class="mb-3">
+          <label for="editItemPurchaseDate" class="form-label">Purchase Date</label>
+          <input type="date" class="form-control" id="editItemPurchaseDate" name="purchase_date" required>
         </div>
       </div>
       <div class="modal-footer">
@@ -202,8 +227,10 @@
             $('#editItemName').val(data.name);
             $('#editItemBarcode').val(data.barcode);
             $('#editItemQty').val(data.quantity);
+            $('#editItemMaxQty').val(data.max_quantity);
             $('#editItemUnit').val(data.unit);
             $('#editItemPrice').val(data.price);
+            $('#editItemPurchaseDate').val(data.purchase_date ? data.purchase_date.substring(0, 10) : '');
             $('#editInventoryModal').modal('show');
           }
         },

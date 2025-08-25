@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `luna` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `luna`;
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: luna
@@ -25,13 +27,16 @@ DROP TABLE IF EXISTS `inventory`;
 CREATE TABLE `inventory` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `sku` varchar(50) NOT NULL,
-  `quantity` int NOT NULL DEFAULT '0',
+  `barcode` varchar(50) NOT NULL,
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `quantity` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `max_quantity` decimal(10,2) NOT NULL DEFAULT '0.00',
   `unit` varchar(100) DEFAULT NULL,
+  `purchase_date` date DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `sku` (`sku`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `sku` (`barcode`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +45,7 @@ CREATE TABLE `inventory` (
 
 LOCK TABLES `inventory` WRITE;
 /*!40000 ALTER TABLE `inventory` DISABLE KEYS */;
-INSERT INTO `inventory` VALUES (10,'Romaine lettuce','SKU1755532210971',80,'g','2025-08-18 15:50:10'),(11,'Parmesan cheese','SKU1755532224659',20,'g','2025-08-18 15:50:24'),(12,'Garlic croutons','SKU1755532233228',30,'g','2025-08-18 15:50:33');
+INSERT INTO `inventory` VALUES (17,'Coffee Beans','1755947829873',1475.00,28.76,100.00,'Kg','2025-08-22','2025-08-23 11:17:09'),(18,'Almond Milk','1755947856126',158.00,70.00,100.00,'L','2025-08-05','2025-08-23 11:17:36'),(19,'Condensed Milk','1755948048271',102.00,120.20,100.00,'L','2025-08-08','2025-08-23 11:20:48'),(20,'Coke Swakto','1755949298187',10.00,73.00,100.00,'pcs','2025-08-11','2025-08-23 11:41:38');
 /*!40000 ALTER TABLE `inventory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -61,7 +66,7 @@ CREATE TABLE `menu_ingredients` (
   KEY `inventory_id` (`inventory_id`),
   CONSTRAINT `menu_ingredients_ibfk_1` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE,
   CONSTRAINT `menu_ingredients_ibfk_2` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +75,7 @@ CREATE TABLE `menu_ingredients` (
 
 LOCK TABLES `menu_ingredients` WRITE;
 /*!40000 ALTER TABLE `menu_ingredients` DISABLE KEYS */;
-INSERT INTO `menu_ingredients` VALUES (9,5,12,12.00);
+INSERT INTO `menu_ingredients` VALUES (15,7,18,0.25),(16,7,17,0.01),(17,7,19,0.20),(18,8,20,1.00);
 /*!40000 ALTER TABLE `menu_ingredients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -84,10 +89,11 @@ DROP TABLE IF EXISTS `menus`;
 CREATE TABLE `menus` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `barcode` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,7 +102,7 @@ CREATE TABLE `menus` (
 
 LOCK TABLES `menus` WRITE;
 /*!40000 ALTER TABLE `menus` DISABLE KEYS */;
-INSERT INTO `menus` VALUES (5,'dawsdasd','2025-08-18 16:43:19','1755535392310');
+INSERT INTO `menus` VALUES (7,'Spanish Latte',210.00,'1755948055385','2025-08-23 11:22:20'),(8,'Coke Swakto',20.00,'1755949301450','2025-08-23 11:41:51');
 /*!40000 ALTER TABLE `menus` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -112,12 +118,13 @@ CREATE TABLE `production` (
   `menu_id` int NOT NULL,
   `quantity_produced` int NOT NULL,
   `quantity_available` int NOT NULL,
+  `quantity_sold` int NOT NULL,
   `barcode` varchar(225) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `fk_production_menu` (`menu_id`),
   CONSTRAINT `fk_production_menu` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,36 +133,8 @@ CREATE TABLE `production` (
 
 LOCK TABLES `production` WRITE;
 /*!40000 ALTER TABLE `production` DISABLE KEYS */;
-INSERT INTO `production` VALUES (4,5,21,800,'1755535392310','2025-08-21 03:36:47');
+INSERT INTO `production` VALUES (30,7,6,3,3,'1755948055385','2025-08-25 14:18:21'),(33,8,20,19,1,'1755949301450','2025-08-25 15:24:37'),(34,8,5,5,0,'1755949301450','2025-08-25 15:24:44'),(35,8,2,2,0,'1755949301450','2025-08-25 15:25:21');
 /*!40000 ALTER TABLE `production` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `production_menu`
---
-
-DROP TABLE IF EXISTS `production_menu`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `production_menu` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `production_id` int NOT NULL,
-  `menu_id` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `production_id` (`production_id`),
-  KEY `menu_id` (`menu_id`),
-  CONSTRAINT `production_menu_ibfk_1` FOREIGN KEY (`production_id`) REFERENCES `production` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `production_menu_ibfk_2` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `production_menu`
---
-
-LOCK TABLES `production_menu` WRITE;
-/*!40000 ALTER TABLE `production_menu` DISABLE KEYS */;
-/*!40000 ALTER TABLE `production_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -197,4 +176,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-08-21 18:59:06
+-- Dump completed on 2025-08-25 23:39:01

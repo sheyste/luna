@@ -25,16 +25,18 @@ class Inventory extends Model
     public function create($data)
     {
         $stmt = $this->db->prepare("
-            INSERT INTO inventory (name, barcode, quantity, unit, price) 
-            VALUES (:name, :barcode, :quantity, :unit, :price)
+            INSERT INTO inventory (name, barcode, quantity, max_quantity, unit, price, purchase_date) 
+            VALUES (:name, :barcode, :quantity, :max_quantity, :unit, :price, :purchase_date)
         ");
 
         return $stmt->execute([
-            'name'     => $data['name'],
-            'barcode'  => $data['barcode'],
-            'quantity' => $data['quantity'],
-            'unit'     => $data['unit'],
-            'price'    => $data['price']
+            'name'          => $data['name'],
+            'barcode'       => $data['barcode'],
+            'quantity'      => $data['quantity'],
+            'max_quantity'  => $data['max_quantity'],
+            'unit'          => $data['unit'],
+            'price'         => $data['price'],
+            'purchase_date' => $data['purchase_date']
         ]);
     }
 
@@ -42,17 +44,19 @@ class Inventory extends Model
     {
         $stmt = $this->db->prepare("
             UPDATE inventory 
-            SET name = :name, barcode = :barcode, quantity = :quantity, unit = :unit, price = :price 
+            SET name = :name, barcode = :barcode, quantity = :quantity, max_quantity = :max_quantity, unit = :unit, price = :price, purchase_date = :purchase_date 
             WHERE id = :id
         ");
 
         return $stmt->execute([
-            'id'       => $data['id'],
-            'name'     => $data['name'],
-            'barcode'  => $data['barcode'],
-            'quantity' => $data['quantity'],
-            'unit'     => $data['unit'],
-            'price'    => $data['price']
+            'id'            => $data['id'],
+            'name'          => $data['name'],
+            'barcode'       => $data['barcode'],
+            'quantity'      => $data['quantity'],
+            'max_quantity'  => $data['max_quantity'],
+            'unit'          => $data['unit'],
+            'price'         => $data['price'],
+            'purchase_date' => $data['purchase_date']
         ]);
     }
 

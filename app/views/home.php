@@ -54,4 +54,71 @@
     </div>
 </div>
 
+<div class="row">
+  <!-- Production Chart -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Production Forecast</div>
+      <div class="card-body">
+        <canvas id="productionChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Cost-to-Profit -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Weekly Cost vs Profit</div>
+      <div class="card-body">
+        <canvas id="costProfitChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Production
+  const productionCtx = document.getElementById('productionChart').getContext('2d');
+  new Chart(productionCtx, {
+    type: 'line',
+    data: {
+      labels: <?= json_encode(array_column($productionData, 'date')) ?>,
+      datasets: [{
+        label: 'Produced',
+        data: <?= json_encode(array_column($productionData, 'total_produced')) ?>,
+        borderColor: '#4e73df',
+        backgroundColor: 'rgba(78,115,223,0.1)',
+        fill: true
+      }]
+    }
+  });
+
+  // Cost vs Profit
+  const costProfitCtx = document.getElementById('costProfitChart').getContext('2d');
+  new Chart(costProfitCtx, {
+    type: 'bar',
+    data: {
+      labels: <?= json_encode(array_column($costProfitData, 'week')) ?>,
+      datasets: [
+        {
+          label: 'Cost',
+          data: <?= json_encode(array_column($costProfitData, 'total_cost')) ?>,
+          backgroundColor: '#e74a3b'
+        },
+        {
+          label: 'Profit',
+          data: <?= json_encode(array_column($costProfitData, 'total_profit')) ?>,
+          backgroundColor: '#1cc88a'
+        }
+      ]
+    }
+  });
+
+
+</script>
+
+
 <?php include_once __DIR__ . '/layout/footer.php' ?>

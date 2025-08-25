@@ -18,6 +18,7 @@ const routes = array(
     '/production/edit' => array('ProductionController', 'edit'),
     '/production/delete' => array('ProductionController', 'delete'),
     '/production/getDetail' => array('ProductionController', 'getDetail'),
+    '/production/updateSold' => array('ProductionController', 'updateSold'),
     '/users'        => array('UserController', 'index'),
     '/users/load'   => array('UserController', 'load'),
     '/users/show'   => array('UserController', 'getDetail'),

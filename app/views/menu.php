@@ -11,7 +11,7 @@
     <h1 class="h3 mb-0 text-gray-800">Menus</h1>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+            <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page">Menus</li>
         </ol>
     </nav>
@@ -87,8 +87,12 @@
             </div>
         </div>
         <div class="mb-3">
-          <label for="menuBarcode" class="form-label">Menu Barcode</label>
-          <input type="text" class="form-control" id="menuBarcode" name="barcode" required>
+            <label for="menuBarcode" class="form-label">Barcode</label>
+            <div class="input-group">
+                <input type="number" class="form-control" id="menuBarcode" name="barcode" required>
+                <button class="btn btn-outline-secondary" type="button" id="generateBarcodeBtn">Generate</button>
+            </div>
+            <div class="form-text">You can manually enter a barcode or generate one.</div>
         </div>
         <hr>
         <h5>Ingredients <span class="float-end">Total Cost: <span id="add-total-cost" class="fw-bold">0.00</span></span></h5>
@@ -135,7 +139,7 @@
           <input type="text" class="form-control" id="editMenuBarcode" name="barcode" readonly>
         </div>
         <hr>
-        <h5>Ingredients <span class="float-end">Total Cost: <span id="edit-total-cost" class="fw-bold">0.00</span></span></h5>
+        <h5>Ingredients <span class="float-end">Total Cost: &#8369;<span id="edit-total-cost" class="fw-bold">0.00</span></span></h5>
         <div id="edit-ingredients-container">
             <!-- Ingredient rows will be added here by JS -->
         </div>
@@ -259,7 +263,7 @@ $(document).ready(function() {
                   <td>${ing.name}</td>
                   <td>${ing.quantity}</td>
                   <td>${ing.unit}</td>
-                  <td>${cost.toFixed(2)}</td>
+                  <td>&#8369;${cost.toFixed(2)}</td>
                 `;
                 ingredientList.appendChild(tr);
               });
@@ -267,12 +271,13 @@ $(document).ready(function() {
               ingredientList.innerHTML = '<tr><td colspan="4">No ingredients found.</td></tr>';
             }
 
-            document.getElementById('totalIngredientCost').textContent = totalCost.toFixed(2);
+            document.getElementById('totalIngredientCost').innerHTML = `&#8369;${totalCost.toFixed(2)}`;
 
             const modal = new bootstrap.Modal(document.getElementById('menuDetailModal'));
             modal.show();
           });
     }
+
 
     // Handle row click to view details
     $('#menuTable tbody').on('click', 'tr.menu-row', function(e) {
@@ -342,16 +347,18 @@ $(document).ready(function() {
 
     // --- Add Modal ---
     $('#addMenuModal').on('shown.bs.modal', function () {
-        // Generate SKU
-        const sku = Date.now();
-        $('#menuBarcode').val(sku);
-
+        $('#menuBarcode').val('');
         fetchInventory().done(function() {
             const container = $('#add-ingredients-container');
             container.empty(); // Clear previous
             $('#add-total-cost').text('0.00');
             addIngredientRow(container);
         });
+    });
+
+    $('#generateBarcodeBtn').on('click', function() {
+        const sku = Date.now();
+        $('#menuBarcode').val(sku);
     });
 
     $('#add-ingredient-btn').on('click', function() {
