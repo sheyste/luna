@@ -79,6 +79,14 @@
           <input type="text" class="form-control" id="itemName" name="name" required>
         </div>
         <div class="mb-3">
+            <label for="itemBarcode" class="form-label">Barcode</label>
+            <div class="input-group">
+                <input type="number" class="form-control" id="itemBarcode" name="barcode">
+                <button class="btn btn-outline-secondary" type="button" id="generateBarcodeBtn">Generate</button>
+            </div>
+            <div class="form-text">You can manually enter a barcode or generate one.</div>
+        </div>
+        <div class="mb-3">
           <label for="itemQty" class="form-label">Quantity</label>
           <input type="number" class="form-control" id="itemQty" name="quantity" min="0" required>
         </div>
@@ -120,8 +128,8 @@
           <input type="text" class="form-control" id="editItemName" name="name" required>
         </div>
         <div class="mb-3">
-          <label for="editItemBARCODE" class="form-label">Barcode</label>
-          <input type="text" class="form-control" id="editItemBARCODE" name="barcode" readonly>
+          <label for="editItemBarcode" class="form-label">Barcode</label>
+          <input type="number" class="form-control" id="editItemBarcode" name="barcode" required>
         </div>
         <div class="mb-3">
           <label for="editItemQty" class="form-label">Quantity</label>
@@ -192,7 +200,7 @@
           if (data) {
             $('#editItemId').val(data.id);
             $('#editItemName').val(data.name);
-            $('#editItemBARCODE').val(data.barcode);
+            $('#editItemBarcode').val(data.barcode);
             $('#editItemQty').val(data.quantity);
             $('#editItemUnit').val(data.unit);
             $('#editItemPrice').val(data.price);
@@ -210,6 +218,12 @@
         var itemId = $(this).data('id');
         $('#deleteItemId').val(itemId);
         $('#deleteInventoryModal').modal('show');
+    });
+
+    // Handle Barcode generation
+    $('#generateBarcodeBtn').on('click', function() {
+        var barcode = Date.now();
+        $('#itemBarcode').val(barcode);
     });
 });
 </script>

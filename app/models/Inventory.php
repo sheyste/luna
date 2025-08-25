@@ -24,9 +24,6 @@ class Inventory extends Model
 
     public function create($data)
     {
-        // Generate a unique barcode
-        $barcode = time() . rand(100, 999);
-
         $stmt = $this->db->prepare("
             INSERT INTO inventory (name, barcode, quantity, unit, price) 
             VALUES (:name, :barcode, :quantity, :unit, :price)
@@ -34,7 +31,7 @@ class Inventory extends Model
 
         return $stmt->execute([
             'name'     => $data['name'],
-            'barcode'  => $barcode,
+            'barcode'  => $data['barcode'],
             'quantity' => $data['quantity'],
             'unit'     => $data['unit'],
             'price'    => $data['price']
@@ -45,13 +42,14 @@ class Inventory extends Model
     {
         $stmt = $this->db->prepare("
             UPDATE inventory 
-            SET name = :name, quantity = :quantity, unit = :unit, price = :price 
+            SET name = :name, barcode = :barcode, quantity = :quantity, unit = :unit, price = :price 
             WHERE id = :id
         ");
 
         return $stmt->execute([
             'id'       => $data['id'],
             'name'     => $data['name'],
+            'barcode'  => $data['barcode'],
             'quantity' => $data['quantity'],
             'unit'     => $data['unit'],
             'price'    => $data['price']

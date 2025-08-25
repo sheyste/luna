@@ -43,8 +43,11 @@
                                 <td><?= htmlspecialchars($menu['name']) ?></td>
                                 <td><?= htmlspecialchars($menu['barcode']) ?></td>
                                 <td>&#8369;<?= htmlspecialchars(number_format($menu['price'] ?? 0, 2)) ?></td>
-                                <td>
-                                    <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
+                                <td class="text-nowrap">
+                                    <button class="btn btn-primary btn-sm view-btn me-3" data-id="<?= htmlspecialchars($menu['id']) ?>">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-info btn-sm edit-btn me-3" data-id="<?= htmlspecialchars($menu['id']) ?>">
                                         <i class="fa fa-edit"></i>
                                     </button>
                                     <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
@@ -85,7 +88,7 @@
         </div>
         <div class="mb-3">
           <label for="menuBarcode" class="form-label">Menu Barcode</label>
-          <input type="text" class="form-control" id="menuBarcode" name="barcode" readonly>
+          <input type="text" class="form-control" id="menuBarcode" name="barcode" required>
         </div>
         <hr>
         <h5>Ingredients <span class="float-end">Total Cost: <span id="add-total-cost" class="fw-bold">0.00</span></span></h5>
@@ -229,49 +232,6 @@
   </div>
 </div>
 
-<script>
-document.querySelectorAll('.menu-row').forEach(row => {
-  row.addEventListener('click', function (e) {
-    // Prevent row click if a button inside the row was clicked
-    if (e.target.closest('.edit-btn') || e.target.closest('.delete-btn')) {
-      return;
-    }
-
-    const menuId = this.dataset.id;
-    fetch(`/menu/getDetail?id=${menuId}`)
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('menuDetailName').textContent = data.name;
-        document.getElementById('menuDetailPrice').textContent = `Price: ${parseFloat(data.price || 0).toFixed(2)}`;
-        const ingredientList = document.getElementById('ingredientList');
-        ingredientList.innerHTML = '';
-        let totalCost = 0;
-
-        if (data.ingredients && data.ingredients.length > 0) {
-          data.ingredients.forEach(ing => {
-            const cost = (parseFloat(ing.price) || 0) * (parseFloat(ing.quantity) || 0);
-            totalCost += cost;
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${ing.name}</td>
-              <td>${ing.quantity}</td>
-              <td>${ing.unit}</td>
-              <td>${cost.toFixed(2)}</td>
-            `;
-            ingredientList.appendChild(tr);
-          });
-        } else {
-          ingredientList.innerHTML = '<tr><td colspan="4">No ingredients found.</td></tr>';
-        }
-
-        document.getElementById('totalIngredientCost').textContent = totalCost.toFixed(2);
-
-        const modal = new bootstrap.Modal(document.getElementById('menuDetailModal'));
-        modal.show();
-      });
-  });
-});
-</script>
 <?php include_once __DIR__ . '/layout/footer.php' ?>
 
 <script>
@@ -279,6 +239,58 @@ $(document).ready(function() {
     $('#menuTable').DataTable();
 
     let inventoryItems = [];
+
+    function showMenuDetails(menuId) {
+        fetch(`/menu/getDetail?id=${menuId}`)
+          .then(response => response.json())
+          .then(data => {
+            document.getElementById('menuDetailName').textContent = data.name;
+            document.getElementById('menuDetailPrice').innerHTML = `Price: &#8369;${parseFloat(data.price || 0).toFixed(2)}`;
+            const ingredientList = document.getElementById('ingredientList');
+            ingredientList.innerHTML = '';
+            let totalCost = 0;
+
+            if (data.ingredients && data.ingredients.length > 0) {
+              data.ingredients.forEach(ing => {
+                const cost = (parseFloat(ing.price) || 0) * (parseFloat(ing.quantity) || 0);
+                totalCost += cost;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                  <td>${ing.name}</td>
+                  <td>${ing.quantity}</td>
+                  <td>${ing.unit}</td>
+                  <td>${cost.toFixed(2)}</td>
+                `;
+                ingredientList.appendChild(tr);
+              });
+            } else {
+              ingredientList.innerHTML = '<tr><td colspan="4">No ingredients found.</td></tr>';
+            }
+
+            document.getElementById('totalIngredientCost').textContent = totalCost.toFixed(2);
+
+            const modal = new bootstrap.Modal(document.getElementById('menuDetailModal'));
+            modal.show();
+          });
+    }
+
+    // Handle row click to view details
+    $('#menuTable tbody').on('click', 'tr.menu-row', function(e) {
+        // Prevent modal from opening if a button was clicked
+        if ($(e.target).closest('button').length) {
+            return;
+        }
+        const menuId = $(this).data('id');
+        if (menuId) { // Make sure we have an ID
+            showMenuDetails(menuId);
+        }
+    });
+    
+    // Handle View button click
+    $('#menuTable').on('click', '.view-btn', function() {
+        var menuId = $(this).data('id');
+        showMenuDetails(menuId);
+    });
 
     // Fetch inventory items to be used in dropdowns
     function fetchInventory() {
@@ -362,7 +374,7 @@ $(document).ready(function() {
     // --- Edit Modal ---
     $('#menuTable').on('click', '.edit-btn', function() {
         var menuId = $(this).data('id');
-        
+
         $.when(
             fetchInventory(),
             $.ajax({
@@ -386,11 +398,11 @@ $(document).ready(function() {
                         const template = $('#ingredient-row-template .ingredient-row').clone();
                         const select = template.find('.ingredient-select');
                         populateIngredientSelect(select);
-                        
+
                         select.val(ing.inventory_id);
                         template.find('.ingredient-quantity').val(ing.quantity);
                         template.find('.unit-span').text(ing.unit || '');
-                        
+
                         container.append(template);
                     });
                 } else {
