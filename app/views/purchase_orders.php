@@ -195,7 +195,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <label>Unit Price</label>
+            <label>Price (Per Unit)</label>
             <input type="number" name="items[0][unit_price]" class="form-control" step="0.01" required min="0">
         </div>
         <div class="col-md-2 received-qty-container" style="display: none;"><label>Received Qty</label><input type="number" name="items[0][received_quantity]" class="form-control" step="0.01" min="0"></div>

@@ -3,19 +3,20 @@
  * Controller for Home page
  */
 require BASE_PATH . '/core/Controller.php';
-require BASE_PATH . '/core/Database.php';
+require_once BASE_PATH . '/app/config.php';
+
 
 class HomeController extends Controller
 {
     private $conn;
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->checkAuth();
-
-        $db = new Database();
-        $this->conn = $db->getConnection();
+        $this->conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        if ($this->conn->connect_error) {
+            die('Database connection failed: ' . $this->conn->connect_error);
+        }
     }
 
 public function index()
