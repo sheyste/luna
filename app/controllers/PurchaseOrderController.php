@@ -1,0 +1,245 @@
+<?php
+require BASE_PATH . '/core/Controller.php';
+require_once BASE_PATH . '/app/config.php';
+
+class PurchaseOrderController extends Controller {
+    private $conn;
+
+    public function __construct() {
+        parent::__construct();
+        $this->checkAuth();
+        $this->conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        if ($this->conn->connect_error) {
+            die('Database connection failed: ' . $this->conn->connect_error);
+        }
+    }
+
+    public function index() {
+        $orders = [];
+        // This query creates a row for each item in a purchase order,
+        // which is what the multi-item view expects.
+        $sql = "
+            SELECT
+                po.id, po.po_number, po.supplier, po.order_date, po.expected_delivery, po.status, po.created_at,
+                poi.id as item_id, poi.quantity, poi.unit_price, poi.received_quantity,
+                i.name as item_name, i.id as inventory_id, i.unit
+            FROM purchase_orders po
+            JOIN purchase_order_items poi ON po.id = poi.purchase_order_id
+            JOIN inventory i ON poi.inventory_id = i.id
+            ORDER BY po.created_at DESC, po.id DESC
+        ";
+        $result = $this->conn->query($sql);
+        while ($row = $result->fetch_assoc()) {
+            $orders[] = $row;
+        }
+
+        $inventory = [];
+        $invResult = $this->conn->query("SELECT id, name, unit FROM inventory ORDER BY name ASC");
+        while ($row = $invResult->fetch_assoc()) {
+            $inventory[] = $row;
+        }
+
+        $this->view('purchase_orders', [
+            'orders' => $orders,
+            'inventory' => $inventory
+        ]);
+    }
+
+    public function add() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->conn->begin_transaction();
+            try {
+                $po_number = $_POST['po_number'];
+                $supplier = $_POST['supplier'];
+                $order_date = $_POST['order_date'];
+                $expected_delivery = !empty($_POST['expected_delivery']) ? $_POST['expected_delivery'] : null;
+                $status = trim($_POST['status']);
+
+                $stmt = $this->conn->prepare("
+                    INSERT INTO purchase_orders (po_number, supplier, order_date, expected_delivery, status)
+                    VALUES (?, ?, ?, ?, ?)
+                ");
+                $stmt->bind_param("sssss", $po_number, $supplier, $order_date, $expected_delivery, $status);
+                $stmt->execute();
+                $po_id = $this->conn->insert_id;
+                $stmt->close();
+
+                $items = $_POST['items'] ?? [];
+                $item_stmt = $this->conn->prepare("
+                    INSERT INTO purchase_order_items (purchase_order_id, inventory_id, quantity, unit_price)
+                    VALUES (?, ?, ?, ?)
+                ");
+                foreach ($items as $item) {
+                    if (empty($item['inventory_id'])) continue;
+                    $inventory_id = intval($item['inventory_id']);
+                    $quantity = intval($item['quantity']);
+                    $unit_price = floatval($item['unit_price']);
+                    $item_stmt->bind_param("iiid", $po_id, $inventory_id, $quantity, $unit_price);
+                    $item_stmt->execute();
+                }
+                $item_stmt->close();
+
+                $this->conn->commit();
+            } catch (Exception $e) {
+                $this->conn->rollback();
+                die('Failed to add purchase order: ' . $e->getMessage());
+            }
+
+            header('Location: /purchase_order');
+            exit;
+        }
+    }
+
+    public function edit() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->conn->begin_transaction();
+            try {
+                $po_id = intval($_POST['id']);
+
+                // Fetch the original PO to get the old status before making changes
+                $old_status_stmt = $this->conn->prepare("SELECT status FROM purchase_orders WHERE id = ?");
+                $old_status_stmt->bind_param("i", $po_id);
+                $old_status_stmt->execute();
+                $old_order = $old_status_stmt->get_result()->fetch_assoc();
+                $old_status_stmt->close();
+                if (!$old_order) {
+                    throw new Exception("Purchase Order not found.");
+                }
+                $old_status = $old_order['status'];
+
+                $po_number = $_POST['po_number'];
+                $supplier = $_POST['supplier'];
+                $order_date = $_POST['order_date'];
+                $expected_delivery = !empty($_POST['expected_delivery']) ? $_POST['expected_delivery'] : null;
+                $status = trim($_POST['status']);
+                $is_received = ($status === 'Received');
+
+                $stmt = $this->conn->prepare("
+                    UPDATE purchase_orders
+                    SET po_number = ?, supplier = ?, order_date = ?, expected_delivery = ?, status = ?
+                    WHERE id = ?
+                ");
+                $stmt->bind_param("sssssi", $po_number, $supplier, $order_date, $expected_delivery, $status, $po_id);
+                $stmt->execute();
+                $stmt->close();
+
+                if (isset($_POST['deleted_items']) && is_array($_POST['deleted_items'])) {
+                    $delete_ids_safe = array_map('intval', $_POST['deleted_items']);
+                    if (!empty($delete_ids_safe)) {
+                        $delete_placeholders = implode(',', array_fill(0, count($delete_ids_safe), '?'));
+                        $delete_stmt = $this->conn->prepare("DELETE FROM purchase_order_items WHERE id IN ($delete_placeholders)");
+                        $delete_stmt->bind_param(str_repeat('i', count($delete_ids_safe)), ...$delete_ids_safe);
+                        $delete_stmt->execute();
+                        $delete_stmt->close();
+                    }
+                }
+
+                $items = $_POST['items'] ?? [];
+                $update_stmt = $this->conn->prepare("
+                    UPDATE purchase_order_items 
+                    SET inventory_id = ?, quantity = ?, unit_price = ?, received_quantity = ?
+                    WHERE id = ?
+                ");
+                $insert_stmt = $this->conn->prepare("
+                    INSERT INTO purchase_order_items (purchase_order_id, inventory_id, quantity, unit_price, received_quantity)
+                    VALUES (?, ?, ?, ?, ?)
+                ");
+
+                foreach ($items as $key => $item) {
+                    if (empty($item['inventory_id'])) continue;
+                    $inventory_id = intval($item['inventory_id']);
+                    $quantity = intval($item['quantity']);
+                    $unit_price = floatval($item['unit_price']);
+                    $received_quantity = ($is_received && isset($item['received_quantity']) && $item['received_quantity'] !== '') ? floatval($item['received_quantity']) : null;
+
+                    if (is_numeric($key)) {
+                        $item_id = intval($key);
+                        $update_stmt->bind_param("iiddi", $inventory_id, $quantity, $unit_price, $received_quantity, $item_id);
+                        $update_stmt->execute();
+                    } elseif (strpos($key, 'new_') === 0) {
+                        $insert_stmt->bind_param("iiidd", $po_id, $inventory_id, $quantity, $unit_price, $received_quantity);
+                        $insert_stmt->execute();
+                    }
+                }
+                $update_stmt->close();
+                $insert_stmt->close();
+
+                // If the status has just been changed to 'Received', update inventory stock
+                if ($is_received && $old_status !== 'Received') {
+                    $update_inventory_stmt = $this->conn->prepare(
+                        "UPDATE inventory SET quantity = quantity + ? WHERE id = ?"
+                    );
+                    foreach ($items as $item) {
+                        if (empty($item['inventory_id']) || !isset($item['received_quantity']) || $item['received_quantity'] === '') {
+                            continue;
+                        }
+                        $received_qty = floatval($item['received_quantity']);
+                        $inv_id = intval($item['inventory_id']);
+
+                        if ($received_qty > 0) {
+                            $update_inventory_stmt->bind_param("di", $received_qty, $inv_id);
+                            $update_inventory_stmt->execute();
+                        }
+                    }
+                    $update_inventory_stmt->close();
+                }
+
+                $this->conn->commit();
+            } catch (Exception $e) {
+                $this->conn->rollback();
+                die('Failed to edit purchase order: ' . $e->getMessage());
+            }
+
+            header('Location: /purchase_order');
+            exit;
+        }
+    }
+
+    public function get() {
+        if (!isset($_GET['id'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing ID']);
+            exit;
+        }
+
+        $id = intval($_GET['id']);
+        
+        $stmt = $this->conn->prepare("SELECT * FROM purchase_orders WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $order = $result->fetch_assoc();
+        $stmt->close();
+
+        if (!$order) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Purchase Order not found']);
+            exit;
+        }
+
+        $items = [];
+        $item_stmt = $this->conn->prepare("
+            SELECT poi.*, i.name AS item_name, i.unit
+            FROM purchase_order_items poi
+            JOIN inventory i ON poi.inventory_id = i.id
+            WHERE poi.purchase_order_id = ?
+        ");
+        $item_stmt->bind_param("i", $id);
+        $item_stmt->execute();
+        $item_result = $item_stmt->get_result();
+        while ($item = $item_result->fetch_assoc()) {
+            $item['unit_price'] = number_format($item['unit_price'], 2, '.', '');
+            $item['total_amount'] = number_format($item['quantity'] * $item['unit_price'], 2, '.', '');
+            $item['received_quantity'] = $item['received_quantity'];
+            $items[] = $item;
+        }
+        $item_stmt->close();
+
+        $order['order_date'] = date('Y-m-d', strtotime($order['order_date']));
+        $order['expected_delivery'] = $order['expected_delivery'] ? date('Y-m-d', strtotime($order['expected_delivery'])) : '';
+        $order['items'] = $items;
+
+        header('Content-Type: application/json');
+        echo json_encode($order);
+    }
+}

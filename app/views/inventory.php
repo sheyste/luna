@@ -1,5 +1,45 @@
 <?php include_once __DIR__ . '/layout/header.php'; ?>
 
+<style>
+    /* Responsive table for mobile */
+    @media (max-width: 767px) {
+        #inventoryTable thead {
+            display: none;
+        }
+
+        #inventoryTable, #inventoryTable tbody, #inventoryTable tr, #inventoryTable td {
+            display: block;
+            width: 100%;
+        }
+
+        #inventoryTable tr {
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+        }
+
+        #inventoryTable td {
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+            border: none;
+            border-bottom: 1px solid #eee;
+        }
+
+        #inventoryTable td:last-of-type {
+            border-bottom: 0;
+        }
+
+        #inventoryTable td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 1rem;
+            width: 45%;
+            font-weight: bold;
+            text-align: left;
+        }
+    }
+</style>
+
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0 text-gray-800">Inventory</h1>
@@ -49,20 +89,20 @@
                               }
                           ?>
                           <tr class="<?= $lowStockClass ?>">
-                              <td><?= htmlspecialchars($item['name'] ?? '') ?></td>
-                              <td><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
-                              <td><?= htmlspecialchars($item['quantity'] ?? '') ?></td>
-                              <td><?= htmlspecialchars($item['max_quantity'] ?? '') ?></td>
-                              <td><?= htmlspecialchars($item['unit'] ?? '') ?></td>
-                              <td>&#8369;<?= htmlspecialchars(number_format($price, 2)) ?></td>
-                              <td>&#8369;<?= htmlspecialchars(number_format($totalPrice, 2)) ?></td>
-                              <td><?= htmlspecialchars(isset($item['purchase_date']) ? date('Y-m-d', strtotime($item['purchase_date'])) : '') ?></td>
-                              <td>
+                              <td data-label="Name"><?= htmlspecialchars($item['name'] ?? '') ?></td>
+                              <td data-label="Barcode"><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
+                              <td data-label="Stock Quantity"><?= htmlspecialchars($item['quantity'] ?? '') ?></td>
+                              <td data-label="Max Quantity"><?= htmlspecialchars($item['max_quantity'] ?? '') ?></td>
+                              <td data-label="Unit"><?= htmlspecialchars($item['unit'] ?? '') ?></td>
+                              <td data-label="Price (Per Unit)">&#8369;<?= htmlspecialchars(number_format($price, 2)) ?></td>
+                              <td data-label="Total Price">&#8369;<?= htmlspecialchars(number_format($totalPrice, 2)) ?></td>
+                              <td data-label="Purchase Date"><?= htmlspecialchars(isset($item['purchase_date']) ? date('Y-m-d', strtotime($item['purchase_date'])) : '') ?></td>
+                              <td data-label="Actions">
                                   <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
-                                      <i class="fa fa-edit"></i>
+                                      <i class="fa fa-edit"></i> Edit
                                   </button>
                                   <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
-                                      <i class="fa fa-trash"></i>
+                                      <i class="fa fa-trash"></i> Delete
                                   </button>
                               </td>
                           </tr>

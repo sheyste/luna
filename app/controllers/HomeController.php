@@ -54,9 +54,26 @@ public function index()
         $costProfitData[] = $row;
     }
 
+    // Card data
+    $result = $this->conn->query("SELECT COUNT(*) as total FROM inventory");
+    $totalItems = $result->fetch_assoc()['total'] ?? 0;
+
+    $result = $this->conn->query("SELECT COUNT(*) as count FROM inventory WHERE quantity <= 10");
+    $lowStockItems = $result->fetch_assoc()['count'] ?? 0;
+
+    $result = $this->conn->query("SELECT SUM(quantity * price) as value FROM inventory");
+    $totalInventoryValue = $result->fetch_assoc()['value'] ?? 0;
+
+    $result = $this->conn->query("SELECT SUM(quantity_available) as total FROM production");
+    $totalProducedAmount = $result->fetch_assoc()['total'] ?? 0;
+
     $this->view('home', [
         'productionData'    => $productionData,
-        'costProfitData'    => $costProfitData
+        'costProfitData'    => $costProfitData,
+        'totalItems' => $totalItems,
+        'lowStockItems' => $lowStockItems,
+        'totalInventoryValue' => $totalInventoryValue,
+        'totalProducedAmount' => $totalProducedAmount,
     ]);
 }
 

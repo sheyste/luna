@@ -1,5 +1,45 @@
 <?php include_once __DIR__ . '/layout/header.php'; ?>
 
+<style>
+    /* Responsive table for mobile */
+    @media (max-width: 767px) {
+        #productionTable thead {
+            display: none;
+        }
+
+        #productionTable, #productionTable tbody, #productionTable tr, #productionTable td {
+            display: block;
+            width: 100%;
+        }
+
+        #productionTable tr {
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+        }
+
+        #productionTable td {
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+            border: none;
+            border-bottom: 1px solid #eee;
+        }
+
+        #productionTable td:last-of-type {
+            border-bottom: 0;
+        }
+
+        #productionTable td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 1rem;
+            width: 45%;
+            font-weight: bold;
+            text-align: left;
+        }
+    }
+</style>
+
 <?php
 $combinedItems = [];
 if (!empty($items)) {
@@ -35,12 +75,12 @@ if (!empty($items)) {
 <!-- Main Content Card -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 fw-bold text-primary">Production List</h6>
+        <h6 class="m-0 fw-bold text-primary"></h6>
         <div>
-            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addProductionModal">
+            <button class="btn btn-success btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#addProductionModal">
                 <i class="fa fa-plus me-1"></i> Add Production
             </button>
-            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateSoldModal">
+            <button class="btn btn-primary btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#updateSoldModal">
                 <i class="fa fa-edit me-1"></i> Update Sold
             </button>
         </div>
@@ -63,15 +103,15 @@ if (!empty($items)) {
                   <?php if (!empty($combinedItems)): ?>
                       <?php foreach ($combinedItems as $item): ?>
                           <tr>
-                              <td><?= htmlspecialchars($item['menu_name']) ?></td>
-                              <td><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
-                              <td><?= htmlspecialchars($item['quantity_produced']) ?></td>
-                              <td><?= htmlspecialchars($item['quantity_available']) ?></td>
-                              <td><?= htmlspecialchars($item['quantity_sold']) ?></td>
-                              <td><?= htmlspecialchars(date('F d, Y H:i:s', strtotime($item['created_at']))) ?></td>
-                              <td>
+                              <td data-label="Menu"><?= htmlspecialchars($item['menu_name']) ?></td>
+                              <td data-label="Barcode"><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
+                              <td data-label="Produced"><?= htmlspecialchars($item['quantity_produced']) ?></td>
+                              <td data-label="Available"><?= htmlspecialchars($item['quantity_available']) ?></td>
+                              <td data-label="Sold"><?= htmlspecialchars($item['quantity_sold']) ?></td>
+                              <td data-label="Updated At"><?= htmlspecialchars(date('F d, Y H:i:s', strtotime($item['created_at']))) ?></td>
+                              <td data-label="Actions">
                                   <button class="btn btn-danger btn-sm delete-btn" data-ids="<?= htmlspecialchars(implode(',', $item['original_ids'])) ?>" data-menu-name="<?= htmlspecialchars($item['menu_name']) ?>">
-                                      <i class="fa fa-trash"></i>
+                                      <i class="fa fa-trash"></i> Delete
                                   </button>
                               </td>
                           </tr>
@@ -200,7 +240,7 @@ if (!empty($items)) {
           <input type="text" class="form-control" id="barcode" name="barcode" readonly>
         </div>
         <div class="mb-3">
-          <label for="quantityProduced" class="form-label">Produced</label>
+          <label for="quantityProduced" class="form-label">To Produce</label>
           <input type="number" class="form-control" id="quantityProduced" name="quantity_produced" min="0" required>
         </div>
       </div>
@@ -384,6 +424,7 @@ $(document).ready(function() {
                     }
 
                     var $summaryList = $('#summaryIngredientsList').empty();
+                    var allStockSufficient = true;
 
                     if (Array.isArray(menu.ingredients) && menu.ingredients.length > 0) {
                         var promises = [];
@@ -399,23 +440,49 @@ $(document).ready(function() {
                                 dataType: 'json',
                                 success: function(inventoryItem) {
                                     if (inventoryItem) {
+                                        var availableStock = parseFloat(inventoryItem.quantity);
+                                        var hasEnoughStock = availableStock >= totalQuantity;
+                                        if (!hasEnoughStock) {
+                                            allStockSufficient = false;
+                                        }
+
                                         var displayQuantity = Number.isInteger(totalQuantity) ? totalQuantity : totalQuantity.toFixed(3).replace(/\.?0+$/, "");
-                                        $summaryList.append('<li class="list-group-item">' + (inventoryItem.name || 'Unnamed') + ': ' + displayQuantity + ' ' + (inventoryItem.unit || '') + '</li>');
+                                        var stockStatusHtml = `
+                                            <span class="badge ${hasEnoughStock ? 'bg-success' : 'bg-danger'}">
+                                                <i class="fa ${hasEnoughStock ? 'fa-check' : 'fa-times'} me-1"></i>
+                                                Available: ${inventoryItem.quantity} ${inventoryItem.unit || ''}
+                                            </span>
+                                        `;
+
+                                        $summaryList.append(`
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span>${inventoryItem.name || 'Unnamed'}: <strong>${displayQuantity} ${inventoryItem.unit || ''}</strong> required</span>
+                                                ${stockStatusHtml}
+                                            </li>
+                                        `);
                                     }
                                     deferred.resolve();
                                 },
                                 error: function() {
                                     $summaryList.append('<li class="list-group-item text-danger">Error loading ingredient details.</li>');
+                                    allStockSufficient = false; // Consider error as insufficient stock
                                     deferred.resolve();
                                 }
                             });
                         });
 
                         $.when.apply($, promises).done(function() {
+                            var $confirmBtn = $('#confirmProductionBtn');
+                            if (allStockSufficient) {
+                                $confirmBtn.prop('disabled', false).removeClass('btn-danger').addClass('btn-primary').text('Confirm & Add');
+                            } else {
+                                $confirmBtn.prop('disabled', true).removeClass('btn-primary').addClass('btn-danger').text('Insufficient Stock');
+                            }
                             $('#productionSummaryModal').modal('show');
                         });
                     } else {
                         $summaryList.append('<li class="list-group-item">No ingredients will be deducted.</li>');
+                        $('#confirmProductionBtn').prop('disabled', false).removeClass('btn-danger').addClass('btn-primary').text('Confirm & Add');
                         $('#productionSummaryModal').modal('show');
                     }
                 } else {

@@ -37,12 +37,15 @@
 
         .page-wrapper {
             display: flex;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
         }
 
         #sidebar {
             width: var(--sidebar-width);
             min-width: var(--sidebar-width);
+            overflow-y: auto;
+            overflow-x: hidden;
             background: var(--sidebar-bg);
             color: #fff;
             transition: margin-left 0.35s ease-in-out;
@@ -115,6 +118,7 @@
             display: flex;
             align-items: center;
             padding: 0 1.5rem;
+            flex-shrink: 0;
             z-index: 1020;
         }
         
@@ -138,6 +142,7 @@
         main {
             padding: 1.5rem;
             flex-grow: 1;
+            overflow-y: auto;
         }
 
         /* Sidebar Toggled State */
@@ -204,8 +209,9 @@
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/home') !== false) echo 'active'; ?>">
                 <a href="/home"><i class="fa fa-home"></i><span>Dashboard</span></a>
             </li>
-            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/users') !== false) echo 'active'; ?>">
-                <a href="/users"><i class="fa fa-users"></i><span>Users</span></a>
+            
+            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/purchase_order') !== false) echo 'active'; ?>">
+                <a href="/purchase_order"><i class="fa fa-file-invoice"></i><span>Purchase Orders</span></a>
             </li>
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/inventory') !== false) echo 'active'; ?>">
                 <a href="/inventory"><i class="fa fa-boxes-stacked"></i><span>Inventory</span></a>
@@ -216,8 +222,17 @@
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/production') !== false) echo 'active'; ?>">
                 <a href="/production"><i class="fa fa-industry"></i><span>Production</span></a>
             </li>
+            <hr>
+            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/users') !== false) echo 'active'; ?>">
+                <a href="/users"><i class="fa fa-users"></i><span>Users</span></a>
+            </li>
+            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/barcode') !== false) echo 'active'; ?>">
+                <a href="/barcode"><i class="fa fa-barcode"></i><span>Barcode Scan</span></a>
+            </li>
+
         </ul>
     </nav>
+
     <!-- /#sidebar -->
 
     <!-- Page Content -->

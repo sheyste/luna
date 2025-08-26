@@ -1,5 +1,45 @@
 <?php include_once __DIR__ . '/layout/header.php'; ?>
 
+<style>
+    /* Responsive table for mobile */
+    @media (max-width: 767px) {
+        #userTable thead {
+            display: none;
+        }
+
+        #userTable, #userTable tbody, #userTable tr, #userTable td {
+            display: block;
+            width: 100%;
+        }
+
+        #userTable tr {
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+        }
+
+        #userTable td {
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+            border: none;
+            border-bottom: 1px solid #eee;
+        }
+
+        #userTable td:last-of-type {
+            border-bottom: 0;
+        }
+
+        #userTable td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 1rem;
+            width: 45%;
+            font-weight: bold;
+            text-align: left;
+        }
+    }
+</style>
+
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0 text-gray-800">Users</h1>
@@ -21,9 +61,37 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <div id="grid_container">
-                <?php include_once __DIR__ . "/user_grid.php"; ?>
-            </div>
+            <table class="table table-bordered" id="userTable" width="100%" cellspacing="0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>User Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($users)): ?>
+                        <?php foreach ($users as $user): ?>
+                            <tr>
+                                <td data-label="Username"><?= htmlspecialchars($user['username']) ?></td>
+                                <td data-label="Name"><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></td>
+                                <td data-label="Email"><?= htmlspecialchars($user['email']) ?></td>
+                                <td data-label="User Type"><?= htmlspecialchars($user['user_type']) ?></td>
+                                <td data-label="Actions" class="text-nowrap">
+                                    <button class="btn btn-info btn-sm" onclick="User.edit(<?= htmlspecialchars($user['id']) ?>)">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="User.delete_prep(<?= htmlspecialchars($user['id']) ?>)">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

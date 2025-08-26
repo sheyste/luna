@@ -1,9 +1,47 @@
 <?php include_once __DIR__ . '/layout/header.php'; ?>
 
 <style>
-  tr:hover {
-    cursor: pointer; /* Changes the cursor to a hand pointer */
-  }
+    tr:hover {
+        cursor: pointer; /* Changes the cursor to a hand pointer */
+    }
+
+    /* Responsive table for mobile */
+    @media (max-width: 767px) {
+        #menuTable thead {
+            display: none;
+        }
+
+        #menuTable, #menuTable tbody, #menuTable tr, #menuTable td {
+            display: block;
+            width: 100%;
+        }
+
+        #menuTable tr {
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+        }
+
+        #menuTable td {
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+            border: none;
+            border-bottom: 1px solid #eee;
+        }
+
+        #menuTable td:last-of-type {
+            border-bottom: 0;
+        }
+
+        #menuTable td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 1rem;
+            width: 45%;
+            font-weight: bold;
+            text-align: left;
+        }
+    }
 </style>
 
 <!-- Page Header -->
@@ -40,14 +78,14 @@
                     <?php if (!empty($menus)): ?>
                         <?php foreach ($menus as $menu): ?>
                             <tr class="menu-row" data-id="<?= $menu['id'] ?>">
-                                <td><?= htmlspecialchars($menu['name']) ?></td>
-                                <td><?= htmlspecialchars($menu['barcode']) ?></td>
-                                <td>&#8369;<?= htmlspecialchars(number_format($menu['price'] ?? 0, 2)) ?></td>
-                                <td class="text-nowrap">
-                                    <button class="btn btn-primary btn-sm view-btn me-3" data-id="<?= htmlspecialchars($menu['id']) ?>">
+                                <td data-label="Name"><?= htmlspecialchars($menu['name']) ?></td>
+                                <td data-label="Barcode"><?= htmlspecialchars($menu['barcode']) ?></td>
+                                <td data-label="Price">&#8369;<?= htmlspecialchars(number_format($menu['price'] ?? 0, 2)) ?></td>
+                                <td data-label="Actions" class="text-nowrap">
+                                    <button class="btn btn-primary btn-sm view-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
                                         <i class="fa fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-info btn-sm edit-btn me-3" data-id="<?= htmlspecialchars($menu['id']) ?>">
+                                    <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
                                         <i class="fa fa-edit"></i>
                                     </button>
                                     <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
@@ -183,10 +221,10 @@
                 <!-- Options populated by JS -->
             </select>
         </div>
-        <div class="col-2">
+        <div class="col-3">
             <input type="number" class="form-control ingredient-quantity" name="ingredients[quantity][]" placeholder="Qty" min="0" step="any" required>
         </div>
-        <div class="col-2">
+        <div class="col-1">
             <span class="unit-span"></span>
         </div>
         <div class="col-2">
