@@ -20,7 +20,7 @@ class HomeController extends Controller
 
 public function index()
 {
-    // ✅ Production forecast (by day)
+    // Production forecast (by day)
     $productionData = [];
     $result = $this->conn->query("
         SELECT DATE(created_at) as date, SUM(quantity_produced) as total_produced
@@ -32,7 +32,7 @@ public function index()
         $productionData[] = $row;
     }
 
-    // ✅ Weekly cost vs profit using ingredient cost and selling price
+    // Weekly cost vs profit using ingredient cost and selling price
     $costProfitData = [];
     $result = $this->conn->query("
         SELECT YEARWEEK(p.created_at, 1) AS week,
