@@ -24,8 +24,12 @@ public function index()
     // Production forecast (by day)
     $productionData = [];
     $result = $this->conn->query("
-        SELECT DATE(created_at) as date, SUM(quantity_produced) as total_produced
+        SELECT DATE(created_at) as date,
+               SUM(quantity_produced) as total_produced,
+               SUM(quantity_sold) as total_sold,
+               SUM(wastage) as total_wastage
         FROM production
+        WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
         GROUP BY DATE(created_at)
         ORDER BY date ASC
     ");

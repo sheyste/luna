@@ -54,11 +54,11 @@
 <!-- Main Content Card -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 fw-bold text-primary">User List</h6>
-        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalUserForm">
-            <i class="fa fa-user-plus me-1"></i> Add User
-        </button>
-    </div>
+            <h6 class="m-0 fw-bold text-primary">User List</h6>
+            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAddUser">
+                <i class="fa fa-user-plus me-1"></i> Add User
+            </button>
+        </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-bordered" id="userTable" width="100%" cellspacing="0">
@@ -80,10 +80,10 @@
                                 <td data-label="Email"><?= htmlspecialchars($user['email']) ?></td>
                                 <td data-label="User Type"><?= htmlspecialchars($user['user_type']) ?></td>
                                 <td data-label="Actions" class="text-nowrap">
-                                    <button class="btn btn-info btn-sm" onclick="User.edit(<?= htmlspecialchars($user['id']) ?>)">
+                                    <button class="btn btn-info btn-sm" onclick="User.show(<?= htmlspecialchars($user['id']) ?>)">
                                         <i class="fa fa-edit"></i> Edit
                                     </button>
-                                    <button class="btn btn-danger btn-sm" onclick="User.delete_prep(<?= htmlspecialchars($user['id']) ?>)">
+                                    <button class="btn btn-danger btn-sm" onclick="User.confirm(<?= htmlspecialchars($user['id']) ?>)">
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
                                 </td>
@@ -96,44 +96,42 @@
     </div>
 </div>
 
-<!-- Add/Edit User Modal -->
-<div class="modal fade" id="modalUserForm" tabindex="-1" aria-labelledby="modalUserFormLabel" aria-hidden="true">
+<!-- Add User Modal -->
+<div class="modal fade" id="modalAddUser" tabindex="-1" aria-labelledby="modalAddUserLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalUserFormLabel">User</h5>
+                <h5 class="modal-title" id="modalAddUserLabel">Add User</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="userForm" method="post">
-                    <input type="hidden" name="edit_mode" id="edit_mode" value="0" readonly>
-                    <input type="hidden" name="id" id="id" value="" readonly>
+                <form id="addUserForm" method="post">
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username (*)</label>
-                        <input type="text" class="form-control" name="username" id="username" required>
+                        <label for="add_username" class="form-label">Username (*)</label>
+                        <input type="text" class="form-control" name="username" id="add_username" required>
                     </div>
                     <div class="mb-3">
-                        <label for="first_name" class="form-label">First Name (*)</label>
-                        <input type="text" class="form-control" name="first_name" id="first_name" required>
+                        <label for="add_first_name" class="form-label">First Name (*)</label>
+                        <input type="text" class="form-control" name="first_name" id="add_first_name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="last_name" class="form-label">Last Name (*)</label>
-                        <input type="text" class="form-control" name="last_name" id="last_name" required>
+                        <label for="add_last_name" class="form-label">Last Name (*)</label>
+                        <input type="text" class="form-control" name="last_name" id="add_last_name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email (*)</label>
-                        <input type="email" class="form-control" name="email" id="email" required>
+                        <label for="add_email" class="form-label">Email (*)</label>
+                        <input type="email" class="form-control" name="email" id="add_email" required>
                     </div>
                     <div class="mb-3">
-                        <label for="user_type" class="form-label">User Type (*)</label>
-                        <select class="form-select" name="user_type" id="user_type" required>
+                        <label for="add_user_type" class="form-label">User Type (*)</label>
+                        <select class="form-select" name="user_type" id="add_user_type" required>
                             <option value="Admin">Admin</option>
                             <option value="User">User</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Password (*)</label>
-                        <input type="password" class="form-control" name="password" id="password" required>
+                        <label for="add_password" class="form-label">Password (*)</label>
+                        <input type="password" class="form-control" name="password" id="add_password" required>
                     </div>
                 </form>
                 <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" style="display:none;">
@@ -142,7 +140,59 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="User.save(this);">Save</button>
+                <button type="button" class="btn btn-success" onclick="User.add(this);">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="modalEditUser" tabindex="-1" aria-labelledby="modalEditUserLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditUserLabel">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm" method="post">
+                    <input type="hidden" name="id" id="edit_id" value="" readonly>
+                    <div class="mb-3">
+                        <label for="edit_username" class="form-label">Username (*)</label>
+                        <input type="text" class="form-control" name="username" id="edit_username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_first_name" class="form-label">First Name (*)</label>
+                        <input type="text" class="form-control" name="first_name" id="edit_first_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_last_name" class="form-label">Last Name (*)</label>
+                        <input type="text" class="form-control" name="last_name" id="edit_last_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_email" class="form-label">Email (*)</label>
+                        <input type="email" class="form-control" name="email" id="edit_email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_user_type" class="form-label">User Type (*)</label>
+                        <select class="form-select" name="user_type" id="edit_user_type" required>
+                            <option value="Admin">Admin</option>
+                            <option value="User">User</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_password" class="form-label">Password (Leave blank to keep current)</label>
+                        <input type="password" class="form-control" name="password" id="edit_password">
+                    </div>
+                </form>
+                <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" style="display:none;">
+                    <p>Error</p>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="User.update(this);">Save</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -168,5 +218,167 @@
         </div>
     </div>
 </div>
+
+<script>
+class UserApp {
+    add() {
+        $('#modalAddUser').modal('show');
+    }
+
+    show(id) {
+        const data = { "id": id };
+
+        $.ajax({
+            url: '/users/show',
+            type: 'POST',
+            dataType: 'JSON',
+            data: data,
+            success: function(response) {
+                $('#edit_username').val(response.username);
+                $('#edit_first_name').val(response.first_name);
+                $('#edit_last_name').val(response.last_name);
+                $('#edit_email').val(response.email);
+                $('#edit_user_type').val(response.user_type);
+                $('#edit_id').val(id);
+                $('#modalEditUser').modal('show');
+            },
+            error: function(error) {
+                console.warn('error ' + error);
+                $('#modalEditUser .alert-danger p').text('Error trying load');
+                $('#modalEditUser .alert-danger').show();
+            }
+        });
+    }
+
+    confirm(id) {
+        $('#modalDelUser').modal('show');
+        $('#id_del').val(id);
+    }
+
+    reloadGrid() {
+        $.ajax({
+            url: '/users/load',
+            type: 'POST',
+            dataType: 'html',
+            data: {},
+            success: function(response) {
+                if (response !== '') {
+                    $("#userTable tbody").html(response);
+                }
+            },error: function(error){
+                console.warn('error loading data');
+            }
+        });
+    }
+
+    add(btn) {
+        const form = $("#addUserForm").serializeArray();
+
+        // Validate required fields
+        if ($.trim($('#add_username').val()) === ''
+            || $.trim($('#add_first_name').val()) === ''
+            || $.trim($('#add_last_name').val()) === ''
+            || $.trim($('#add_email').val()) === ''
+            || $.trim($('#add_user_type').val()) === ''
+            || $.trim($('#add_password').val()) === ''
+        ) {
+            $('#modalAddUser .alert-danger p').text('All fields required');
+            $('#modalAddUser .alert-danger').show();
+        } else {
+            $.ajax({
+                url: '/users/add',
+                type: 'POST',
+                dataType: 'JSON',
+                data: form,
+                success:function(response){
+                    if (response.success) {
+                        $("#modalAddUser").modal('hide');
+                        User.reloadGrid();
+                    } else {
+                        $('#modalAddUser .alert-danger p').text('Error saving user');
+                        $('#modalAddUser .alert-danger').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('#modalAddUser .alert-danger p').text('Error saving user: ' + error);
+                    $('#modalAddUser .alert-danger').show();
+                }
+            });
+        }
+    }
+
+    update(btn) {
+        const form = $("#editUserForm").serializeArray();
+
+        // Validate required fields
+        if ($.trim($('#edit_username').val()) === ''
+            || $.trim($('#edit_first_name').val()) === ''
+            || $.trim($('#edit_last_name').val()) === ''
+            || $.trim($('#edit_email').val()) === ''
+            || $.trim($('#edit_user_type').val()) === ''
+        ) {
+            $('#modalEditUser .alert-danger p').text('All fields required');
+            $('#modalEditUser .alert-danger').show();
+        } else {
+            $.ajax({
+                url: '/users/edit',
+                type: 'POST',
+                dataType: 'JSON',
+                data: form,
+                success:function(response){
+                    if (response.success) {
+                        $("#modalEditUser").modal('hide');
+                        User.reloadGrid();
+                    } else {
+                        $('#modalEditUser .alert-danger p').text('Error saving user');
+                        $('#modalEditUser .alert-danger').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('#modalEditUser .alert-danger p').text('Error saving user: ' + error);
+                    $('#modalEditUser .alert-danger').show();
+                }
+            });
+        }
+    }
+
+    delete(btn) {
+        const data = {'id' : $('#id_del').val()};
+
+        $.ajax({
+            url: '/users/delete',
+            type: 'POST',
+            dataType: 'JSON',
+            data: data,
+            success:function(response){
+                if (response.success) {
+                    User.reloadGrid();
+                    $("#modalDelUser").modal('hide');
+                } else {
+                    $('#modalDelUser .alert-danger p').text('Error deleting user');
+                    $('#modalDelUser .alert-danger').show();
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#modalDelUser .alert-danger p').text('Error deleting user: ' + error);
+                $('#modalDelUser .alert-danger').show();
+            }
+        });
+    }
+}
+
+const User = new UserApp();
+
+// Reset forms and alerts when modals are hidden
+$('#modalAddUser').on('hidden.bs.modal', function(e){
+    $(this).find('form').trigger('reset');
+    $(this).find('.alert').hide();
+});
+
+$('#modalEditUser').on('hidden.bs.modal', function(e){
+    $(this).find('form').trigger('reset');
+    $(this).find('.alert').hide();
+});
+</script>
 
 <?php include_once __DIR__ . '/layout/footer.php'; ?>

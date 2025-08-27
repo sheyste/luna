@@ -92,7 +92,7 @@
   <!-- Production Chart -->
   <div class="col-md-6">
     <div class="card">
-      <div class="card-header">Production Forecast</div>
+      <div class="card-header">Production and Sales</div>
       <div class="card-body">
         <canvas id="productionChart"></canvas>
       </div>
@@ -113,16 +113,7 @@
 
 <!-- Content Row -->
 <div class="row mt-3">
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <i class="fa fa-users fa-3x text-primary mb-3"></i>
-                <h5 class="card-title">Users</h5>
-                <p class="card-text text-muted">Manage application users and roles.</p>
-                <a href="/users" class="btn btn-primary mt-auto">Go to Users</a>
-            </div>
-        </div>
-    </div>
+
     <div class="col-lg-3 col-md-6 mb-4">
         <div class="card h-100">
             <div class="card-body text-center">
@@ -130,6 +121,16 @@
                 <h5 class="card-title">Inventory</h5>
                 <p class="card-text text-muted">Manage stock levels and items.</p>
                 <a href="/inventory" class="btn btn-info mt-auto">Go to Inventory</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fa fa-file-invoice fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Purchase Orders</h5>
+                <p class="card-text text-muted">Manage Purchase Orders.</p>
+                <a href="/users" class="btn btn-primary mt-auto">Go to Users</a>
             </div>
         </div>
     </div>
@@ -170,6 +171,18 @@
         data: <?= json_encode(array_column($productionData, 'total_produced')) ?>,
         borderColor: '#4e73df',
         backgroundColor: 'rgba(78,115,223,0.1)',
+        fill: true
+      }, {
+        label: 'Sold',
+        data: <?= json_encode(array_column($productionData, 'total_sold')) ?>,
+        borderColor: '#1cc88a',
+        backgroundColor: 'rgba(28, 200, 138, 0.1)',
+        fill: true
+      }, {
+        label: 'Wastage',
+        data: <?= json_encode(array_column($productionData, 'total_wastage')) ?>,
+        borderColor: '#e74a3b',
+        backgroundColor: 'rgba(231, 74, 59, 0.1)',
         fill: true
       }]
     }

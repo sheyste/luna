@@ -1,42 +1,248 @@
 <?php include_once __DIR__ . '/layout/header.php'; ?>
 
 <style>
-    /* Responsive table for mobile */
-    @media (max-width: 767px) {
-        #productionTable thead {
-            display: none;
-        }
+    .menu-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        border-radius: 12px;
+        overflow: hidden;
+    }
 
-        #productionTable, #productionTable tbody, #productionTable tr, #productionTable td {
-            display: block;
-            width: 100%;
-        }
+    .price-tag {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background-color: #1200b1ff;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.25rem;
+        font-weight: bold;
+    }
 
-        #productionTable tr {
-            margin-bottom: 1rem;
-            border: 1px solid #ddd;
-        }
+    /* Modern React-style input controls */
+    .react-style-input-group {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 16px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        transition: all 0.2s ease;
+    }
 
-        #productionTable td {
-            text-align: right;
-            padding-left: 50%;
-            position: relative;
-            border: none;
-            border-bottom: 1px solid #eee;
-        }
+    .react-style-input-group:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        background: #fff;
+    }
 
-        #productionTable td:last-of-type {
-            border-bottom: 0;
-        }
+    .react-style-input {
+        width: 120px;
+        text-align: center;
+        font-size: 1.25rem;
+        font-weight: 600;
+        padding: 12px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        background: white;
+    }
 
-        #productionTable td::before {
-            content: attr(data-label);
-            position: absolute;
-            left: 1rem;
-            width: 45%;
-            font-weight: bold;
-            text-align: left;
-        }
+    .react-style-input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .react-style-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: none;
+        font-size: 1.25rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .react-style-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .react-style-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    .react-style-btn:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    .react-style-btn-decrement {
+        background: #ef4444;
+        color: white;
+    }
+
+    .react-style-btn-increment {
+        background: #10b981;
+        color: white;
+    }
+
+    .react-style-btn-decrement:hover:not(:disabled) {
+        background: #dc2626;
+    }
+
+    .react-style-btn-increment:hover:not(:disabled) {
+        background: #059669;
+    }
+
+    .react-style-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .react-style-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .react-style-card-header {
+        background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        color: white;
+        border-radius: 12px 12px 0 0 !important;
+        padding: 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .react-style-card-body {
+        padding: 24px;
+    }
+
+    .react-style-modal-footer {
+        padding: 20px;
+        background: #f8fafc;
+        border-radius: 0 0 12px 12px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .react-style-btn-lg {
+        padding: 12px 24px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .react-style-btn-primary {
+        background: #3b82f6;
+        color: white;
+        border: none;
+    }
+
+    .react-style-btn-primary:hover {
+        background: #2563eb;
+    }
+
+    .react-style-btn-secondary {
+        background: #64748b;
+        color: white;
+        border: none;
+    }
+
+    .react-style-btn-secondary:hover {
+        background: #475569;
+    }
+
+    .react-style-btn-warning {
+        background: #f59e0b;
+        color: white;
+        border: none;
+    }
+
+    .react-style-btn-warning:hover {
+        background: #d97706;
+    }
+
+    .react-style-menu-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 16px;
+        text-align: center;
+        color: #1e293b;
+    }
+
+    .react-style-quantity-display {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #64748b;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .react-style-quantity-value {
+        color: #3b82f6;
+        font-weight: 700;
+    }
+
+    .react-style-summary-card {
+        background: #f1f5f9;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .react-style-summary-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+
+    .react-style-summary-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #3b82f6;
+    }
+
+    .react-style-alert {
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .react-style-alert-warning {
+        background: #fef3c7;
+        border: 1px solid #fde68a;
+        color: #92400e;
+    }
+
+    .react-style-alert-info {
+        background: #dbeafe;
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+    }
+
+    .react-style-icon {
+        font-size: 1.5rem;
     }
 </style>
 
@@ -48,10 +254,19 @@ if (!empty($items)) {
         if (!isset($combinedItems[$menuId])) {
             $combinedItems[$menuId] = $item;
             $combinedItems[$menuId]['original_ids'] = [$item['id']];
+            $combinedItems[$menuId]['total_wastage'] = $item['wastage'] ?? 0;
+            $combinedItems[$menuId]['total_waste_cost'] = $item['waste_cost'] ?? 0;
         } else {
             $combinedItems[$menuId]['quantity_produced'] += $item['quantity_produced'];
             $combinedItems[$menuId]['quantity_available'] += $item['quantity_available'];
             $combinedItems[$menuId]['quantity_sold'] += $item['quantity_sold'];
+            $combinedItems[$menuId]['total_wastage'] += $item['wastage'] ?? 0;
+            // Recalculate combined costs and sales
+            $combinedItems[$menuId]['total_cost'] += $item['total_cost'];
+            $combinedItems[$menuId]['total_sales'] += $item['total_sales'];
+            $combinedItems[$menuId]['total_waste_cost'] += $item['waste_cost'] ?? 0;
+            $combinedItems[$menuId]['profit'] += $item['profit'];
+            $combinedItems[$menuId]['unit_cost'] = $combinedItems[$menuId]['total_cost'] / $combinedItems[$menuId]['quantity_produced'];
             $combinedItems[$menuId]['original_ids'][] = $item['id'];
             if (strtotime($item['created_at']) > strtotime($combinedItems[$menuId]['created_at'])) {
                 $combinedItems[$menuId]['created_at'] = $item['created_at'];
@@ -73,7 +288,7 @@ if (!empty($items)) {
 </div>
 
 <!-- Main Content Card -->
-<div class="card shadow mb-4">
+<div class=" mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 fw-bold text-primary"></h6>
         <div>
@@ -83,43 +298,43 @@ if (!empty($items)) {
             <button class="btn btn-primary btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#updateSoldModal">
                 <i class="fa fa-edit me-1"></i> Update Sold
             </button>
+            <button class="btn btn-warning btn-sm mb-3 text-white" data-bs-toggle="modal" data-bs-target="#updateWastageModal">
+                <i class="fa fa-exclamation-triangle me-1"></i> Update Wastage
+            </button>
         </div>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-          <table class="table table-bordered" id="productionTable" width="100%" cellspacing="0">
-              <thead class="table-dark">
-                  <tr>
-                      <th>Menu</th>
-                      <th>Barcode</th>
-                      <th>Produced</th>
-                      <th>Available</th>
-                      <th>Sold</th>
-                      <th>Updated At</th>
-                      <th>Actions</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <?php if (!empty($combinedItems)): ?>
-                      <?php foreach ($combinedItems as $item): ?>
-                          <tr>
-                              <td data-label="Menu"><?= htmlspecialchars($item['menu_name']) ?></td>
-                              <td data-label="Barcode"><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
-                              <td data-label="Produced"><?= htmlspecialchars($item['quantity_produced']) ?></td>
-                              <td data-label="Available"><?= htmlspecialchars($item['quantity_available']) ?></td>
-                              <td data-label="Sold"><?= htmlspecialchars($item['quantity_sold']) ?></td>
-                              <td data-label="Updated At"><?= htmlspecialchars(date('F d, Y H:i:s', strtotime($item['created_at']))) ?></td>
-                              <td data-label="Actions">
-                                  <button class="btn btn-danger btn-sm delete-btn" data-ids="<?= htmlspecialchars(implode(',', $item['original_ids'])) ?>" data-menu-name="<?= htmlspecialchars($item['menu_name']) ?>">
-                                      <i class="fa fa-trash"></i> Delete
-                                  </button>
-                              </td>
-                          </tr>
-                      <?php endforeach; ?>
-                  <?php endif; ?>
-              </tbody>
-          </table>
-
+    <div class="">
+        <div class="row" id="production-container">
+            <?php if (!empty($combinedItems)): ?>
+                <?php foreach ($combinedItems as $item): ?>
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card menu-card h-100 shadow-sm border-0 rounded-3">
+                            <div class="card-body">
+                                <div class="price-tag">Available: <?= htmlspecialchars($item['quantity_available']) ?></div>
+                                <h5 class="card-title"><?= htmlspecialchars($item['menu_name']) ?></h5>
+                                <p class="card-text text-muted">Barcode: <?= htmlspecialchars($item['barcode'] ?? '') ?></p>
+                                <div class="mt-3">
+                                    <p class="mb-1"><strong>Price:</strong> &#8369;<?= htmlspecialchars(number_format($item['price'] ?? 0, 2)) ?></p>
+                                    <p class="mb-1"><strong>Produced:</strong> <?= htmlspecialchars($item['quantity_produced']) ?> | <strong>Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_cost'] ?? 0, 2)) ?></p>
+                                    <p class="mb-1"><strong>Sold:</strong> <?= htmlspecialchars($item['quantity_sold']) ?> | <strong>Sales:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_sales'] ?? 0, 2)) ?></p>
+                                    <p class="mb-1"><strong>Wastage:</strong> <?= htmlspecialchars($item['total_wastage']) ?> | <strong>Waste Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_waste_cost'] ?? 0, 2)) ?></p>
+                                    
+                                    <p class="mb-1"><strong>Profit:</strong> &#8369;<?= htmlspecialchars(number_format($item['profit'] ?? 0, 2)) ?></p>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
+                                <button class="btn btn-danger btn-sm delete-btn" data-ids="<?= htmlspecialchars(implode(',', $item['original_ids'])) ?>" data-menu-name="<?= htmlspecialchars($item['menu_name']) ?>">
+                                    <i class="fa fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="col-12">
+                    <div class="alert alert-info">No production items found.</div>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -128,52 +343,72 @@ if (!empty($items)) {
 <!-- Update Sold Modal -->
 <div class="modal fade" id="updateSoldModal" tabindex="-1" aria-labelledby="updateSoldModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
-    <form class="modal-content p-3" method="post" action="/production/updateSold">
+    <form class="modal-content" method="post" action="/production/updateSold">
       
       <!-- Header -->
-      <div class="modal-header bg-primary text-white">
+      <div class="react-style-card-header">
+        <i class="bi bi-bag-check-fill react-style-icon"></i>
         <h4 class="modal-title fw-bold" id="updateSoldModalLabel">
-          <i class="bi bi-bag-check-fill me-2"></i> Update Sold Quantities
+          Update Sold Quantities
         </h4>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <!-- Body -->
       <div class="modal-body">
+        <div class="react-style-alert react-style-alert-info">
+          <i class="bi bi-info-circle react-style-icon"></i>
+          <div>
+            <strong>Instructions:</strong> Enter the number of items sold for each menu item. The system will automatically deduct from available inventory, starting with the oldest production batches.
+          </div>
+        </div>
+        
         <div class="row g-4">
           <?php if (!empty($combinedItems)): ?>
             <?php foreach ($combinedItems as $item): ?>
               <?php if ($item['quantity_produced'] > 0): ?>
                 <div class="col-md-6 col-lg-4">
-                  <div class="card shadow-lg border-0 h-100">
-                    <div class="card-body text-center p-4 bg-light rounded">
-                      
+                  <div class="react-style-card">
+                    <div class="react-style-card-body">
                       <!-- Menu Name -->
-                      <h5 class="fw-bold text-primary mb-3"><?= htmlspecialchars($item['menu_name']) ?></h5>
+                      <h5 class="react-style-menu-name"><?= htmlspecialchars($item['menu_name']) ?></h5>
+                      
+                      <!-- Available Quantity Display -->
+                      <div class="react-style-quantity-display">
+                        Available: <span class="react-style-quantity-value"><?= htmlspecialchars($item['quantity_available']) ?></span>
+                      </div>
                       
                       <!-- Input Controls -->
-                      <div class="d-flex justify-content-center align-items-center gap-3">
-                        <button type="button" 
-                                class="btn btn-lg btn-danger decrement" 
-                                data-target="sold-<?= $item['menu_id'] ?>">
+                      <div class="react-style-input-group">
+                        <button type="button"
+                                class="react-style-btn react-style-btn-decrement decrement"
+                                data-target="sold-<?= $item['menu_id'] ?>"
+                                aria-label="Decrease quantity">
                           <i class="bi bi-dash-lg"></i>
                         </button>
 
-                        <input type="number" 
-                               class="form-control form-control-lg text-center fw-bold" 
-                               style="max-width:120px; font-size:1.4rem;" 
-                               name="sold[<?= $item['menu_id'] ?>]" 
-                               id="sold-<?= $item['menu_id'] ?>" 
-                               value="0" 
-                               min="0">
+                        <input type="number"
+                               class="react-style-input"
+                               name="sold[<?= $item['menu_id'] ?>]"
+                               id="sold-<?= $item['menu_id'] ?>"
+                               value="0"
+                               min="0"
+                               max="<?= $item['quantity_available'] ?>"
+                               aria-label="Quantity sold for <?= htmlspecialchars($item['menu_name']) ?>">
 
-                        <button type="button" 
-                                class="btn btn-lg btn-success increment" 
-                                data-target="sold-<?= $item['menu_id'] ?>">
+                        <button type="button"
+                                class="react-style-btn react-style-btn-increment increment"
+                                data-target="sold-<?= $item['menu_id'] ?>"
+                                aria-label="Increase quantity">
                           <i class="bi bi-plus-lg"></i>
                         </button>
                       </div>
                       
+                      <!-- Summary Card -->
+                      <div class="react-style-summary-card">
+                        <div class="react-style-summary-title">Sales Value</div>
+                        <div class="react-style-summary-value">&#8369;<span id="sales-value-<?= $item['menu_id'] ?>">0.00</span></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -181,8 +416,11 @@ if (!empty($items)) {
             <?php endforeach; ?>
           <?php else: ?>
             <div class="col-12">
-              <div class="alert alert-warning text-center fs-5">
-                <i class="bi bi-exclamation-circle me-2"></i> No production items found.
+              <div class="react-style-alert react-style-alert-warning">
+                <i class="bi bi-exclamation-circle react-style-icon"></i>
+                <div>
+                  <strong>No production items found.</strong> Please add production items before updating sold quantities.
+                </div>
               </div>
             </div>
           <?php endif; ?>
@@ -190,12 +428,12 @@ if (!empty($items)) {
       </div>
 
       <!-- Footer -->
-      <div class="modal-footer justify-content-between">
-        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
-          <i class="bi bi-x-circle me-2"></i> Cancel
+      <div class="react-style-modal-footer">
+        <button type="button" class="react-style-btn-lg react-style-btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle"></i> Cancel
         </button>
-        <button type="submit" class="btn btn-primary btn-lg">
-          <i class="bi bi-save-fill me-2"></i> Save Changes
+        <button type="submit" class="react-style-btn-lg react-style-btn-primary">
+          <i class="bi bi-save-fill"></i> Save Changes
         </button>
       </div>
     </form>
@@ -273,6 +511,106 @@ if (!empty($items)) {
   </div>
 </div>
 
+<!-- Update Wastage Modal -->
+<div class="modal fade" id="updateWastageModal" tabindex="-1" aria-labelledby="updateWastageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <form class="modal-content" method="post" action="/production/updateWastage">
+      
+      <!-- Header -->
+      <div class="react-style-card-header" style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);">
+        <i class="bi bi-exclamation-triangle-fill react-style-icon"></i>
+        <h4 class="modal-title fw-bold" id="updateWastageModalLabel">
+          Update Wastage Quantities
+        </h4>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div class="react-style-alert react-style-alert-info">
+          <i class="bi bi-info-circle react-style-icon"></i>
+          <div>
+            <strong>Instructions:</strong> Enter the number of items wasted for each menu item. The system will automatically deduct from available inventory, starting with the oldest production batches.
+          </div>
+        </div>
+        
+        <div class="row g-4">
+          <?php if (!empty($combinedItems)): ?>
+            <?php foreach ($combinedItems as $item): ?>
+              <?php if ($item['quantity_produced'] > 0): ?>
+                <div class="col-md-6 col-lg-4">
+                  <div class="react-style-card">
+                    <div class="react-style-card-body">
+                      <!-- Menu Name -->
+                      <h5 class="react-style-menu-name"><?= htmlspecialchars($item['menu_name']) ?></h5>
+                      
+                      <!-- Available Quantity Display -->
+                      <div class="react-style-quantity-display">
+                        Available: <span class="react-style-quantity-value"><?= htmlspecialchars($item['quantity_available']) ?></span>
+                      </div>
+                      
+                      <!-- Input Controls -->
+                      <div class="react-style-input-group">
+                        <button type="button"
+                                class="react-style-btn react-style-btn-decrement decrement"
+                                data-target="wastage-<?= $item['menu_id'] ?>"
+                                aria-label="Decrease wastage">
+                          <i class="bi bi-dash-lg"></i>
+                        </button>
+
+                        <input type="number"
+                               class="react-style-input"
+                               name="wastage[<?= $item['menu_id'] ?>]"
+                               id="wastage-<?= $item['menu_id'] ?>"
+                               value="0"
+                               min="0"
+                               max="<?= $item['quantity_available'] ?>"
+                               aria-label="Quantity wasted for <?= htmlspecialchars($item['menu_name']) ?>">
+
+                        <button type="button"
+                                class="react-style-btn react-style-btn-increment increment"
+                                data-target="wastage-<?= $item['menu_id'] ?>"
+                                aria-label="Increase wastage">
+                          <i class="bi bi-plus-lg"></i>
+                        </button>
+                      </div>
+                      
+                      <!-- Summary Card -->
+                      <div class="react-style-summary-card">
+                        <div class="react-style-summary-title">Waste Cost</div>
+                        <div class="react-style-summary-value">&#8369;<span id="waste-cost-<?= $item['menu_id'] ?>">0.00</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <?php endif; ?>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <div class="col-12">
+              <div class="react-style-alert react-style-alert-warning">
+                <i class="bi bi-exclamation-circle react-style-icon"></i>
+                <div>
+                  <strong>No production items found.</strong> Please add production items before updating wastage quantities.
+                </div>
+              </div>
+            </div>
+          <?php endif; ?>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="react-style-modal-footer">
+        <button type="button" class="react-style-btn-lg react-style-btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle"></i> Cancel
+        </button>
+        <button type="submit" class="react-style-btn-lg react-style-btn-warning">
+          <i class="bi bi-save-fill"></i> Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- Production Summary Modal -->
 <div class="modal fade" id="productionSummaryModal" tabindex="-1" aria-labelledby="productionSummaryModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -306,7 +644,7 @@ if (!empty($items)) {
 
 <script>
 $(document).ready(function() {
-    $('#productionTable').DataTable();
+    // No table to initialize - using cards instead
     var menuData = []; // To hold menu data for auto-populating fields
 
     // Load menus into dropdowns
@@ -512,7 +850,7 @@ $(document).ready(function() {
     });
 
     // Handle Edit button click
-    $('#productionTable').on('click', '.edit-btn', function() {
+    $('#production-container').on('click', '.edit-btn', function() {
         var itemId = $(this).data('id');
 
         $.ajax({
@@ -539,7 +877,7 @@ $(document).ready(function() {
     });
 
     // Handle Delete button click
-    $('#productionTable').on('click', '.delete-btn', function() {
+    $('#production-container').on('click', '.delete-btn', function() {
         var itemIds = $(this).data('ids');
         var menuName = $(this).data('menu-name');
         $('#deleteItemIds').val(itemIds);
@@ -547,22 +885,93 @@ $(document).ready(function() {
         $('#deleteProductionModal').modal('show');
     });
 
-    // --- Update Sold Increment/Decrement ---
+    // --- Update Increment/Decrement for Sold and Wastage ---
     $(document).on('click', '.increment', function() {
-        var target = $('#' + $(this).data('target'));
+        var targetId = $(this).data('target');
+        var target = $('#' + targetId);
         var val = parseInt(target.val()) || 0;
-        target.val(val + 1);
+        var max = parseInt(target.attr('max')) || Infinity;
+        
+        // Handle both sold and wastage increment
+        if ((targetId && targetId.startsWith('sold-')) || (targetId && targetId.startsWith('wastage-'))) {
+            if (val < max) {
+                target.val(val + 1).trigger('change');
+            }
+        }
     });
 
     $(document).on('click', '.decrement', function() {
-        var target = $('#' + $(this).data('target'));
+        var targetId = $(this).data('target');
+        var target = $('#' + targetId);
         var val = parseInt(target.val()) || 0;
-        if (val > 0) target.val(val - 1);
+        
+        // Handle both sold and wastage decrement
+        if (((targetId && targetId.startsWith('sold-')) || (targetId && targetId.startsWith('wastage-'))) && val > 0) {
+            target.val(val - 1).trigger('change');
+        }
+    });
+    
+    // Real-time calculation for sold quantities
+    $(document).on('change keyup', 'input[name^="sold["]', function() {
+        var menuId = $(this).attr('id').replace('sold-', '');
+        var quantity = parseInt($(this).val()) || 0;
+        var max = parseInt($(this).attr('max')) || 0;
+        
+        // Ensure quantity doesn't exceed available
+        if (quantity > max) {
+            quantity = max;
+            $(this).val(quantity);
+        }
+        
+        // Find the corresponding price in the combinedItems data
+        var price = 0;
+        <?php foreach ($combinedItems as $item): ?>
+        if ('<?= $item['menu_id'] ?>' === menuId) {
+            price = <?= $item['price'] ?? 0 ?>;
+        }
+        <?php endforeach; ?>
+        
+        var salesValue = (quantity * price).toFixed(2);
+        $('#sales-value-' + menuId).text(salesValue);
+    });
+    
+    // Real-time calculation for wastage quantities
+    $(document).on('change keyup', 'input[name^="wastage["]', function() {
+        var menuId = $(this).attr('id').replace('wastage-', '');
+        var quantity = parseInt($(this).val()) || 0;
+        var max = parseInt($(this).attr('max')) || 0;
+        
+        // Ensure quantity doesn't exceed available
+        if (quantity > max) {
+            quantity = max;
+            $(this).val(quantity);
+        }
+        
+        // Find the corresponding unit cost in the combinedItems data
+        var unitCost = 0;
+        <?php foreach ($combinedItems as $item): ?>
+        if ('<?= $item['menu_id'] ?>' === menuId) {
+            unitCost = <?= $item['unit_cost'] ?? 0 ?>;
+        }
+        <?php endforeach; ?>
+        
+        var wasteCost = (quantity * unitCost).toFixed(2);
+        $('#waste-cost-' + menuId).text(wasteCost);
+    });
+    
+    // Initialize calculations on modal show
+    $('#updateSoldModal').on('show.bs.modal', function() {
+        $('input[name^="sold["]').trigger('change');
+    });
+    
+    $('#updateWastageModal').on('show.bs.modal', function() {
+        $('input[name^="wastage["]').trigger('change');
     });
 
-    // Handle final confirmation from summary modal
-    $('#confirmProductionBtn').on('click', function() {
-        $('#addProductionForm').submit();
-    });
+// Handle final confirmation from summary modal
+$('#confirmProductionBtn').on('click', function() {
+    $('#addProductionForm').submit();
 });
+});
+
 </script>

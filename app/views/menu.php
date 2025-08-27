@@ -1,46 +1,25 @@
 <?php include_once __DIR__ . '/layout/header.php'; ?>
 
 <style>
-    tr:hover {
-        cursor: pointer; /* Changes the cursor to a hand pointer */
+    .menu-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     }
 
-    /* Responsive table for mobile */
-    @media (max-width: 767px) {
-        #menuTable thead {
-            display: none;
-        }
+    .menu-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
 
-        #menuTable, #menuTable tbody, #menuTable tr, #menuTable td {
-            display: block;
-            width: 100%;
-        }
 
-        #menuTable tr {
-            margin-bottom: 1rem;
-            border: 1px solid #ddd;
-        }
-
-        #menuTable td {
-            text-align: right;
-            padding-left: 50%;
-            position: relative;
-            border: none;
-            border-bottom: 1px solid #eee;
-        }
-
-        #menuTable td:last-of-type {
-            border-bottom: 0;
-        }
-
-        #menuTable td::before {
-            content: attr(data-label);
-            position: absolute;
-            left: 1rem;
-            width: 45%;
-            font-weight: bold;
-            text-align: left;
-        }
+    .price-tag {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.25rem;
+        font-weight: bold;
     }
 </style>
 
@@ -55,51 +34,51 @@
     </nav>
 </div>
 
-<!-- Main Content Card -->
-<div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 fw-bold text-primary">Menu List</h6>
-        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addMenuModal">
-            <i class="fa fa-plus me-1"></i> Add Menu
-        </button>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="menuTable" width="100%" cellspacing="0">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Name</th>
-                        <th>Barcode</th>
-                        <th>Price</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($menus)): ?>
-                        <?php foreach ($menus as $menu): ?>
-                            <tr class="menu-row" data-id="<?= $menu['id'] ?>">
-                                <td data-label="Name"><?= htmlspecialchars($menu['name']) ?></td>
-                                <td data-label="Barcode"><?= htmlspecialchars($menu['barcode']) ?></td>
-                                <td data-label="Price">&#8369;<?= htmlspecialchars(number_format($menu['price'] ?? 0, 2)) ?></td>
-                                <td data-label="Actions" class="text-nowrap">
-                                    <button class="btn btn-primary btn-sm view-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
-                                        <i class="fa fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
+<!-- Main Content -->
+<div class="d-flex justify-content-end mb-3">
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMenuModal">
+        <i class="fa fa-plus me-1"></i> Add Menu
+    </button>
 </div>
+
+<div class="row" id="menu-container">
+    <?php if (!empty($menus)): ?>
+        <?php foreach ($menus as $menu): ?>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card menu-card h-100 shadow-sm border-0 rounded-3" style="cursor: pointer;" data-id="<?= htmlspecialchars($menu['id']) ?>">
+                    <div class="price-tag">&#8369;<?= htmlspecialchars(number_format($menu['price'] ?? 0, 2)) ?></div>
+                    <div class="card-body">
+                        <h5 class="card-title"><?= htmlspecialchars($menu['name']) ?></h5>
+                        <p class="card-text text-muted">Barcode: <?= htmlspecialchars($menu['barcode']) ?></p>
+                        <div class="mt-3">
+                            <p class="mb-1"><strong>Price:</strong> &#8369;<?= htmlspecialchars(number_format($menu['price'] ?? 0, 2)) ?></p>
+                            <p class="mb-1"><strong>Cost:</strong> &#8369;<?= htmlspecialchars(number_format($menu['cost'] ?? 0, 2)) ?></p>
+                            <?php
+                                $price = $menu['price'] ?? 0;
+                                $cost = $menu['cost'] ?? 0;
+                                $profitMargin = ($price > 0) ? (($price - $cost) / $price) * 100 : 0;
+                            ?>
+                            <p class="mb-1"><strong>Profit Margin:</strong> <?= htmlspecialchars(number_format($profitMargin, 2)) ?>%</p>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
+                        <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
+                            <i class="fa fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
+                            <i class="fa fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="col-12">
+            <div class="alert alert-info">No menu items found.</div>
+        </div>
+    <?php endif; ?>
+</div>
+
 
 <!-- Add Menu Modal -->
 <div class="modal fade" id="addMenuModal" tabindex="-1" aria-labelledby="addMenuModalLabel" aria-hidden="true">
@@ -278,8 +257,6 @@
 
 <script>
 $(document).ready(function() {
-    $('#menuTable').DataTable();
-
     let inventoryItems = [];
 
     function showMenuDetails(menuId) {
@@ -316,23 +293,13 @@ $(document).ready(function() {
           });
     }
 
-
-    // Handle row click to view details
-    $('#menuTable tbody').on('click', 'tr.menu-row', function(e) {
-        // Prevent modal from opening if a button was clicked
-        if ($(e.target).closest('button').length) {
-            return;
-        }
-        const menuId = $(this).data('id');
-        if (menuId) { // Make sure we have an ID
+    // Handle Card click
+    $('#menu-container').on('click', '.menu-card', function(e) {
+        // Only trigger if not clicking on edit or delete buttons
+        if (!$(e.target).closest('.edit-btn, .delete-btn').length) {
+            var menuId = $(this).data('id');
             showMenuDetails(menuId);
         }
-    });
-    
-    // Handle View button click
-    $('#menuTable').on('click', '.view-btn', function() {
-        var menuId = $(this).data('id');
-        showMenuDetails(menuId);
     });
 
     // Fetch inventory items to be used in dropdowns
@@ -417,7 +384,7 @@ $(document).ready(function() {
     });
 
     // --- Edit Modal ---
-    $('#menuTable').on('click', '.edit-btn', function() {
+    $('#menu-container').on('click', '.edit-btn', function() {
         var menuId = $(this).data('id');
 
         $.when(
@@ -467,7 +434,7 @@ $(document).ready(function() {
     });
 
     // --- Delete Modal ---
-    $('#menuTable').on('click', '.delete-btn', function() {
+    $('#menu-container').on('click', '.delete-btn', function() {
         var menuId = $(this).data('id');
         $('#deleteMenuId').val(menuId);
         $('#deleteMenuModal').modal('show');

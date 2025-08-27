@@ -11,13 +11,29 @@ class Menu extends Model
 
     public function getAll()
     {
-        $stmt = $this->db->query("SELECT id, name, barcode, price FROM menus ORDER BY name ASC");
+        $stmt = $this->db->query("
+            SELECT m.id, m.name, m.barcode, m.price,
+                   COALESCE(SUM(mi.quantity * i.price), 0) as cost
+            FROM menus m
+            LEFT JOIN menu_ingredients mi ON m.id = mi.menu_id
+            LEFT JOIN inventory i ON mi.inventory_id = i.id
+            GROUP BY m.id, m.name, m.barcode, m.price
+            ORDER BY m.name ASC
+        ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getById($id)
     {
-        $menuStmt = $this->db->prepare("SELECT id, name, barcode, price FROM menus WHERE id = :id");
+        $menuStmt = $this->db->prepare("
+            SELECT m.id, m.name, m.barcode, m.price,
+                   COALESCE(SUM(mi.quantity * i.price), 0) as cost
+            FROM menus m
+            LEFT JOIN menu_ingredients mi ON m.id = mi.menu_id
+            LEFT JOIN inventory i ON mi.inventory_id = i.id
+            WHERE m.id = :id
+            GROUP BY m.id, m.name, m.barcode, m.price
+        ");
         $menuStmt->execute(['id' => $id]);
         $menu = $menuStmt->fetch(PDO::FETCH_ASSOC);
 

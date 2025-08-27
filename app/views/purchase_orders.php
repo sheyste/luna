@@ -1,6 +1,13 @@
 <?php include_once __DIR__ . '/layout/header.php'; ?>
 
 <style>
+    .status-field-highlight {
+        background-color: #fff3cd; /* A light yellow color */
+        border-radius: 5px;
+        padding: 1rem;
+        border: 1px solid #ffeeba;
+    }
+
     /* Responsive table for mobile */
     @media (max-width: 767px) {
         #poTable thead {
@@ -299,7 +306,7 @@
                 <label for="editExpected">Expected Delivery</label>
                 <input type="date" id="editExpected" name="expected_delivery" class="form-control">
             </div>
-            <div class="col-md-12 mb-2">
+            <div class="col-md-12 mb-2 status-field-highlight">
                 <label for="editStatus">Status</label>
                 <select id="editStatus" name="status" class="form-select">
                     <option value="Pending">Pending</option>
@@ -331,7 +338,23 @@
 
 <script>
 $(document).ready(function() {
-    var table = $('#poTable').DataTable();
+    // Custom sorting for status
+    $.fn.dataTable.ext.type.order['status-order-pre'] = function (d) {
+        switch (d) {
+            case 'Pending': return 1;
+            case 'Ordered': return 2;
+            case 'Received': return 3;
+            case 'Cancelled': return 4;
+            default: return 5;
+        }
+    };
+
+    var table = $('#poTable').DataTable({
+        "columnDefs": [
+            { "type": "status-order", "targets": 6 }
+        ],
+        "order": [[6, "asc"]]
+    });
 
     const viewPOModal = new bootstrap.Modal(document.getElementById('viewPOModal'));
     const editPOModal = new bootstrap.Modal(document.getElementById('editPOModal'));
@@ -350,6 +373,27 @@ $(document).ready(function() {
             e.preventDefault();
             alert('A purchase order must have at least one item.');
             return false;
+        }
+
+        if ($('#editStatus').val() === 'Received') {
+            let allReceivedQuantitiesFilled = true;
+            $('#edit-po-items-container .po-item-row').each(function() {
+                const receivedQtyInput = $(this).find('input[name*="[received_quantity]"]');
+                if (receivedQtyInput.val() === '') {
+                    allReceivedQuantitiesFilled = false;
+                    // Highlight the empty field
+                    receivedQtyInput.addClass('is-invalid');
+                } else {
+                    receivedQtyInput.removeClass('is-invalid');
+                }
+            });
+
+            if (!allReceivedQuantitiesFilled) {
+                e.preventDefault();
+                // Use a more noticeable warning, perhaps a custom modal or a toast notification
+                alert('Please fill in all "Received Qty" fields before marking as received.');
+                return false;
+            }
         }
     });
 

@@ -1,9 +1,10 @@
 <?php
 require BASE_PATH . '/core/Controller.php';
-require_once BASE_PATH . '/app/config.php';
+require_once BASE_PATH . '/app/models/Production.php';
 
 class ProductionController extends Controller {
     private $conn;
+    private $productionModel;
 
     public function __construct() {
         parent::__construct();
@@ -12,22 +13,13 @@ class ProductionController extends Controller {
         if ($this->conn->connect_error) {
             die('Database connection failed: ' . $this->conn->connect_error);
         }
+        $this->productionModel = new Production();
     }
 
 public function index() {
-    $sql = "
-        SELECT p.id, p.menu_id, p.barcode, p.quantity_produced, p.quantity_available, p.quantity_sold, p.created_at,
-               m.name AS menu_name
-        FROM production p
-        JOIN menus m ON p.menu_id = m.id
-        ORDER BY p.created_at DESC
-    ";
-    $result = $this->conn->query($sql);
-    $items = [];
-    while ($row = $result->fetch_assoc()) {
-        $items[] = $row;
-    }
-
+    // Use the new model to get items with calculated details
+    $items = $this->productionModel->getAllWithDetails();
+    
     $menuResult = $this->conn->query("SELECT id, name FROM menus ORDER BY name ASC");
     $menus = [];
     while ($row = $menuResult->fetch_assoc()) {
@@ -40,9 +32,6 @@ public function index() {
     ]);
 }
 
-
-
-
 public function add() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $menu_id = intval($_POST['menu_id']);
@@ -51,8 +40,8 @@ public function add() {
 
         // Insert new production entry
         $stmt = $this->conn->prepare("
-            INSERT INTO production (menu_id, barcode, quantity_produced, quantity_available, quantity_sold)
-            VALUES (?, ?, ?, ?, 0)
+            INSERT INTO production (menu_id, barcode, quantity_produced, quantity_available, quantity_sold, wastage)
+            VALUES (?, ?, ?, ?, 0, 0)
         ");
         $stmt->bind_param("isii", $menu_id, $barcode, $quantity_produced, $quantity_produced);
         $stmt->execute();
@@ -89,8 +78,6 @@ public function add() {
         exit;
     }
 }
-
-
 
 public function edit() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -168,6 +155,58 @@ public function updateSold() {
         exit;
     }
 }
+public function updateWastage() {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['wastage'])) {
+        // The key is now menu_id
+        foreach ($_POST['wastage'] as $menu_id => $wastage_input) {
+            $menu_id = intval($menu_id);
+            $wastage_to_add = intval($wastage_input);
+
+            if ($wastage_to_add <= 0) {
+                continue;
+            }
+
+            // Get all production entries for this menu with available quantity, oldest first
+            $stmt = $this->conn->prepare("
+                SELECT id, quantity_available, quantity_sold, wastage
+                FROM production
+                WHERE menu_id = ? AND quantity_available > 0
+                ORDER BY created_at ASC
+            ");
+            $stmt->bind_param("i", $menu_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $productions_to_update = $result->fetch_all(MYSQLI_ASSOC);
+            $stmt->close();
+
+            foreach ($productions_to_update as $prod) {
+                if ($wastage_to_add <= 0) {
+                    break;
+                }
+
+                // We can only add wastage up to the available quantity
+                $add_to_this_row = min($prod['quantity_available'], $wastage_to_add);
+
+                $new_available = $prod['quantity_available'] - $add_to_this_row;
+                $new_wastage = $prod['wastage'] + $add_to_this_row;
+
+                $updateStmt = $this->conn->prepare("
+                    UPDATE production
+                    SET wastage = ?, quantity_available = ?
+                    WHERE id = ?
+                ");
+                $updateStmt->bind_param("iii", $new_wastage, $new_available, $prod['id']);
+                $updateStmt->execute();
+                $updateStmt->close();
+
+                $wastage_to_add -= $add_to_this_row;
+            }
+        }
+
+        header('Location: /production');
+        exit;
+    }
+}
 public function delete() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ids'])) {
         $ids = array_map('intval', explode(',', $_POST['ids']));
@@ -200,5 +239,4 @@ public function getDetail() {
     header('Content-Type: application/json');
     echo json_encode($item);
 }
-
 }
