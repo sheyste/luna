@@ -15,6 +15,16 @@ CREATE TABLE `inventory` (
   UNIQUE KEY `sku` (`barcode`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+
+CREATE TABLE `menus` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `barcode` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 CREATE TABLE `menu_ingredients` (
   `id` int NOT NULL AUTO_INCREMENT,
   `menu_id` int NOT NULL,
@@ -27,14 +37,6 @@ CREATE TABLE `menu_ingredients` (
   CONSTRAINT `menu_ingredients_ibfk_2` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `menus` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `price` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `barcode` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `production` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -48,6 +50,20 @@ CREATE TABLE `production` (
   KEY `fk_production_menu` (`menu_id`),
   CONSTRAINT `fk_production_menu` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE `purchase_orders` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `po_number` varchar(50) NOT NULL,
+  `supplier` varchar(255) NOT NULL,
+  `order_date` date NOT NULL,
+  `expected_delivery` date DEFAULT NULL,
+  `status` varchar(20) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `po_number` (`po_number`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `purchase_order_items` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -65,18 +81,6 @@ CREATE TABLE `purchase_order_items` (
   CONSTRAINT `fk_po_items_to_po` FOREIGN KEY (`purchase_order_id`) REFERENCES `purchase_orders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `purchase_orders` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `po_number` varchar(50) NOT NULL,
-  `supplier` varchar(255) NOT NULL,
-  `order_date` date NOT NULL,
-  `expected_delivery` date DEFAULT NULL,
-  `status` varchar(20) NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `po_number` (`po_number`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `user` (
   `id` int NOT NULL AUTO_INCREMENT,
