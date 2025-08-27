@@ -96,7 +96,7 @@
                               <td data-label="Unit"><?= htmlspecialchars($item['unit'] ?? '') ?></td>
                               <td data-label="Price (Per Unit)">&#8369;<?= htmlspecialchars(number_format($price, 2)) ?></td>
                               <td data-label="Total Price">&#8369;<?= htmlspecialchars(number_format($totalPrice, 2)) ?></td>
-                              <td data-label="Purchase Date"><?= htmlspecialchars(isset($item['purchase_date']) ? date('Y-m-d', strtotime($item['purchase_date'])) : '') ?></td>
+                              <td data-label="Purchase Date"><?= htmlspecialchars(isset($item['purchase_date']) ? date('F j, Y', strtotime($item['purchase_date'])):'') ?></td>
                               <td data-label="Actions">
                                   <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
                                       <i class="fa fa-edit"></i> Edit

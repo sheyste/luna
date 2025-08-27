@@ -33,10 +33,10 @@ public function index()
         $productionData[] = $row;
     }
 
-    // Weekly cost vs profit using ingredient cost and selling price
+    // Daily cost vs profit using ingredient cost and selling price
     $costProfitData = [];
     $result = $this->conn->query("
-        SELECT YEARWEEK(p.created_at, 1) AS week,
+        SELECT DATE(p.created_at) AS date,
             SUM(p.quantity_sold * mi.cost_per_item) AS total_cost,
             SUM(p.quantity_sold * m.price) AS total_revenue,
             SUM(p.quantity_sold * m.price) - SUM(p.quantity_sold * mi.cost_per_item) AS total_profit
@@ -48,8 +48,9 @@ public function index()
             JOIN inventory i ON mi.inventory_id = i.id
             GROUP BY mi.menu_id
         ) mi ON p.menu_id = mi.menu_id
-        GROUP BY YEARWEEK(p.created_at, 1)
-        ORDER BY week ASC
+        WHERE p.created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        GROUP BY DATE(p.created_at)
+        ORDER BY date ASC
     ");
     while ($row = $result->fetch_assoc()) {
         $costProfitData[] = $row;

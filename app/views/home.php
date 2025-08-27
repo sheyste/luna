@@ -21,7 +21,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Total Stocks in Inventory</div>
+                            Total Item in Inventory</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $totalItems ?? 0 ?></div>
                     </div>
                     <div class="col-auto">
@@ -99,10 +99,10 @@
     </div>
   </div>
 
-  <!-- Weekly Cost-to-Profit -->
+  <!-- Daily Cost-to-Profit -->
   <div class="col-md-6">
     <div class="card">
-      <div class="card-header">Cost vs Profit</div>
+      <div class="card-header">Daily Cost vs Profit</div>
       <div class="card-body">
         <canvas id="costProfitChart"></canvas>
       </div>
@@ -175,12 +175,12 @@
     }
   });
 
-  // Cost vs Profit
+  // Daily Cost vs Profit
   const costProfitCtx = document.getElementById('costProfitChart').getContext('2d');
   new Chart(costProfitCtx, {
     type: 'bar',
     data: {
-      labels: <?= json_encode(array_column($costProfitData, 'week')) ?>,
+      labels: <?= json_encode(array_column($costProfitData, 'date')) ?>,
       datasets: [
         {
           label: 'Cost',

@@ -240,7 +240,7 @@ if (!empty($items)) {
           <input type="text" class="form-control" id="barcode" name="barcode" readonly>
         </div>
         <div class="mb-3">
-          <label for="quantityProduced" class="form-label">To Produce</label>
+          <label for="quantityProduced" class="form-label">Quantity</label>
           <input type="number" class="form-control" id="quantityProduced" name="quantity_produced" min="0" required>
         </div>
       </div>

@@ -142,7 +142,7 @@
 <div class="modal fade" id="addPOModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <form class="modal-content" method="post" action="/purchase_order/add">
-      <input type="hidden" name="status" value="Pending">
+      <input type="hidden" name="status" value="Ordered">
       <div class="modal-header">
         <h5 class="modal-title">Add Purchase Order</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>

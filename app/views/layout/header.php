@@ -209,12 +209,13 @@
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/home') !== false) echo 'active'; ?>">
                 <a href="/home"><i class="fa fa-home"></i><span>Dashboard</span></a>
             </li>
-            
-            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/purchase_order') !== false) echo 'active'; ?>">
-                <a href="/purchase_order"><i class="fa fa-file-invoice"></i><span>Purchase Orders</span></a>
-            </li>
+
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/inventory') !== false) echo 'active'; ?>">
                 <a href="/inventory"><i class="fa fa-boxes-stacked"></i><span>Inventory</span></a>
+            </li>
+                        
+            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/purchase_order') !== false) echo 'active'; ?>">
+                <a href="/purchase_order"><i class="fa fa-file-invoice"></i><span>Purchase Orders</span></a>
             </li>
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/menu') !== false) echo 'active'; ?>">
                 <a href="/menu"><i class="fa fa-utensils"></i><span>Menu</span></a>
