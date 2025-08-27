@@ -230,6 +230,10 @@
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/barcode') !== false) echo 'active'; ?>">
                 <a href="/barcode"><i class="fa fa-barcode"></i><span>Barcode Scan</span></a>
             </li>
+            
+            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/backup') !== false) echo 'active'; ?>">
+                <a href="/backup"><i class="fa fa-download"></i><span>Backup Database</span></a>
+            </li>
 
         </ul>
     </nav>

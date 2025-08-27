@@ -42,6 +42,10 @@ const routes = array(
     '/purchase_order/add' => array('PurchaseOrderController', 'add'),
     '/purchase_order/delete' => array('PurchaseOrderController', 'delete'),
     '/purchase_order/get' => array('PurchaseOrderController', 'get'),
-    '/purchase_order/edit' => array('PurchaseOrderController', 'edit')
+    '/purchase_order/edit' => array('PurchaseOrderController', 'edit'),
+
+    // Backup routes
+    '/backup' => array('BackupController', 'index'),
+    '/backup/download' => array('BackupController', 'download')
 
 );
