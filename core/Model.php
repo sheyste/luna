@@ -18,8 +18,8 @@ class Model
     {
         try {
             $pdo = new PDO(
-                'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME,
-                DB_USER,
+                'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME,
+                DB_USERNAME,
                 DB_PASSWORD
             );
             return $pdo;

@@ -45,10 +45,14 @@ if (!defined('DB_NAME')) {
     define('DB_NAME', 'luna'); // Default fallback
 }
 
-if (!defined('DB_USER')) {
-    define('DB_USER', 'root'); // Default fallback
+if (!defined('DB_USERNAME')) {
+    define('DB_USERNAME', 'root'); // Default fallback
 }
 
 if (!defined('DB_PASSWORD')) {
     define('DB_PASSWORD', 'rootroot'); // Default fallback
+}
+
+if (!defined('DB_PORT')) {
+    define('DB_PORT', '3306'); // Default fallback
 }
