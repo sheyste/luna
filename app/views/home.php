@@ -21,7 +21,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Total Item in Inventory</div>
+                            Items in Inventory</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $totalItems ?? 0 ?></div>
                     </div>
                     <div class="col-auto">
@@ -57,7 +57,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Total Inventory Value</div>
+                            Inventory Value</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">&#8369;<?= number_format($totalInventoryValue ?? 0, 2) ?></div>
                     </div>
                     <div class="col-auto">
