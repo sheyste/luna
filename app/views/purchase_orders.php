@@ -134,7 +134,7 @@
                                     <i class="fa fa-eye"></i> View
                                 </button>
                                 <button class="btn btn-warning btn-sm edit-btn" data-id="<?= $order['id'] ?>">
-                                    <i class="fa fa-edit"></i> Edit
+                                    <i class="fa fa-edit"></i> Update
                                 </button>
                             </td>
                         </tr>
@@ -149,7 +149,7 @@
 <div class="modal fade" id="addPOModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <form class="modal-content" method="post" action="/purchase_order/add">
-      <input type="hidden" name="status" value="Ordered">
+      <input type="hidden" name="status" value="Pending">
       <div class="modal-header">
         <h5 class="modal-title">Add Purchase Order</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>

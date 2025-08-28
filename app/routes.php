@@ -24,11 +24,11 @@ const routes = array(
     '/production/updateWastage' => array('ProductionController', 'updateWastage'),
 
     '/users'        => array('UserController', 'index'),
-    '/users/load'   => array('UserController', 'load'),
     '/users/show'   => array('UserController', 'getDetail'),
     '/users/add'    => array('UserController', 'add'),
     '/users/edit'   => array('UserController', 'edit'),
     '/users/delete' => array('UserController', 'delete'),
+    '/users/getAll' => array('UserController', 'getAll'),
 
     '/menu'         => array('MenuController', 'index'),
     '/menu/add'     => array('MenuController', 'add'),
@@ -46,6 +46,7 @@ const routes = array(
 
     // Backup routes
     '/backup' => array('BackupController', 'index'),
-    '/backup/download' => array('BackupController', 'download')
+    '/backup/download' => array('BackupController', 'download'),
+    '/backup/upload' => array('BackupController', 'upload')
 
 );

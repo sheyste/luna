@@ -69,4 +69,56 @@ class BackupController extends Controller
         echo $sqlDump;
         exit;
     }
+
+    public function upload() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Check if file was uploaded without errors
+            if (isset($_FILES['backupFile']) && $_FILES['backupFile']['error'] === 0) {
+                $fileTmpPath = $_FILES['backupFile']['tmp_name'];
+                $fileName = $_FILES['backupFile']['name'];
+                $fileSize = $_FILES['backupFile']['size'];
+                $fileType = $_FILES['backupFile']['type'];
+                $fileNameCmps = explode(".", $fileName);
+                $fileExtension = strtolower(end($fileNameCmps));
+
+                // Check if file is a SQL file
+                if ($fileExtension === 'sql') {
+                    // Read the SQL file
+                    $sqlContent = file_get_contents($fileTmpPath);
+                    
+                    if ($sqlContent === false) {
+                        $this->view('backup', ['error' => 'Failed to read the backup file.']);
+                        return;
+                    }
+
+                    // Split the SQL content into individual statements
+                    $statements = explode(";\n", $sqlContent);
+                    
+                    // Execute each statement
+                    $this->conn->query("SET foreign_key_checks = 0");
+                    foreach ($statements as $statement) {
+                        $statement = trim($statement);
+                        if (!empty($statement)) {
+                            if (!$this->conn->query($statement)) {
+                                $this->conn->query("SET foreign_key_checks = 1");
+                                $this->view('backup', ['error' => 'Error executing SQL statement: ' . $this->conn->error]);
+                                return;
+                            }
+                        }
+                    }
+                    $this->conn->query("SET foreign_key_checks = 1");
+                    
+                    $this->view('backup', ['success' => 'Database restored successfully from ' . $fileName]);
+                } else {
+                    $this->view('backup', ['error' => 'Invalid file type. Please upload a .sql file.']);
+                }
+            } else {
+                $this->view('backup', ['error' => 'Error uploading file. Please try again.']);
+            }
+        } else {
+            // Redirect to backup page if not a POST request
+            header('Location: /backup');
+            exit;
+        }
+    }
 }

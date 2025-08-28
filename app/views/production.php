@@ -265,7 +265,8 @@ if (!empty($items)) {
             $combinedItems[$menuId]['total_cost'] += $item['total_cost'];
             $combinedItems[$menuId]['total_sales'] += $item['total_sales'];
             $combinedItems[$menuId]['total_waste_cost'] += $item['waste_cost'] ?? 0;
-            $combinedItems[$menuId]['profit'] += $item['profit'];
+            // Recalculate profit as sales - cost only
+            $combinedItems[$menuId]['profit'] = $combinedItems[$menuId]['total_sales'] - $combinedItems[$menuId]['total_cost'];
             $combinedItems[$menuId]['unit_cost'] = $combinedItems[$menuId]['total_cost'] / $combinedItems[$menuId]['quantity_produced'];
             $combinedItems[$menuId]['original_ids'][] = $item['id'];
             if (strtotime($item['created_at']) > strtotime($combinedItems[$menuId]['created_at'])) {
@@ -289,20 +290,29 @@ if (!empty($items)) {
 
 <!-- Main Content Card -->
 <div class=" mb-4">
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 fw-bold text-primary"></h6>
-        <div>
-            <button class="btn btn-success btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#addProductionModal">
+    <div class="card-header py-3 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-between">
+        <!-- Search Bar on top in mobile, left in desktop -->
+        <div class="input-group mb-3 mb-md-0" style="max-width: 350px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border-radius: 8px; transition: all 0.2s ease;">
+            <span class="input-group-text" style="border: none; background: transparent;"><i class="fa fa-search"></i></span>
+            <input type="text" id="productionSearch" class="form-control" placeholder="Search..." style="border: none; box-shadow: none;">
+            <button class="btn btn-outline-secondary" type="button" id="clearSearch" style="border-radius: 0 8px 8px 0; border: none;">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <!-- Buttons on the bottom in mobile, right in desktop -->
+        <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addProductionModal">
                 <i class="fa fa-plus me-1"></i> Add Production
             </button>
-            <button class="btn btn-primary btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#updateSoldModal">
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateSoldModal">
                 <i class="fa fa-edit me-1"></i> Update Sold
             </button>
-            <button class="btn btn-warning btn-sm mb-3 text-white" data-bs-toggle="modal" data-bs-target="#updateWastageModal">
+            <button class="btn btn-warning btn-sm text-white" data-bs-toggle="modal" data-bs-target="#updateWastageModal">
                 <i class="fa fa-exclamation-triangle me-1"></i> Update Wastage
             </button>
         </div>
     </div>
+
     <div class="">
         <div class="row" id="production-container">
             <?php if (!empty($combinedItems)): ?>
@@ -315,15 +325,24 @@ if (!empty($items)) {
                                 <p class="card-text text-muted">Barcode: <?= htmlspecialchars($item['barcode'] ?? '') ?></p>
                                 <div class="mt-3">
                                     <p class="mb-1"><strong>Price:</strong> &#8369;<?= htmlspecialchars(number_format($item['price'] ?? 0, 2)) ?></p>
-                                    <p class="mb-1"><strong>Produced:</strong> <?= htmlspecialchars($item['quantity_produced']) ?> | <strong>Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_cost'] ?? 0, 2)) ?></p>
-                                    <p class="mb-1"><strong>Sold:</strong> <?= htmlspecialchars($item['quantity_sold']) ?> | <strong>Sales:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_sales'] ?? 0, 2)) ?></p>
-                                    <p class="mb-1"><strong>Wastage:</strong> <?= htmlspecialchars($item['total_wastage']) ?> | <strong>Waste Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_waste_cost'] ?? 0, 2)) ?></p>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span><strong>Produced:</strong> <?= htmlspecialchars($item['quantity_produced']) ?></span>
+                                        <span><strong>Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_cost'] ?? 0, 2)) ?></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span><strong>Sold:</strong> <?= htmlspecialchars($item['quantity_sold']) ?></span>
+                                        <span><strong>Sales:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_sales'] ?? 0, 2)) ?></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span><strong>Wastage:</strong> <?= htmlspecialchars($item['total_wastage']) ?></span>
+                                        <span><strong>Waste Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_waste_cost'] ?? 0, 2)) ?></span>
+                                    </div>
                                     
                                     <p class="mb-1"><strong>Profit:</strong> &#8369;<?= htmlspecialchars(number_format($item['profit'] ?? 0, 2)) ?></p>
                                 </div>
                             </div>
                             <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
-                                <button class="btn btn-danger btn-sm delete-btn" data-ids="<?= htmlspecialchars(implode(',', $item['original_ids'])) ?>" data-menu-name="<?= htmlspecialchars($item['menu_name']) ?>">
+                                <button class="btn btn-outline-danger btn-sm delete-btn" data-ids="<?= htmlspecialchars(implode(',', $item['original_ids'])) ?>" data-menu-name="<?= htmlspecialchars($item['menu_name']) ?>">
                                     <i class="fa fa-trash"></i> Delete
                                 </button>
                             </div>
@@ -356,14 +375,16 @@ if (!empty($items)) {
 
       <!-- Body -->
       <div class="modal-body">
-        <div class="react-style-alert react-style-alert-info">
-          <i class="bi bi-info-circle react-style-icon"></i>
-          <div>
-            <strong>Instructions:</strong> Enter the number of items sold for each menu item. The system will automatically deduct from available inventory, starting with the oldest production batches.
+
+          
+          <!-- Search Bar -->
+          <div class="row mb-3">
+              <div class="col-12">
+                  <input type="text" class="form-control" id="soldSearch" placeholder="Search menu items...">
+              </div>
           </div>
-        </div>
-        
-        <div class="row g-4">
+          
+          <div class="row g-4">
           <?php if (!empty($combinedItems)): ?>
             <?php foreach ($combinedItems as $item): ?>
               <?php if ($item['quantity_produced'] > 0): ?>
@@ -527,14 +548,15 @@ if (!empty($items)) {
 
       <!-- Body -->
       <div class="modal-body">
-        <div class="react-style-alert react-style-alert-info">
-          <i class="bi bi-info-circle react-style-icon"></i>
-          <div>
-            <strong>Instructions:</strong> Enter the number of items wasted for each menu item. The system will automatically deduct from available inventory, starting with the oldest production batches.
+          
+          <!-- Search Bar -->
+          <div class="row mb-3">
+              <div class="col-12">
+                  <input type="text" class="form-control" id="wastageSearch" placeholder="Search menu items...">
+              </div>
           </div>
-        </div>
-        
-        <div class="row g-4">
+          
+          <div class="row g-4">
           <?php if (!empty($combinedItems)): ?>
             <?php foreach ($combinedItems as $item): ?>
               <?php if ($item['quantity_produced'] > 0): ?>
@@ -967,10 +989,68 @@ $(document).ready(function() {
     $('#updateWastageModal').on('show.bs.modal', function() {
         $('input[name^="wastage["]').trigger('change');
     });
-
+    
 // Handle final confirmation from summary modal
 $('#confirmProductionBtn').on('click', function() {
     $('#addProductionForm').submit();
+});
+
+// Search functionality for production items
+$('#productionSearch').on('input', function() {
+    var searchTerm = $(this).val().toLowerCase();
+    
+    $('#production-container .col-lg-4').each(function() {
+        var menuName = $(this).find('.card-title').text().toLowerCase();
+        var barcode = $(this).find('.card-text').text().toLowerCase();
+        
+        if (menuName.includes(searchTerm) || barcode.includes(searchTerm)) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+});
+
+// Clear search functionality
+$('#clearSearch').on('click', function() {
+    $('#productionSearch').val('');
+    $('#productionSearch').trigger('input');
+});
+
+// Search functionality for Update Sold modal
+$('#soldSearch').on('input', function() {
+    var searchTerm = $(this).val().toLowerCase();
+    
+    $('#updateSoldModal .col-md-6').each(function() {
+        var menuName = $(this).find('.react-style-menu-name').text().toLowerCase();
+        
+        if (menuName.includes(searchTerm)) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+});
+
+// Search functionality for Update Wastage modal
+$('#wastageSearch').on('input', function() {
+    var searchTerm = $(this).val().toLowerCase();
+    
+    $('#updateWastageModal .col-md-6').each(function() {
+        var menuName = $(this).find('.react-style-menu-name').text().toLowerCase();
+        
+        if (menuName.includes(searchTerm)) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+});
+
+// Clear search when modals are closed
+$('#updateSoldModal, #updateWastageModal').on('hidden.bs.modal', function () {
+    $(this).find('input[type="text"]').val('');
+    $(this).find('.col-md-6').show();
 });
 });
 

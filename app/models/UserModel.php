@@ -76,11 +76,11 @@ class UserModel extends Model
         $result = false;
 
         if ($conn) {
-            $sql = "INSERT INTO {$this->table} (username, first_name, last_name, email, user_type, password)
-                    VALUES (?,?,?,?,?,?)";
+            $sql = "INSERT INTO {$this->table} (username, first_name, last_name, email, user_type, password, sign_date)
+                    VALUES (?,?,?,?,?,?,?)";
 
             $result = $conn->prepare($sql)->execute([
-              $data['username'], $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['password']
+              $data['username'], $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['password'], date('Y-m-d')
             ]);
         }
         return $result;
@@ -94,14 +94,14 @@ class UserModel extends Model
         if ($conn) {
             // If password is provided, update it; otherwise, leave it unchanged
             if (!empty($data['password'])) {
-                $sql = "UPDATE {$this->table} 
+                $sql = "UPDATE {$this->table}
                         SET username=?, first_name=?, last_name=?, email=?, user_type=?, password=?
                         WHERE id=?";
                 $result = $conn->prepare($sql)->execute([
                     $data['username'], $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['password'], $data['id']
                 ]);
             } else {
-                $sql = "UPDATE {$this->table} 
+                $sql = "UPDATE {$this->table}
                         SET username=?, first_name=?, last_name=?, email=?, user_type=?
                         WHERE id=?";
                 $result = $conn->prepare($sql)->execute([

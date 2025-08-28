@@ -68,6 +68,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>User Type</th>
+                        <th>Sign Date</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -79,6 +80,7 @@
                                 <td data-label="Name"><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></td>
                                 <td data-label="Email"><?= htmlspecialchars($user['email']) ?></td>
                                 <td data-label="User Type"><?= htmlspecialchars($user['user_type']) ?></td>
+                                <td data-label="Sign Date"><?= htmlspecialchars($user['sign_date']) ?></td>
                                 <td data-label="Actions" class="text-nowrap">
                                     <button class="btn btn-info btn-sm" onclick="User.show(<?= htmlspecialchars($user['id']) ?>)">
                                         <i class="fa fa-edit"></i> Edit
@@ -221,6 +223,18 @@
 
 <script>
 class UserApp {
+    // Utility function to escape HTML special characters
+    htmlspecialchars(str) {
+        if (typeof str !== 'string') {
+            return str;
+        }
+        return str.replace(/&/g, '&')
+                  .replace(/</g, '<')
+                  .replace(/>/g, '>')
+                  .replace(/"/g, '"')
+                  .replace(/'/g, '&#039;');
+    }
+
     add() {
         $('#modalAddUser').modal('show');
     }
@@ -234,12 +248,12 @@ class UserApp {
             dataType: 'JSON',
             data: data,
             success: function(response) {
-                $('#edit_username').val(response.username);
-                $('#edit_first_name').val(response.first_name);
-                $('#edit_last_name').val(response.last_name);
-                $('#edit_email').val(response.email);
-                $('#edit_user_type').val(response.user_type);
-                $('#edit_id').val(id);
+                $('#edit_username').val(User.htmlspecialchars(response.username));
+                $('#edit_first_name').val(User.htmlspecialchars(response.first_name));
+                $('#edit_last_name').val(User.htmlspecialchars(response.last_name));
+                $('#edit_email').val(User.htmlspecialchars(response.email));
+                $('#edit_user_type').val(User.htmlspecialchars(response.user_type));
+                $('#edit_id').val(User.htmlspecialchars(id));
                 $('#modalEditUser').modal('show');
             },
             error: function(error) {
@@ -252,20 +266,41 @@ class UserApp {
 
     confirm(id) {
         $('#modalDelUser').modal('show');
-        $('#id_del').val(id);
+        $('#id_del').val(User.htmlspecialchars(id));
     }
 
     reloadGrid() {
         $.ajax({
-            url: '/users/load',
-            type: 'POST',
-            dataType: 'html',
-            data: {},
-            success: function(response) {
-                if (response !== '') {
-                    $("#userTable tbody").html(response);
+            url: '/users/getAll',
+            type: 'GET',
+            dataType: 'json',
+            success: function(users) {
+                // Clear the current table body
+                $("#userTable tbody").empty();
+                
+                // Add each user to the table
+                if (users && users.length > 0) {
+                    users.forEach(function(user) {
+                        var row = '<tr>' +
+                            '<td data-label="Username">' + User.htmlspecialchars(user.username) + '</td>' +
+                            '<td data-label="Name">' + User.htmlspecialchars(user.first_name + ' ' + user.last_name) + '</td>' +
+                            '<td data-label="Email">' + User.htmlspecialchars(user.email) + '</td>' +
+                            '<td data-label="User Type">' + User.htmlspecialchars(user.user_type) + '</td>' +
+                            '<td data-label="Sign Date">' + User.htmlspecialchars(user.sign_date) + '</td>' +
+                            '<td data-label="Actions" class="text-nowrap">' +
+                                '<button class="btn btn-info btn-sm" onclick="User.show(' + User.htmlspecialchars(user.id) + ')">' +
+                                    '<i class="fa fa-edit"></i> Edit' +
+                                '</button>' +
+                                '<button class="btn btn-danger btn-sm" onclick="User.confirm(' + User.htmlspecialchars(user.id) + ')">' +
+                                    '<i class="fa fa-trash"></i> Delete' +
+                                '</button>' +
+                            '</td>' +
+                        '</tr>';
+                        $("#userTable tbody").append(row);
+                    });
                 }
-            },error: function(error){
+            },
+            error: function(error) {
                 console.warn('error loading data');
             }
         });

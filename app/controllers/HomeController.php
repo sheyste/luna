@@ -64,14 +64,14 @@ public function index()
     $result = $this->conn->query("SELECT COUNT(*) as total FROM inventory");
     $totalItems = $result->fetch_assoc()['total'] ?? 0;
 
-    $result = $this->conn->query("SELECT COUNT(*) as count FROM inventory WHERE quantity <= 10");
+    $result = $this->conn->query("SELECT COUNT(*) as count FROM inventory WHERE max_quantity > 0 AND quantity <= (max_quantity * 0.2)");
     $lowStockItems = $result->fetch_assoc()['count'] ?? 0;
 
     $result = $this->conn->query("SELECT SUM(quantity * price) as value FROM inventory");
     $totalInventoryValue = $result->fetch_assoc()['value'] ?? 0;
 
-    $result = $this->conn->query("SELECT SUM(quantity_available) as total FROM production");
-    $totalProducedAmount = $result->fetch_assoc()['total'] ?? 0;
+    $result = $this->conn->query("SELECT COUNT(*) as count FROM purchase_orders WHERE status = 'Pending'");
+    $pendingPurchaseOrders = $result->fetch_assoc()['count'] ?? 0;
 
     $this->view('home', [
         'productionData'    => $productionData,
@@ -79,7 +79,7 @@ public function index()
         'totalItems' => $totalItems,
         'lowStockItems' => $lowStockItems,
         'totalInventoryValue' => $totalInventoryValue,
-        'totalProducedAmount' => $totalProducedAmount,
+        'pendingPurchaseOrders' => $pendingPurchaseOrders,
     ]);
 }
 

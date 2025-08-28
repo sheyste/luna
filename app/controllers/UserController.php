@@ -22,11 +22,6 @@ class UserController extends Controller
         $this->view('users', ['users' => $users]);
     }
 
-    public function load()
-    {
-        $users = $this->model->getAll();
-        $this->view('user_grid', ['users' => $users]);
-    }
 
 
     public function getDetail()
@@ -40,6 +35,13 @@ class UserController extends Controller
         }
 
         echo json_encode($response);
+    }
+
+    public function getAll()
+    {
+        $users = $this->model->getAll();
+        header('Content-Type: application/json');
+        echo json_encode($users);
     }
 
 

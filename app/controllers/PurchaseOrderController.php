@@ -164,10 +164,10 @@ class PurchaseOrderController extends Controller {
                 $update_stmt->close();
                 $insert_stmt->close();
 
-                // If the status has just been changed to 'Received', update inventory stock and purchase_date
+                // If the status has just been changed to 'Received', update inventory stock, purchase_date and price
                 if ($is_received && $old_status !== 'Received') {
                     $update_inventory_stmt = $this->conn->prepare(
-                        "UPDATE inventory SET quantity = quantity + ?, purchase_date = ? WHERE id = ?"
+                        "UPDATE inventory SET quantity = quantity + ?, purchase_date = ?, price = ? WHERE id = ?"
                     );
                     $current_date = date('Y-m-d');
                     foreach ($items as $item) {
@@ -176,9 +176,10 @@ class PurchaseOrderController extends Controller {
                         }
                         $received_qty = floatval($item['received_quantity']);
                         $inv_id = intval($item['inventory_id']);
+                        $unit_price = floatval($item['unit_price']);
 
                         if ($received_qty > 0) {
-                            $update_inventory_stmt->bind_param("dsi", $received_qty, $current_date, $inv_id);
+                            $update_inventory_stmt->bind_param("dssi", $received_qty, $current_date, $unit_price, $inv_id);
                             $update_inventory_stmt->execute();
                         }
                     }

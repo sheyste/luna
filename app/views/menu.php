@@ -35,7 +35,14 @@
 </div>
 
 <!-- Main Content -->
-<div class="d-flex justify-content-end mb-3">
+<div class="card-header py-3 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
+    <div class="input-group mb-3 mb-md-0" style="max-width: 350px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border-radius: 8px; transition: all 0.2s ease;">
+        <span class="input-group-text" style="border: none; background: transparent;"><i class="fa fa-search"></i></span>
+        <input type="text" id="menuSearch" class="form-control" placeholder="Search..." style="border: none; box-shadow: none;">
+        <button class="btn btn-outline-secondary" type="button" id="clearMenuSearch" style="border-radius: 0 8px 8px 0; border: none;">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMenuModal">
         <i class="fa fa-plus me-1"></i> Add Menu
     </button>
@@ -201,10 +208,13 @@
             </select>
         </div>
         <div class="col-3">
-            <input type="number" class="form-control ingredient-quantity" name="ingredients[quantity][]" placeholder="Qty" min="0" step="any" required>
+            <div class="input-group">
+                <input type="number" class="form-control ingredient-quantity" name="ingredients[quantity][]" placeholder="Qty" min="0" step="any" required>
+                <span class="input-group-text unit-span"></span>
+            </div>
         </div>
         <div class="col-1">
-            <span class="unit-span"></span>
+            <!-- Unit now displayed in input group -->
         </div>
         <div class="col-2">
             <span class="cost-span fw-bold">0.00</span>
@@ -444,6 +454,28 @@ $(document).ready(function() {
     $('#add-ingredients-container, #edit-ingredients-container').on('change input', '.ingredient-select, .ingredient-quantity', function() {
         const containerSelector = $(this).closest('#add-ingredients-container').length ? '#add-ingredients-container' : '#edit-ingredients-container';
         calculateTotalCost(containerSelector);
+    });
+
+    // Search functionality for menu items
+    $('#menuSearch').on('input', function() {
+        var searchTerm = $(this).val().toLowerCase();
+        
+        $('#menu-container .col-lg-4').each(function() {
+            var menuName = $(this).find('.card-title').text().toLowerCase();
+            var barcode = $(this).find('.card-text').text().toLowerCase();
+            
+            if (menuName.includes(searchTerm) || barcode.includes(searchTerm)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+
+    // Clear search functionality
+    $('#clearMenuSearch').on('click', function() {
+        $('#menuSearch').val('');
+        $('#menuSearch').trigger('input');
     });
 });
 </script>

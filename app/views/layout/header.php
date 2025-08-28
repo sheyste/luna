@@ -232,7 +232,7 @@
             </li>
             
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/backup') !== false) echo 'active'; ?>">
-                <a href="/backup"><i class="fa fa-download"></i><span>Backup Database</span></a>
+                <a href="/backup"><i class="fa fa-download"></i><span>Backup</span></a>
             </li>
 
         </ul>
