@@ -3,7 +3,7 @@
  * Main model class
  */
 
-require BASE_PATH . '/app/config.php';
+require_once BASE_PATH . '/app/config.php';
 
 class Model
 {

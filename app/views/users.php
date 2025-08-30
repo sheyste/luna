@@ -55,9 +55,14 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 fw-bold text-primary">User List</h6>
-            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalAddUser">
-                <i class="fa fa-user-plus me-1"></i> Add User
-            </button>
+                         <div>
+                 <button class="btn btn-success btn-sm me-2" data-bs-toggle="modal" data-bs-target="#modalAddUser">
+                     <i class="fa fa-user-plus me-1"></i> Add User
+                 </button>
+                 <button class="btn btn-info btn-sm" id="debugEmailBtn">
+                     <i class="fa fa-bug me-1"></i> Debug Email Config
+                 </button>
+             </div>
         </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -82,12 +87,17 @@
                                 <td data-label="User Type"><?= htmlspecialchars($user['user_type']) ?></td>
                                 <td data-label="Sign Date"><?= htmlspecialchars($user['sign_date']) ?></td>
                                 <td data-label="Actions" class="text-nowrap">
-                                    <button class="btn btn-info btn-sm" onclick="User.show(<?= htmlspecialchars($user['id']) ?>)">
+                                    <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($user['id']) ?>">
                                         <i class="fa fa-edit"></i> Edit
                                     </button>
-                                    <button class="btn btn-danger btn-sm" onclick="User.confirm(<?= htmlspecialchars($user['id']) ?>)">
+                                    <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($user['id']) ?>">
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
+                                    <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'Admin'): ?>
+                                        <button class="btn btn-secondary btn-sm test-email-btn" data-email="<?= htmlspecialchars($user['email']) ?>" data-name="<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>">
+                                            <i class="fa fa-envelope"></i> Test Email
+                                        </button>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -142,7 +152,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="User.add(this);">Save</button>
+                <button type="button" class="btn btn-success" id="addUserBtn">Save</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -194,7 +204,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="User.update(this);">Save</button>
+                <button type="button" class="btn btn-success" id="updateUserBtn">Save</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -214,206 +224,218 @@
                 <span>Are you sure you want to delete this user?</span>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="User.delete(this);">Delete</button>
+                <button type="button" class="btn btn-danger" id="deleteUserBtn">Delete</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
+<?php include_once __DIR__ . '/layout/footer.php'; ?>
+
 <script>
-class UserApp {
-    // Utility function to escape HTML special characters
-    htmlspecialchars(str) {
-        if (typeof str !== 'string') {
-            return str;
-        }
-        return str.replace(/&/g, '&')
-                  .replace(/</g, '<')
-                  .replace(/>/g, '>')
-                  .replace(/"/g, '"')
-                  .replace(/'/g, '&#039;');
-    }
+$(document).ready(function() {
+    var userTable = $('#userTable').DataTable();
 
-    add() {
-        $('#modalAddUser').modal('show');
-    }
-
-    show(id) {
-        const data = { "id": id };
-
-        $.ajax({
-            url: '/users/show',
-            type: 'POST',
-            dataType: 'JSON',
-            data: data,
-            success: function(response) {
-                $('#edit_username').val(User.htmlspecialchars(response.username));
-                $('#edit_first_name').val(User.htmlspecialchars(response.first_name));
-                $('#edit_last_name').val(User.htmlspecialchars(response.last_name));
-                $('#edit_email').val(User.htmlspecialchars(response.email));
-                $('#edit_user_type').val(User.htmlspecialchars(response.user_type));
-                $('#edit_id').val(User.htmlspecialchars(id));
-                $('#modalEditUser').modal('show');
-            },
-            error: function(error) {
-                console.warn('error ' + error);
-                $('#modalEditUser .alert-danger p').text('Error trying load');
-                $('#modalEditUser .alert-danger').show();
+    const User = {
+        htmlspecialchars: function(str) {
+            if (typeof str !== 'string') {
+                return str;
             }
-        });
-    }
+            return str.replace(/&/g, '&')
+                      .replace(/</g, '<')
+                      .replace(/>/g, '>')
+                      .replace(/"/g, '"')
+                      .replace(/'/g, '&#039;');
+        },
+        show: function(id) {
+            const data = { "id": id };
 
-    confirm(id) {
-        $('#modalDelUser').modal('show');
-        $('#id_del').val(User.htmlspecialchars(id));
-    }
-
-    reloadGrid() {
-        $.ajax({
-            url: '/users/getAll',
-            type: 'GET',
-            dataType: 'json',
-            success: function(users) {
-                // Clear the current table body
-                $("#userTable tbody").empty();
-                
-                // Add each user to the table
-                if (users && users.length > 0) {
-                    users.forEach(function(user) {
-                        var row = '<tr>' +
-                            '<td data-label="Username">' + User.htmlspecialchars(user.username) + '</td>' +
-                            '<td data-label="Name">' + User.htmlspecialchars(user.first_name + ' ' + user.last_name) + '</td>' +
-                            '<td data-label="Email">' + User.htmlspecialchars(user.email) + '</td>' +
-                            '<td data-label="User Type">' + User.htmlspecialchars(user.user_type) + '</td>' +
-                            '<td data-label="Sign Date">' + User.htmlspecialchars(user.sign_date) + '</td>' +
-                            '<td data-label="Actions" class="text-nowrap">' +
-                                '<button class="btn btn-info btn-sm" onclick="User.show(' + User.htmlspecialchars(user.id) + ')">' +
-                                    '<i class="fa fa-edit"></i> Edit' +
-                                '</button>' +
-                                '<button class="btn btn-danger btn-sm" onclick="User.confirm(' + User.htmlspecialchars(user.id) + ')">' +
-                                    '<i class="fa fa-trash"></i> Delete' +
-                                '</button>' +
-                            '</td>' +
-                        '</tr>';
-                        $("#userTable tbody").append(row);
-                    });
-                }
-            },
-            error: function(error) {
-                console.warn('error loading data');
-            }
-        });
-    }
-
-    add(btn) {
-        const form = $("#addUserForm").serializeArray();
-
-        // Validate required fields
-        if ($.trim($('#add_username').val()) === ''
-            || $.trim($('#add_first_name').val()) === ''
-            || $.trim($('#add_last_name').val()) === ''
-            || $.trim($('#add_email').val()) === ''
-            || $.trim($('#add_user_type').val()) === ''
-            || $.trim($('#add_password').val()) === ''
-        ) {
-            $('#modalAddUser .alert-danger p').text('All fields required');
-            $('#modalAddUser .alert-danger').show();
-        } else {
             $.ajax({
-                url: '/users/add',
+                url: '/users/show',
                 type: 'POST',
                 dataType: 'JSON',
-                data: form,
-                success:function(response){
-                    if (response.success) {
-                        $("#modalAddUser").modal('hide');
-                        User.reloadGrid();
-                    } else {
-                        $('#modalAddUser .alert-danger p').text('Error saving user');
-                        $('#modalAddUser .alert-danger').show();
-                    }
+                data: data,
+                success: function(response) {
+                    $('#edit_username').val(User.htmlspecialchars(response.username));
+                    $('#edit_first_name').val(User.htmlspecialchars(response.first_name));
+                    $('#edit_last_name').val(User.htmlspecialchars(response.last_name));
+                    $('#edit_email').val(User.htmlspecialchars(response.email));
+                    $('#edit_user_type').val(User.htmlspecialchars(response.user_type));
+                    $('#edit_id').val(User.htmlspecialchars(id));
+                    $('#modalEditUser').modal('show');
                 },
-                error: function(xhr, status, error) {
-                    $('#modalAddUser .alert-danger p').text('Error saving user: ' + error);
-                    $('#modalAddUser .alert-danger').show();
-                }
-            });
-        }
-    }
-
-    update(btn) {
-        const form = $("#editUserForm").serializeArray();
-
-        // Validate required fields
-        if ($.trim($('#edit_username').val()) === ''
-            || $.trim($('#edit_first_name').val()) === ''
-            || $.trim($('#edit_last_name').val()) === ''
-            || $.trim($('#edit_email').val()) === ''
-            || $.trim($('#edit_user_type').val()) === ''
-        ) {
-            $('#modalEditUser .alert-danger p').text('All fields required');
-            $('#modalEditUser .alert-danger').show();
-        } else {
-            $.ajax({
-                url: '/users/edit',
-                type: 'POST',
-                dataType: 'JSON',
-                data: form,
-                success:function(response){
-                    if (response.success) {
-                        $("#modalEditUser").modal('hide');
-                        User.reloadGrid();
-                    } else {
-                        $('#modalEditUser .alert-danger p').text('Error saving user');
-                        $('#modalEditUser .alert-danger').show();
-                    }
-                },
-                error: function(xhr, status, error) {
-                    $('#modalEditUser .alert-danger p').text('Error saving user: ' + error);
+                error: function(error) {
+                    console.warn('error ' + error);
+                    $('#modalEditUser .alert-danger p').text('Error trying load');
                     $('#modalEditUser .alert-danger').show();
                 }
             });
-        }
-    }
+        },
+        confirm: function(id) {
+            $('#modalDelUser').modal('show');
+            $('#id_del').val(id);
+        },
+        add: function() {
+            const form = $("#addUserForm").serializeArray();
 
-    delete(btn) {
-        const data = {'id' : $('#id_del').val()};
+            if ($.trim($('#add_username').val()) === '' || $.trim($('#add_first_name').val()) === '' || $.trim($('#add_last_name').val()) === '' || $.trim($('#add_email').val()) === '' || $.trim($('#add_user_type').val()) === '' || $.trim($('#add_password').val()) === '') {
+                $('#modalAddUser .alert-danger p').text('All fields required');
+                $('#modalAddUser .alert-danger').show();
+            } else {
+                $.ajax({
+                    url: '/users/add',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: form,
+                    success: function(response) {
+                        if (response.success) {
+                            $("#modalAddUser").modal('hide');
+                            location.reload();
+                        } else {
+                            $('#modalAddUser .alert-danger p').text('Error saving user');
+                            $('#modalAddUser .alert-danger').show();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#modalAddUser .alert-danger p').text('Error saving user: ' + error);
+                        $('#modalAddUser .alert-danger').show();
+                    }
+                });
+            }
+        },
+        update: function() {
+            const form = $("#editUserForm").serializeArray();
 
-        $.ajax({
-            url: '/users/delete',
-            type: 'POST',
-            dataType: 'JSON',
-            data: data,
-            success:function(response){
-                if (response.success) {
-                    User.reloadGrid();
-                    $("#modalDelUser").modal('hide');
-                } else {
-                    $('#modalDelUser .alert-danger p').text('Error deleting user');
+            if ($.trim($('#edit_username').val()) === '' || $.trim($('#edit_first_name').val()) === '' || $.trim($('#edit_last_name').val()) === '' || $.trim($('#edit_email').val()) === '' || $.trim($('#edit_user_type').val()) === '') {
+                $('#modalEditUser .alert-danger p').text('All fields required');
+                $('#modalEditUser .alert-danger').show();
+            } else {
+                $.ajax({
+                    url: '/users/edit',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: form,
+                    success: function(response) {
+                        if (response.success) {
+                            $("#modalEditUser").modal('hide');
+                            location.reload();
+                        } else {
+                            $('#modalEditUser .alert-danger p').text('Error saving user');
+                            $('#modalEditUser .alert-danger').show();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#modalEditUser .alert-danger p').text('Error saving user: ' + error);
+                        $('#modalEditUser .alert-danger').show();
+                    }
+                });
+            }
+        },
+        delete: function() {
+            const data = { 'id': $('#id_del').val() };
+
+            $.ajax({
+                url: '/users/delete',
+                type: 'POST',
+                dataType: 'JSON',
+                data: data,
+                success: function(response) {
+                    if (response.success) {
+                        location.reload();
+                        $("#modalDelUser").modal('hide');
+                    } else {
+                        $('#modalDelUser .alert-danger p').text('Error deleting user');
+                        $('#modalDelUser .alert-danger').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('#modalDelUser .alert-danger p').text('Error deleting user: ' + error);
                     $('#modalDelUser .alert-danger').show();
                 }
+            });
+        },
+        testEmail: function(email, name) {
+            const data = { email: email, name: name };
+
+            $.ajax({
+                url: '/users/test-email',
+                type: 'POST',
+                dataType: 'JSON',
+                data: data,
+                success: function(response) {
+                    if (response.success) {
+                        alert('Test email sent successfully to ' + name);
+                    } else {
+                        alert('Failed to send test email: ' + (response.message || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred while sending the test email: ' + error);
+                }
+            });
+        }
+    };
+
+    // Event listeners
+    $('#userTable').on('click', '.edit-btn', function() {
+        var userId = $(this).data('id');
+        User.show(userId);
+    });
+
+    $('#userTable').on('click', '.delete-btn', function() {
+        var userId = $(this).data('id');
+        User.confirm(userId);
+    });
+
+    $('#userTable').on('click', '.test-email-btn', function() {
+        var email = $(this).data('email');
+        var name = $(this).data('name');
+        User.testEmail(email, name);
+    });
+
+    $('#addUserBtn').on('click', function() {
+        User.add();
+    });
+
+    $('#updateUserBtn').on('click', function() {
+        User.update();
+    });
+
+    $('#deleteUserBtn').on('click', function() {
+        User.delete();
+    });
+
+    $('#debugEmailBtn').on('click', function() {
+        $.ajax({
+            url: '/users/debug-email-config',
+            type: 'GET',
+            dataType: 'JSON',
+            success: function(response) {
+                let message = 'Email Configuration Debug:\n\n';
+                message += 'Environment file exists: ' + response.env_file_exists + '\n';
+                message += 'SMTP Username: ' + response.smtp_username + '\n';
+                message += 'SMTP Password: ' + response.smtp_password + '\n';
+                message += 'From Email: ' + response.from_email + '\n';
+                message += 'From Name: ' + response.from_name + '\n';
+                message += 'Mail Function: ' + response.mail_function;
+                alert(message);
             },
-            error: function(xhr, status, error) {
-                $('#modalDelUser .alert-danger p').text('Error deleting user: ' + error);
-                $('#modalDelUser .alert-danger').show();
+            error: function() {
+                alert('Error checking email configuration');
             }
         });
-    }
-}
+    });
 
-const User = new UserApp();
+    // Reset forms and alerts when modals are hidden
+    $('#modalAddUser').on('hidden.bs.modal', function(e){
+        $(this).find('form').trigger('reset');
+        $(this).find('.alert').hide();
+    });
 
-// Reset forms and alerts when modals are hidden
-$('#modalAddUser').on('hidden.bs.modal', function(e){
-    $(this).find('form').trigger('reset');
-    $(this).find('.alert').hide();
-});
-
-$('#modalEditUser').on('hidden.bs.modal', function(e){
-    $(this).find('form').trigger('reset');
-    $(this).find('.alert').hide();
+    $('#modalEditUser').on('hidden.bs.modal', function(e){
+        $(this).find('form').trigger('reset');
+        $(this).find('.alert').hide();
+    });
 });
 </script>
-
-<?php include_once __DIR__ . '/layout/footer.php'; ?>

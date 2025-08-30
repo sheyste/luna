@@ -166,6 +166,10 @@ class PurchaseOrderController extends Controller {
 
                 // If the status has just been changed to 'Received', update inventory stock, purchase_date and price
                 if ($is_received && $old_status !== 'Received') {
+                    // Include Inventory and LowStockAlert models
+                    require_once BASE_PATH . '/app/models/Inventory.php';
+                    require_once BASE_PATH . '/app/models/LowStockAlert.php';
+                    
                     $update_inventory_stmt = $this->conn->prepare(
                         "UPDATE inventory SET quantity = quantity + ?, purchase_date = ?, price = ? WHERE id = ?"
                     );
@@ -179,8 +183,33 @@ class PurchaseOrderController extends Controller {
                         $unit_price = floatval($item['unit_price']);
 
                         if ($received_qty > 0) {
+                            // Get current inventory item before updating
+                            $inventoryModel = new Inventory();
+                            $currentItem = $inventoryModel->getItemById($inv_id);
+                            
                             $update_inventory_stmt->bind_param("dssi", $received_qty, $current_date, $unit_price, $inv_id);
                             $update_inventory_stmt->execute();
+                            
+                            // Update alert resolution status based on current inventory status
+                            if ($currentItem) {
+                                $alertModel = new LowStockAlert();
+                                
+                                // Calculate new quantity
+                                $newQuantity = $currentItem['quantity'] + $received_qty;
+                                $maxQuantity = $currentItem['max_quantity'];
+                                
+                                // Check if item is currently low stock
+                                $isLowStock = ($newQuantity / $maxQuantity) <= 0.2;
+                                
+                                // Get all pending alerts for this item and update their resolution status
+                                $pendingAlerts = $alertModel->getPendingAlerts();
+                                foreach ($pendingAlerts as $alert) {
+                                    if ($alert['item_id'] == $inv_id) {
+                                        // Update the resolved status based on current inventory status
+                                        $alertModel->updateAlertResolutionStatus($alert['id'], !$isLowStock);
+                                    }
+                                }
+                            }
                         }
                     }
                     $update_inventory_stmt->close();

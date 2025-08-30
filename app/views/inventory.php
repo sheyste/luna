@@ -65,13 +65,14 @@
                 <thead class="table-dark">
                     <tr>
                         <th>Name</th>
-                        <th>Barcode</th>
+                        <th>Category</th>
                         <th>Stock Quantity</th>
                         <th>Max Quantity</th>
                         <th>Unit</th>
                         <th>Price (Per Unit)</th>
                         <th>Total Price</th>
                         <th>Purchase Date</th>
+                        <th>Barcode</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -83,20 +84,26 @@
                               $max_quantity = (float)($item['max_quantity'] ?? 0);
                               $price = (float)($item['price'] ?? 0);
                               $totalPrice = $quantity * $price;
-                              $lowStockClass = '';
-                              if ($max_quantity > 0 && ($quantity / $max_quantity) <= 0.2) {
-                                  $lowStockClass = 'table-danger';
+                              $rowClass = '';
+                              if ($max_quantity > 0) {
+                                  $stockRatio = $quantity / $max_quantity;
+                                  if ($stockRatio <= 0.2) {
+                                      $rowClass = 'table-danger'; // Low stock
+                                  } elseif ($stockRatio >= 1.1) {
+                                      $rowClass = 'table-warning'; // Overstock
+                                  }
                               }
                           ?>
-                          <tr class="<?= $lowStockClass ?>">
+                          <tr class="<?= $rowClass ?>">
                               <td data-label="Name"><?= htmlspecialchars($item['name'] ?? '') ?></td>
-                              <td data-label="Barcode"><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
+                              <td data-label="Category"><?= htmlspecialchars($item['category'] ?? '') ?></td>
                               <td data-label="Stock Quantity"><?= htmlspecialchars($item['quantity'] ?? '') ?></td>
                               <td data-label="Max Quantity"><?= htmlspecialchars($item['max_quantity'] ?? '') ?></td>
                               <td data-label="Unit"><?= htmlspecialchars($item['unit'] ?? '') ?></td>
                               <td data-label="Price (Per Unit)">&#8369;<?= htmlspecialchars(number_format($price, 2)) ?></td>
                               <td data-label="Total Price">&#8369;<?= htmlspecialchars(number_format($totalPrice, 2)) ?></td>
                               <td data-label="Purchase Date"><?= htmlspecialchars(isset($item['purchase_date']) ? date('F j, Y', strtotime($item['purchase_date'])):'') ?></td>
+                              <td data-label="Barcode"><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
                               <td data-label="Actions">
                                   <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
                                       <i class="fa fa-edit"></i> Edit
@@ -127,6 +134,23 @@
           <label for="itemName" class="form-label">Name</label>
           <input type="text" class="form-control" id="itemName" name="name" required>
         </div>
+        <div class="mb-3">
+          <label for="itemCategory" class="form-label">Category</label>
+          <select class="form-select" id="itemCategory" name="category" required>
+            <option value="" selected disabled> </option>
+            <option value="Vegetables">Vegetables</option>
+            <option value="Meat">Meat</option>
+            <option value="Dairy">Dairy</option>
+            <option value="Grains">Grains</option>
+            <option value="Spices">Spices</option>
+            <option value="Beverages">Beverages</option>
+            <option value="Condiments">Condiments</option>
+            <option value="Frozen">Frozen</option>
+            <option value="Canned">Canned</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
         <div class="mb-3">
             <label for="itemBarcode" class="form-label">Barcode</label>
             <div class="input-group">
@@ -215,6 +239,21 @@
           <label for="editItemPurchaseDate" class="form-label">Purchase Date</label>
           <input type="date" class="form-control" id="editItemPurchaseDate" name="purchase_date" required>
         </div>
+        <div class="mb-3">
+          <label for="editItemCategory" class="form-label">Category</label>
+          <select class="form-select" id="editItemCategory" name="category" required>
+            <option value="Vegetables">Vegetables</option>
+            <option value="Meat">Meat</option>
+            <option value="Dairy">Dairy</option>
+            <option value="Grains">Grains</option>
+            <option value="Spices">Spices</option>
+            <option value="Beverages">Beverages</option>
+            <option value="Condiments">Condiments</option>
+            <option value="Frozen">Frozen</option>
+            <option value="Canned">Canned</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -271,6 +310,7 @@
             $('#editItemUnit').val(data.unit);
             $('#editItemPrice').val(data.price);
             $('#editItemPurchaseDate').val(data.purchase_date ? data.purchase_date.substring(0, 10) : '');
+            $('#editItemCategory').val(data.category);
             $('#editInventoryModal').modal('show');
           }
         },

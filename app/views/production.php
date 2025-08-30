@@ -838,11 +838,13 @@ $(document).ready(function() {
                             } else {
                                 $confirmBtn.prop('disabled', true).removeClass('btn-primary').addClass('btn-danger').text('Insufficient Stock');
                             }
+                            $('#addProductionModal').modal('hide');
                             $('#productionSummaryModal').modal('show');
                         });
                     } else {
                         $summaryList.append('<li class="list-group-item">No ingredients will be deducted.</li>');
                         $('#confirmProductionBtn').prop('disabled', false).removeClass('btn-danger').addClass('btn-primary').text('Confirm & Add');
+                        $('#addProductionModal').modal('hide');
                         $('#productionSummaryModal').modal('show');
                     }
                 } else {

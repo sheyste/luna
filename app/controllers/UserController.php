@@ -4,6 +4,7 @@
  */
 require BASE_PATH . '/core/Controller.php';
 require BASE_PATH . '/app/models/UserModel.php';
+require BASE_PATH . '/app/helpers/EmailHelper.php';
 
 class UserController extends Controller
 {
@@ -94,5 +95,78 @@ class UserController extends Controller
         }
 
         echo json_encode($response);
+    }
+
+    public function testEmail()
+    {
+        // Set proper headers to prevent any output before JSON
+        header('Content-Type: application/json');
+        
+        try {
+            $response = ['success' => false, 'message' => ''];
+            if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'Admin') {
+                $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+                $name = filter_var(trim($_POST['name']), FILTER_SANITIZE_STRING);
+
+                if (!empty($email) && !empty($name)) {
+                    $subject = 'Test Email';
+                    $body = 'Hello ' . $name . ',<br><br>This is a test email from the system.';
+                    $emailResult = $this->sendEmail($email, $subject, $body);
+                    
+                    if ($emailResult['success']) {
+                        $response['success'] = true;
+                        $response['message'] = $emailResult['message'];
+                        if (isset($emailResult['debug_info'])) {
+                            $response['debug_info'] = $emailResult['debug_info'];
+                        }
+                    } else {
+                        $response['message'] = $emailResult['message'];
+                    }
+                } else {
+                    $response['message'] = 'Email and name are required';
+                }
+            } else {
+                $response['message'] = 'Admin access required';
+            }
+        } catch (Exception $e) {
+            $response = [
+                'success' => false,
+                'message' => 'PHP Error: ' . $e->getMessage()
+            ];
+        }
+        
+        echo json_encode($response);
+        exit;
+    }
+
+    public function debugEmailConfig()
+    {
+        if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'Admin') {
+            $smtpUsername = getenv('SMTP_USERNAME');
+            $smtpPassword = getenv('SMTP_PASSWORD');
+            $fromEmail = getenv('FROM_EMAIL');
+            $fromName = getenv('FROM_NAME');
+            
+            $response = [
+                'env_file_exists' => file_exists(__DIR__ . '/../../.env'),
+                'smtp_username' => $smtpUsername ? 'Set' : 'Not set',
+                'smtp_password' => $smtpPassword ? 'Set (length: ' . strlen($smtpPassword) . ')' : 'Not set',
+                'from_email' => $fromEmail ?: 'Using default: noreply@luna-mail.8800111.xyz',
+                'from_name' => $fromName ?: 'Using default: LUNA Inventory System',
+                'mail_function' => function_exists('mail') ? 'Available' : 'Not available'
+            ];
+            
+            header('Content-Type: application/json');
+            echo json_encode($response);
+        } else {
+            echo json_encode(['error' => 'Admin access required']);
+        }
+    }
+
+    private function sendEmail($to, $subject, $body)
+    {
+        // Use EmailHelper to send emails via SMTP
+        $emailHelper = new EmailHelper();
+        return $emailHelper->send($to, $subject, $body);
     }
 }

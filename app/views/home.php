@@ -32,15 +32,24 @@
         </div>
     </div>
 
-    <!-- Low Stock Items Card -->
+    <!-- Stock Alerts Card -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-warning shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                            Low Stock Items</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $lowStockItems ?? 0 ?></div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    Low Stock</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $lowStockItems ?? 0 ?></div>
+                            </div>
+                            <div class="col">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    Overstock</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $overStockItems ?? 0 ?></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-auto">
                         <i class="fa fa-exclamation-triangle fa-2x text-gray-300"></i>
@@ -91,7 +100,7 @@
 
 <div class="row">
   <!-- Production Chart -->
-  <div class="col-md-6">
+  <div class="col-md-6 mt-4">
     <div class="card">
       <div class="card-header">Production and Sales</div>
       <div class="card-body">
@@ -101,11 +110,58 @@
   </div>
 
   <!-- Daily Cost-to-Profit -->
-  <div class="col-md-6">
+  <div class="col-md-6 mt-4">
     <div class="card">
       <div class="card-header">Daily Cost vs Profit</div>
       <div class="card-body">
         <canvas id="costProfitChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inventory Pie Chart and Low Stock Alerts -->
+  <div class="col-md-6 mt-4">
+    <div class="card">
+      <div class="card-header">Inventory Items Distribution</div>
+      <div class="card-body">
+        <canvas id="inventoryPieChart" ></canvas>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Latest Low Stock Alerts -->
+  <div class="col-md-6 mt-4">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Latest Low Stock Alerts</span>
+        <a href="/inventory/low-stock-alerts" class="btn btn-sm btn-primary">View All</a>
+      </div>
+      <div class="card-body">
+        <?php if (!empty($latestLowStockAlerts)): ?>
+          <div class="list-group">
+            <?php foreach ($latestLowStockAlerts as $alert): ?>
+              <a href="/inventory/low-stock-alerts" class="list-group-item list-group-item-action">
+                <div class="d-flex justify-content-between">
+                  <strong><?= htmlspecialchars($alert['item_name']) ?></strong>
+                  <span><?= $alert['current_quantity'] ?> <?= htmlspecialchars($alert['unit']) ?></span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <small class="text-muted"><?= htmlspecialchars(isset($alert['alert_date']) ? date('F j, Y g:i A', strtotime($alert['alert_date'])):'') ?></small>
+                  <small>
+                    <?php if ($alert['resolved'] == 1): ?>
+                      <span class="badge bg-success">Resolved</span>
+                    <?php else: ?>
+                      <span class="badge bg-warning text-dark">Pending</span>
+                    <?php endif; ?>
+                  </small>
+                </div>
+
+              </a>
+            <?php endforeach; ?>
+          </div>
+        <?php else: ?>
+          <p class="text-muted text-center">No low stock alerts</p>
+        <?php endif; ?>
       </div>
     </div>
   </div>
@@ -131,7 +187,7 @@
                 <i class="fa fa-file-invoice fa-3x text-primary mb-3"></i>
                 <h5 class="card-title">Purchase Orders</h5>
                 <p class="card-text text-muted">Manage Purchase Orders.</p>
-                <a href="/users" class="btn btn-primary mt-auto">Go to Users</a>
+                <a href="/purchase_order" class="btn btn-primary mt-auto">Go to Users</a>
             </div>
         </div>
     </div>
@@ -210,6 +266,38 @@
     }
   });
 
+  // Inventory Pie Chart
+  const inventoryCtx = document.getElementById('inventoryPieChart').getContext('2d');
+  new Chart(inventoryCtx, {
+    type: 'pie',
+    data: {
+      labels: <?= json_encode(array_column($inventoryData, 'name')) ?>,
+      datasets: [{
+        data: <?= json_encode(array_column($inventoryData, 'quantity')) ?>,
+        backgroundColor: [
+          '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+          '#858796', '#5a5c69', '#fd7e14', '#20c997', '#6f42c1'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'none'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.label + ': ' + context.parsed;
+            }
+          }
+        }
+      }
+    }
+  });
 
 </script>
 

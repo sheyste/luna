@@ -67,19 +67,39 @@ public function index()
     $result = $this->conn->query("SELECT COUNT(*) as count FROM inventory WHERE max_quantity > 0 AND quantity <= (max_quantity * 0.2)");
     $lowStockItems = $result->fetch_assoc()['count'] ?? 0;
 
+    $result = $this->conn->query("SELECT COUNT(*) as count FROM inventory WHERE max_quantity > 0 AND quantity >= (max_quantity * 1.1)");
+    $overStockItems = $result->fetch_assoc()['count'] ?? 0;
+
     $result = $this->conn->query("SELECT SUM(quantity * price) as value FROM inventory");
     $totalInventoryValue = $result->fetch_assoc()['value'] ?? 0;
 
     $result = $this->conn->query("SELECT COUNT(*) as count FROM purchase_orders WHERE status = 'Pending'");
     $pendingPurchaseOrders = $result->fetch_assoc()['count'] ?? 0;
 
+    // Inventory data for pie chart
+    $result = $this->conn->query("SELECT name, quantity FROM inventory WHERE quantity > 0 ORDER BY quantity DESC");
+    $inventoryData = [];
+    while ($row = $result->fetch_assoc()) {
+        $inventoryData[] = $row;
+    }
+
+    // Latest low stock alerts
+    $result = $this->conn->query("SELECT item_name, current_quantity, unit, resolved, alert_date FROM low_stock_alerts WHERE status != 'resolved' ORDER BY alert_date DESC LIMIT 5");
+    $latestLowStockAlerts = [];
+    while ($row = $result->fetch_assoc()) {
+        $latestLowStockAlerts[] = $row;
+    }
+
     $this->view('home', [
         'productionData'    => $productionData,
         'costProfitData'    => $costProfitData,
         'totalItems' => $totalItems,
         'lowStockItems' => $lowStockItems,
+        'overStockItems' => $overStockItems,
         'totalInventoryValue' => $totalInventoryValue,
         'pendingPurchaseOrders' => $pendingPurchaseOrders,
+        'inventoryData' => $inventoryData,
+        'latestLowStockAlerts' => $latestLowStockAlerts
     ]);
 }
 

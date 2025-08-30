@@ -210,9 +210,11 @@
                 <a href="/home"><i class="fa fa-home"></i><span>Dashboard</span></a>
             </li>
 
-            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/inventory') !== false) echo 'active'; ?>">
+            <li class="nav-item <?php if ($_SERVER['REQUEST_URI'] == '/inventory') echo 'active'; ?>">
                 <a href="/inventory"><i class="fa fa-boxes-stacked"></i><span>Inventory</span></a>
             </li>
+                        
+           
                         
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/purchase_order') !== false) echo 'active'; ?>">
                 <a href="/purchase_order"><i class="fa fa-file-invoice"></i><span>Purchase Orders</span></a>
@@ -224,6 +226,9 @@
                 <a href="/production"><i class="fa fa-industry"></i><span>Production</span></a>
             </li>
             <hr>
+            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/inventory/low-stock-alerts') !== false) echo 'active'; ?>">
+                <a href="/inventory/low-stock-alerts"><i class="fa fa-exclamation-triangle"></i><span>Low Stock Alerts</span></a>
+            </li>
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/users') !== false) echo 'active'; ?>">
                 <a href="/users"><i class="fa fa-users"></i><span>Users</span></a>
             </li>

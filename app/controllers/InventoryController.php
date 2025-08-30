@@ -1,7 +1,9 @@
 <?php
 
 require_once __DIR__ . '/../models/Inventory.php';
-require BASE_PATH . '/core/Controller.php';
+require_once BASE_PATH . '/core/Controller.php';
+require_once __DIR__ . '/../models/UserModel.php';
+require_once BASE_PATH . '/app/helpers/EmailHelper.php';
 
 class InventoryController extends Controller
 {
@@ -64,4 +66,5 @@ class InventoryController extends Controller
         header('Content-Type: application/json');
         echo json_encode($items);
     }
+
 }

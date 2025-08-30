@@ -2,30 +2,37 @@
 /**
  * Load environment variables from .env file
  */
-function loadEnv($path) {
-    if (!file_exists($path)) {
-        return;
-    }
-    
-    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        // Skip comments
-        if (strpos(trim($line), '#') === 0) {
-            continue;
+if (!function_exists('loadEnv')) {
+    function loadEnv($path) {
+        if (!file_exists($path)) {
+            return;
         }
         
-        // Split on first equals sign
-        $parts = explode('=', $line, 2);
-        if (count($parts) === 2) {
-            $key = trim($parts[0]);
-            $value = trim($parts[1]);
+        $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            // Skip comments
+            if (strpos(trim($line), '#') === 0) {
+                continue;
+            }
             
-            // Remove quotes if present
-            $value = trim($value, '"\'');
-            
-            // Set as constant if not already defined
-            if (!defined($key)) {
-                define($key, $value);
+            // Split on first equals sign
+            $parts = explode('=', $line, 2);
+            if (count($parts) === 2) {
+                $key = trim($parts[0]);
+                $value = trim($parts[1]);
+                
+                // Remove quotes if present
+                $value = trim($value, '"\'' );
+                
+                // Set as constant if not already defined
+                if (!defined($key)) {
+                    define($key, $value);
+                }
+                
+                // Also set as environment variable for getenv() to work
+                if (!getenv($key)) {
+                    putenv($key . '=' . $value);
+                }
             }
         }
     }

@@ -49,6 +49,10 @@ public function add() {
 
 
         // Deduct ingredients from inventory
+        // Include Inventory and LowStockAlert models
+        require_once BASE_PATH . '/app/models/Inventory.php';
+        require_once BASE_PATH . '/app/models/LowStockAlert.php';
+        
         $sql = "
             SELECT mi.inventory_id, mi.quantity
             FROM menu_ingredients mi
@@ -63,6 +67,10 @@ public function add() {
             $ingredient_qty = $row['quantity'];
             $deduct_qty = $ingredient_qty * $quantity_produced;
 
+            // Get current inventory item before updating
+            $inventoryModel = new Inventory();
+            $currentItem = $inventoryModel->getItemById($inventory_id);
+            
             $updateStmt = $this->conn->prepare("
                 UPDATE inventory
                 SET quantity = GREATEST(quantity - ?, 0)
@@ -71,6 +79,40 @@ public function add() {
             $updateStmt->bind_param("di", $deduct_qty, $inventory_id);
             $updateStmt->execute();
             $updateStmt->close();
+            
+            // Update alert resolution status based on current inventory status
+            if ($currentItem) {
+                $alertModel = new LowStockAlert();
+                
+                // Calculate new quantity
+                $newQuantity = max($currentItem['quantity'] - $deduct_qty, 0);
+                $maxQuantity = $currentItem['max_quantity'];
+                
+                // Check if item is currently low stock
+                $isLowStock = ($newQuantity / $maxQuantity) <= 0.2;
+                
+                // Get all pending alerts for this item and update their resolution status
+                $pendingAlerts = $alertModel->getPendingAlerts();
+                foreach ($pendingAlerts as $alert) {
+                    if ($alert['item_id'] == $inventory_id) {
+                        // Update the resolved status based on current inventory status
+                        $alertModel->updateAlertResolutionStatus($alert['id'], !$isLowStock);
+                    }
+                }
+                
+                // Check if we need to create a new alert
+                if ($isLowStock && !$alertModel->alertExistsForItem($inventory_id)) {
+                    // Create a new alert
+                    $alertData = [
+                        'item_id' => $inventory_id,
+                        'item_name' => $currentItem['name'],
+                        'current_quantity' => $newQuantity,
+                        'max_quantity' => $maxQuantity,
+                        'unit' => $currentItem['unit']
+                    ];
+                    $alertModel->createAlert($alertData);
+                }
+            }
         }
         $stmt->close();
 

@@ -14,6 +14,12 @@ const routes = array(
     '/inventory/delete' => array('InventoryController', 'delete'),
     '/inventory/getDetail' => array('InventoryController', 'getDetail'),
     '/inventory/getAll' => array('InventoryController', 'getAll'),
+    '/inventory/check-low-stock-db' => array('InventoryController', 'checkLowStockDb'),
+    '/inventory/check-and-send-alerts' => array('InventoryController', 'checkAndSendAlerts'),
+    '/inventory/low-stock-alerts' => array('LowStockAlertController', 'index'),
+    '/inventory/auto-update-alerts' => array('LowStockAlertController', 'autoUpdateAlerts'),
+    '/inventory/check-low-stock-db' => array('LowStockAlertController', 'checkLowStockDb'),
+    '/inventory/check-and-send-alerts' => array('LowStockAlertController', 'checkAndSendAlerts'),
 
     '/production'    => array('ProductionController', 'index'),
     '/production/add' => array('ProductionController', 'add'),
@@ -29,6 +35,8 @@ const routes = array(
     '/users/edit'   => array('UserController', 'edit'),
     '/users/delete' => array('UserController', 'delete'),
     '/users/getAll' => array('UserController', 'getAll'),
+    '/users/test-email' => array('UserController', 'testEmail'),
+    '/users/debug-email-config' => array('UserController', 'debugEmailConfig'),
 
     '/menu'         => array('MenuController', 'index'),
     '/menu/add'     => array('MenuController', 'add'),

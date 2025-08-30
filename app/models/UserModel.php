@@ -2,7 +2,7 @@
 /**
  * Class for User model
  */
-require BASE_PATH . '/core/Model.php';
+require_once BASE_PATH . '/core/Model.php';
 
 class UserModel extends Model
 {
@@ -124,6 +124,21 @@ class UserModel extends Model
             $result   = $conn->prepare($sql)->execute([$id]);
         }
 
+        return $result;
+    }
+
+    public function getUsersByType($userType)
+    {
+        $conn   = $this->connectDB();
+        $result = array();
+
+        if ($conn)
+        {
+            $sql = "SELECT * FROM {$this->table} WHERE user_type = :user_type";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(['user_type' => $userType]);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
         return $result;
     }
 }

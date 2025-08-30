@@ -1,71 +1,217 @@
 <?php include_once __DIR__ . '/layout/header_simple.php'; ?>
 
 <style>
-    body {
-        background-color: #f3f4f6; /* AdminCAST page background */
-    }
-    .login-card {
-        border: none;
-        border-radius: 0.5rem;
-    }
-    .login-card-header {
-        background-color: #293145; /* AdminCAST sidebar color */
-        color: #fff;
-        padding: 1.5rem;
-        border-top-left-radius: 0.5rem;
-        border-top-right-radius: 0.5rem;
-    }
-    .login-card-header .h2 {
-        font-weight: 600;
-    }
-    .login-logo {
-        max-height: 300px;
-    }
-    .bg-dark {
-        background-color: #293145 !important;
+    :root {
+        --primary-color: #6c5ce7;
+        --secondary-color: #f2f2f2;
+        --text-color: #333;
+        --light-text-color: #fff;
+        --error-color: #ff4d4d;
+        --success-color: #28a745;
     }
 
+    body {
+        background-color: var(--secondary-color);
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .login-container {
+        display: flex;
+        width: 100%;
+        max-width: 960px; /* Adjusted max-width */
+        height: 600px; /* Fixed height */
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .login-banner {
+        background: linear-gradient(135deg, var(--primary-color), #a29bfe);
+        color: var(--light-text-color);
+        padding: 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        width: 50%;
+    }
+
+    .login-banner img {
+        max-width: 250px;
+    }
+
+    .login-form-container {
+        padding: 60px;
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .mobile-logo {
+        display: none; /* Hidden by default */
+        max-width: 150px;
+        margin-bottom: 30px;
+    }
+
+    .login-form-container h2 {
+        font-size: 2.2rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 10px;
+        text-align: center; /* Center align */
+    }
+
+    .login-form-container .sub-heading {
+        color: #777;
+        margin-bottom: 30px;
+        text-align: center; /* Center align */
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .password-wrapper {
+        position: relative;
+    }
+
+    #togglePassword {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #6c757d;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+    }
+
+    .btn-login {
+        background-color: var(--primary-color);
+        color: var(--light-text-color);
+        border: none;
+        padding: 15px;
+        width: 100%;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-login:hover {
+        background-color: #5a4cdb;
+    }
+
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    @media (max-width: 992px) {
+        .login-banner {
+            display: none;
+        }
+        .login-form-container {
+            width: 100%;
+            padding: 40px;
+            justify-content: center;
+            align-items: center; /* Center items for mobile view */
+        }
+        .login-container {
+            flex-direction: column;
+            height: auto;
+            width: 100%;
+            max-width: 100%;
+            min-height: 100vh;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .mobile-logo {
+            display: block; /* Show logo on mobile */
+        }
+    }
 </style>
 
-<div class="container-fluid">
-    <div class="row min-vh-100">
-        <!-- Left side: Logo -->
-        <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center bg-dark">
-            <img src="/assets/img/LUNA WHITE.png" alt="Logo" class="login-logo img-fluid">
-        </div>
+<div class="login-container">
+    <div class="login-banner">
+        <img src="/assets/img/LUNA WHITE.png" alt="Logo">
+    </div>
+    <div class="login-form-container">
+        <img src="/assets/img/LUNA.png" alt="Mobile Logo" class="mobile-logo">
+        <h2>Sign In</h2>
+        <p class="sub-heading"> </p>
 
-        <!-- Right side: Login form -->
-        <div class="col-12 col-md-6 d-flex justify-content-center align-items-center">
-            <div class="card shadow login-card w-75">
-                <div class="login-card-header text-center">
-                    <img src="/assets/img/LUNA WHITE.png" alt="Logo" class="d-md-none img-fluid mb-3" style="max-height: 80px;">
-                    <h2 class="h2">Welcome Back</h2>
-                </div>
-                <div class="card-body p-4">
-                    <p class="text-muted text-center mb-4">Sign in to continue</p>
+        <?php if (!empty($error)): ?>
+            <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
+        <?php endif; ?>
 
-                    <?php if (!empty($error)): ?>
-                        <div class="alert alert-danger text-center p-2"><?php echo htmlspecialchars($error); ?></div>
-                    <?php endif; ?>
-
-                    <form action="/login" method="POST">
-                        <div class="mb-3">
-                            <label for="username" class="form-label fw-semibold">Username</label>
-                            <input type="text" class="form-control form-control-lg" id="username" name="username" required>
-                        </div>
-                        <div class="mb-4">
-                            <label for="password" class="form-label fw-semibold">Password</label>
-                            <input type="password" class="form-control form-control-lg" id="password" name="password" required>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg fw-semibold">Login</button>
-                        </div>
-                    </form>
+        <form action="/login" method="POST" style="width: 100%; max-width: 400px;">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <i class="bi bi-eye-slash" id="togglePassword"></i>
                 </div>
             </div>
-        </div>
+            <button type="submit" class="btn-login">Login</button>
+        </form>
     </div>
 </div>
 
+<script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#password');
+
+    togglePassword.addEventListener('click', function (e) {
+        // toggle the type attribute
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        // toggle the eye slash icon
+        this.classList.toggle('bi-eye');
+    });
+</script>
 
 <?php include_once __DIR__ . '/layout/footer_simple.php'; ?>
