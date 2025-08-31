@@ -1,5 +1,14 @@
+# Database Configuration
 DB_HOST=localhost
 DB_NAME=luna
 DB_USERNAME=root
 DB_PASSWORD=rootroot
 DB_PORT=3306
+
+# API Keys
+# Email Configuration
+AHASEND_API_KEY=
+AHASEND_API_URL=
+ACCOUNT_ID=
+FROM_EMAIL=
+FROM_NAME=
