@@ -4,9 +4,11 @@ require_once __DIR__ . '/../models/Inventory.php';
 require_once BASE_PATH . '/core/Controller.php';
 require_once __DIR__ . '/../models/UserModel.php';
 require_once BASE_PATH . '/app/helpers/EmailHelper.php';
+require_once __DIR__ . '/../models/PhysicalCount.php';
 
 class InventoryController extends Controller
 {
+    private $physicalCountModel;
     private $inventoryModel;
 
     public function __construct()
@@ -16,6 +18,7 @@ class InventoryController extends Controller
         $this->checkAuth();
 
         $this->inventoryModel = new Inventory();
+        $this->physicalCountModel = new PhysicalCount();
     }
 
     public function index()
@@ -67,4 +70,15 @@ class InventoryController extends Controller
         echo json_encode($items);
     }
 
+    public function physicalCount()
+    {
+        $items = $this->inventoryModel->getAllItems();
+        $this->view('physical_count', ['items' => $items]);
+
+
+
+
+
+        $this->view('physical_count', ['items' => $items]);
+    }
 }

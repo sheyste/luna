@@ -6,6 +6,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="/inventory">Inventory</a></li>
             <li class="breadcrumb-item active" aria-current="page">Low Stock Alerts</li>
         </ol>
     </nav>
@@ -32,6 +33,11 @@
                     </tr>
                 </thead>
                 <tbody>
+                  <?php
+                  function getResolvedBadgeClass($resolved) {
+                      return $resolved == 1 ? 'bg-success' : 'bg-secondary';
+                  }
+                  ?>
                   <?php if (!empty($alerts)): ?>
                       <?php foreach ($alerts as $alert): ?>
                           <?php
@@ -66,7 +72,7 @@
                               <td data-label="Unit"><?= htmlspecialchars($alert['unit'] ?? '') ?></td>
                               <td data-label="Alert Date"><?= htmlspecialchars(isset($alert['alert_date']) ? date('F j, Y g:i A', strtotime($alert['alert_date'])):'') ?></td>
                               <td data-label="Status"><?= htmlspecialchars(ucfirst($alert['status'] ?? '')) ?></td>
-                              <td data-label="Resolved"><?= $alert['resolved'] == 1 ? 'Yes' : 'No' ?></td>
+                              <td data-label="Resolved"><span class="badge <?= getResolvedBadgeClass($alert['resolved']) ?>"><?= $alert['resolved'] == 1 ? 'Yes' : 'No' ?></span></td>
                               <td data-label="Sent Date"><?= htmlspecialchars(isset($alert['sent_date']) && $alert['sent_date'] ? date('F j, Y g:i A', strtotime($alert['sent_date'])):'') ?></td>
                           </tr>
                       <?php endforeach; ?>
@@ -128,7 +134,8 @@
       "language": {
         "emptyTable": "No low stock alerts found"
       },
-      "order": [[ 4, "desc" ]] // Sort by alert date descending by default
+      "order": [[ 4, "desc" ]], // Sort by alert date descending by default
+      "ordering": false // Disable sorting functionality
     });
   });
 </script>

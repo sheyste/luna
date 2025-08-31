@@ -212,10 +212,8 @@
 
             <li class="nav-item <?php if ($_SERVER['REQUEST_URI'] == '/inventory') echo 'active'; ?>">
                 <a href="/inventory"><i class="fa fa-boxes-stacked"></i><span>Inventory</span></a>
-            </li>
-                        
-           
-                        
+            </li>          
+            <hr>
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/purchase_order') !== false) echo 'active'; ?>">
                 <a href="/purchase_order"><i class="fa fa-file-invoice"></i><span>Purchase Orders</span></a>
             </li>
@@ -226,16 +224,20 @@
                 <a href="/production"><i class="fa fa-industry"></i><span>Production</span></a>
             </li>
             <hr>
+            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/inventory/physical-count') !== false) echo 'active'; ?>">
+                <a href="/inventory/physical-count"><i class="fa fa-clipboard-list"></i><span>Physical Count</span></a>
+            </li>
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/inventory/low-stock-alerts') !== false) echo 'active'; ?>">
                 <a href="/inventory/low-stock-alerts"><i class="fa fa-exclamation-triangle"></i><span>Low Stock Alerts</span></a>
             </li>
-            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/users') !== false) echo 'active'; ?>">
-                <a href="/users"><i class="fa fa-users"></i><span>Users</span></a>
-            </li>
+            
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/barcode') !== false) echo 'active'; ?>">
                 <a href="/barcode"><i class="fa fa-barcode"></i><span>Barcode Scan</span></a>
             </li>
-            
+            <hr>
+            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/users') !== false) echo 'active'; ?>">
+                <a href="/users"><i class="fa fa-users"></i><span>Users</span></a>
+            </li>
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/backup') !== false) echo 'active'; ?>">
                 <a href="/backup"><i class="fa fa-download"></i><span>Backup</span></a>
             </li>

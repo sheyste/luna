@@ -3,6 +3,28 @@
 # enable apache rewrite engine
 RewriteEngine on
 
+# Custom 404 error page
+ErrorDocument 404 /404
+
+# Custom 404 error page
+ErrorDocument 403 /404
+
+# Security rules - Deny access to sensitive directories and files
+# Block access to app directory and all subdirectories
+RewriteRule ^app(/.*)?$ - [R=404,L]
+
+# Block access to core directory and all subdirectories
+RewriteRule ^core(/.*)?$ - [R=404,L]
+
+# Deny access to configuration files
+<Files ".env">
+    Require all denied
+</Files>
+
+<Files "config.php">
+    Require all denied
+</Files>
+
 # set your rewrite base
 # Edit this in your init method too if you script lives in a subfolder
 #RewriteBase /

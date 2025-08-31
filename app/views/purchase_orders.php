@@ -116,6 +116,20 @@
                                 return '';
                         }
                     }
+
+                    function getStatusBadgeClass($status) {
+                        switch ($status) {
+                            case 'Received':
+                                return 'bg-success';
+                            case 'Ordered':
+                                return 'bg-info text-dark';
+                            case 'Cancelled':
+                                return 'bg-danger';
+                            case 'Pending':
+                            default:
+                                return 'bg-warning text-dark';
+                        }
+                    }
                     ?>
                     <?php foreach ($grouped_orders as $order): ?>
                         <tr class="<?= getStatusRowClass($order['status']) ?>">
@@ -128,7 +142,7 @@
                                     ? htmlspecialchars(date('F j, Y', strtotime($order['expected_delivery']))) 
                                     : 'N/A' ?></td>
 
-                            <td data-label="Status"><?= htmlspecialchars($order['status']) ?></td>
+                            <td data-label="Status"><span class="badge <?= getStatusBadgeClass($order['status']) ?>"><?= htmlspecialchars($order['status']) ?></span></td>
                             <td data-label="Actions" class="text-nowrap">
                                 <button class="btn btn-primary btn-sm view-btn" data-id="<?= $order['id'] ?>">
                                     <i class="fa fa-eye"></i> View
@@ -340,18 +354,23 @@
 $(document).ready(function() {
     // Custom sorting for status
     $.fn.dataTable.ext.type.order['status-order-pre'] = function (d) {
-        switch (d) {
-            case 'Pending': return 1;
-            case 'Ordered': return 2;
-            case 'Received': return 3;
-            case 'Cancelled': return 4;
+        // Extract text content if d is HTML
+        var text = typeof d === 'string' && d.indexOf('<') !== -1 ? $(d).text() : d;
+        switch (text.toLowerCase()) {
+            case 'pending': return 1;
+            case 'ordered': return 2;
+            case 'received': return 3;
+            case 'cancelled': return 4;
             default: return 5;
         }
     };
 
     var table = $('#poTable').DataTable({
         "columnDefs": [
-            { "type": "status-order", "targets": 6 }
+            {
+                "type": "status-order",
+                "targets": 6
+            }
         ],
         "order": [[6, "asc"]]
     });

@@ -27,6 +27,103 @@ class LowStockAlert extends Model
     }
     
     /**
+     * Atomically get pending alerts and mark them as sent
+     * This prevents concurrent requests from processing the same alerts
+     */
+    public function getAndMarkPendingAlertsAsSent()
+    {
+        try {
+            // Start a transaction to ensure atomicity
+            $this->db->beginTransaction();
+            
+            // Get pending alerts
+            $stmt = $this->db->prepare("
+                SELECT * FROM low_stock_alerts 
+                WHERE status = 'pending' 
+                ORDER BY alert_date ASC
+            ");
+            $stmt->execute();
+            $alerts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // If we have alerts, mark them as sent
+            if (!empty($alerts)) {
+                $ids = array_column($alerts, 'id');
+                $placeholders = str_repeat('?,', count($ids) - 1) . '?';
+                
+                $stmt = $this->db->prepare("
+                    UPDATE low_stock_alerts 
+                    SET status = 'sent', sent_date = NOW() 
+                    WHERE id IN ($placeholders)
+                ");
+                $stmt->execute($ids);
+            }
+            
+            // Commit the transaction
+            $this->db->commit();
+            
+            return $alerts;
+        } catch (Exception $e) {
+            // Rollback the transaction on error
+            $this->db->rollback();
+            throw $e;
+        }
+    }
+    
+    /**
+     * Get pending alerts with row-level locking to prevent concurrent processing
+     * This ensures only one request can process the same alerts at a time
+     */
+    public function getPendingAlertsWithLock()
+    {
+        try {
+            // Start a transaction
+            $this->db->beginTransaction();
+            
+            // Get pending alerts with row-level locking
+            $stmt = $this->db->prepare("
+                SELECT * FROM low_stock_alerts 
+                WHERE status = 'pending' 
+                ORDER BY alert_date ASC
+                FOR UPDATE
+            ");
+            $stmt->execute();
+            $alerts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Return both the alerts and a flag to indicate we're in a transaction
+            return [
+                'alerts' => $alerts,
+                'transaction' => true
+            ];
+        } catch (Exception $e) {
+            // Rollback the transaction on error
+            if ($this->db->inTransaction()) {
+                $this->db->rollback();
+            }
+            throw $e;
+        }
+    }
+    
+    /**
+     * Commit the transaction after processing alerts
+     */
+    public function commitTransaction()
+    {
+        if ($this->db->inTransaction()) {
+            $this->db->commit();
+        }
+    }
+    
+    /**
+     * Rollback the transaction if there's an error
+     */
+    public function rollbackTransaction()
+    {
+        if ($this->db->inTransaction()) {
+            $this->db->rollback();
+        }
+    }
+    
+    /**
      * Get recent alerts for an item (within last hour)
      * Only returns pending or sent alerts that haven't been resolved
      */

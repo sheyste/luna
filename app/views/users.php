@@ -367,7 +367,14 @@ $(document).ready(function() {
                     if (response.success) {
                         alert('Test email sent successfully to ' + name);
                     } else {
-                        alert('Failed to send test email: ' + (response.message || 'Unknown error'));
+                        let errorMessage = 'Failed to send test email: ' + (response.message || 'Unknown error');
+                        if (response.http_code) {
+                            errorMessage += '\nHTTP Code: ' + response.http_code;
+                        }
+                        if (response.response) {
+                            errorMessage += '\nResponse: ' + JSON.stringify(response.response);
+                        }
+                        alert(errorMessage);
                     }
                 },
                 error: function(xhr, status, error) {
@@ -414,11 +421,11 @@ $(document).ready(function() {
             success: function(response) {
                 let message = 'Email Configuration Debug:\n\n';
                 message += 'Environment file exists: ' + response.env_file_exists + '\n';
-                message += 'SMTP Username: ' + response.smtp_username + '\n';
-                message += 'SMTP Password: ' + response.smtp_password + '\n';
+                message += 'API Key: ' + response.api_key + '\n';
+                message += 'API URL: ' + response.api_url + '\n';
                 message += 'From Email: ' + response.from_email + '\n';
                 message += 'From Name: ' + response.from_name + '\n';
-                message += 'Mail Function: ' + response.mail_function;
+                message += 'cURL Extension: ' + response.curl_extension;
                 alert(message);
             },
             error: function() {

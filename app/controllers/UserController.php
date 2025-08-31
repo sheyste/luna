@@ -121,6 +121,16 @@ class UserController extends Controller
                         }
                     } else {
                         $response['message'] = $emailResult['message'];
+                        // Include additional error details if available
+                        if (isset($emailResult['http_code'])) {
+                            $response['http_code'] = $emailResult['http_code'];
+                        }
+                        if (isset($emailResult['response'])) {
+                            $response['response'] = $emailResult['response'];
+                        }
+                        if (isset($emailResult['headers'])) {
+                            $response['headers'] = $emailResult['headers'];
+                        }
                     }
                 } else {
                     $response['message'] = 'Email and name are required';
@@ -142,18 +152,18 @@ class UserController extends Controller
     public function debugEmailConfig()
     {
         if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'Admin') {
-            $smtpUsername = getenv('SMTP_USERNAME');
-            $smtpPassword = getenv('SMTP_PASSWORD');
+            $apiKey = getenv('AHASEND_API_KEY');
+            $apiUrl = getenv('AHASEND_API_URL');
             $fromEmail = getenv('FROM_EMAIL');
             $fromName = getenv('FROM_NAME');
             
             $response = [
                 'env_file_exists' => file_exists(__DIR__ . '/../../.env'),
-                'smtp_username' => $smtpUsername ? 'Set' : 'Not set',
-                'smtp_password' => $smtpPassword ? 'Set (length: ' . strlen($smtpPassword) . ')' : 'Not set',
+                'api_key' => $apiKey ? 'Set (length: ' . strlen($apiKey) . ')' : 'Not set',
+                'api_url' => $apiUrl ?: 'Using default: https://api.ahasend.com',
                 'from_email' => $fromEmail ?: 'Using default: noreply@luna-mail.8800111.xyz',
                 'from_name' => $fromName ?: 'Using default: LUNA Inventory System',
-                'mail_function' => function_exists('mail') ? 'Available' : 'Not available'
+                'curl_extension' => extension_loaded('curl') ? 'Available' : 'Not available'
             ];
             
             header('Content-Type: application/json');
@@ -165,7 +175,7 @@ class UserController extends Controller
 
     private function sendEmail($to, $subject, $body)
     {
-        // Use EmailHelper to send emails via SMTP
+        // Use EmailHelper to send emails via AhaSend API V2
         $emailHelper = new EmailHelper();
         return $emailHelper->send($to, $subject, $body);
     }

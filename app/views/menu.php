@@ -51,7 +51,7 @@
 <div class="row" id="menu-container">
     <?php if (!empty($menus)): ?>
         <?php foreach ($menus as $menu): ?>
-            <div class="col-lg-4 col-md-6 mb-4">
+            <div class="col-lg-3 col-md-3 mb-4">
                 <div class="card menu-card h-100 shadow-sm border-0 rounded-3" style="cursor: pointer;" data-id="<?= htmlspecialchars($menu['id']) ?>">
                     <div class="price-tag">&#8369;<?= htmlspecialchars(number_format($menu['price'] ?? 0, 2)) ?></div>
                     <div class="card-body">

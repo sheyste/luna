@@ -317,7 +317,7 @@ if (!empty($items)) {
         <div class="row" id="production-container">
             <?php if (!empty($combinedItems)): ?>
                 <?php foreach ($combinedItems as $item): ?>
-                    <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="col-lg-3 col-md-3 mb-4">
                         <div class="card menu-card h-100 shadow-sm border-0 rounded-3">
                             <div class="card-body">
                                 <div class="price-tag">Available: <?= htmlspecialchars($item['quantity_available']) ?></div>

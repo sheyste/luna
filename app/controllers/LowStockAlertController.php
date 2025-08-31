@@ -44,8 +44,8 @@ class LowStockAlertController extends Controller
             
             $newAlerts = 0;
             foreach ($lowStockItems as $item) {
-                // Check if an alert already exists for this item that hasn't been resolved
-                if (!$alertModel->alertExistsForItem($item['id'])) {
+                // Check if we should create an alert for this item
+                if ($this->shouldCreateAlert($alertModel, $item['id'])) {
                     // Create a new alert
                     $alertData = [
                         'item_id' => $item['id'],
@@ -93,8 +93,9 @@ class LowStockAlertController extends Controller
             $lowStockItems = $inventoryModel->getLowStockItems();
             $newAlerts = 0;
             foreach ($lowStockItems as $item) {
-                // Check if an alert already exists for this item that hasn't been resolved
-                if (!$alertModel->alertExistsForItem($item['id'])) {
+                // Check if we should create an alert for this item
+                // Use a more robust check that considers recently sent alerts
+                if ($this->shouldCreateAlert($alertModel, $item['id'])) {
                     // Create a new alert
                     $alertData = [
                         'item_id' => $item['id'],
@@ -112,7 +113,8 @@ class LowStockAlertController extends Controller
             
             // Then, get pending alerts (including any new ones we just created)
             // Filter out alerts that have been resolved
-            $allPendingAlerts = $alertModel->getPendingAlerts();
+            $result = $alertModel->getPendingAlertsWithLock();
+            $allPendingAlerts = $result['alerts'];
             $pendingAlerts = [];
             foreach ($allPendingAlerts as $alert) {
                 // Only include alerts that haven't been resolved
@@ -135,24 +137,337 @@ class LowStockAlertController extends Controller
                     
                     // Prepare email content
                     $subject = 'Low Stock Alert - LUNA Inventory System';
-                    $body = '<h2>Low Stock Alert</h2>';
-                    $body .= '<p>The following items in your inventory are running low:</p>';
-                    $body .= '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">';
-                    $body .= '<tr><th>Name</th><th>Current Quantity</th><th>Max Quantity</th><th>Percentage</th></tr>';
                     
+                    // Modern React-inspired email template
+                    $body = '
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Low Stock Alert</title>
+                        <style>
+                            /* Reset styles */
+                            body, html {
+                                margin: 0;
+                                padding: 0;
+                                font-family: \'Inter\', \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif;
+                                line-height: 1.6;
+                                color: #333;
+                                background-color: #f8f9fa;
+                            }
+                            
+                            /* Container */
+                            .email-container {
+                                max-width: 800px;
+                                margin: 0 auto;
+                                background-color: #ffffff;
+                                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                                border-radius: 8px;
+                                overflow: hidden;
+                            }
+                            
+                            /* Header */
+                            .email-header {
+                                background: linear-gradient(135deg, #293145 0%, #1f2639 100%);
+                                color: white;
+                                padding: 30px 20px;
+                                text-align: center;
+                            }
+                            
+                            .logo {
+                                font-size: 28px;
+                                font-weight: 700;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 12px;
+                            }
+                            
+                            .logo-icon {
+                                width: 36px;
+                                height: 36px;
+                                background-color: #3498db;
+                                border-radius: 8px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+                            
+                            .logo-text {
+                                letter-spacing: 1px;
+                            }
+                            
+                            
+                            /* Content */
+                            .email-content {
+                                padding: 30px;
+                            }
+                            
+                            .content-title {
+                                color: #293145;
+                                font-size: 20px;
+                                margin-top: 0;
+                                margin-bottom: 20px;
+                                font-weight: 600;
+                            }
+                            
+                            .content-text {
+                                color: #555;
+                                font-size: 16px;
+                                margin-bottom: 25px;
+                            }
+                            
+                            /* Card Styles */
+                            .items-container {
+                                margin: 25px 0;
+                            }
+                            
+                            .item-card {
+                                background-color: #ffffff;
+                                border: 1px solid #e2e8f0;
+                                border-radius: 8px;
+                                margin-bottom: 15px;
+                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                                overflow: hidden;
+                            }
+                            
+                            .item-card:last-child {
+                                margin-bottom: 0;
+                            }
+                            
+                            .card-header {
+                                background-color: #f1f5f9;
+                                padding: 15px 20px;
+                                border-bottom: 1px solid #e2e8f0;
+                            }
+                            
+                            .item-name {
+                                font-weight: 600;
+                                color: #293145;
+                                margin: 0;
+                                font-size: 18px;
+                            }
+                            
+                            .card-body {
+                                padding: 20px;
+                            }
+                            
+                            .data-row {
+                                display: flex;
+                                justify-content: space-between;
+                                margin-bottom: 12px;
+                                padding-bottom: 12px;
+                                border-bottom: 1px solid #f1f5f9;
+                            }
+                            
+                            .data-row:last-child {
+                                margin-bottom: 0;
+                                padding-bottom: 0;
+                                border-bottom: none;
+                            }
+                            
+                            .data-label {
+                                font-weight: 500;
+                                color: #64748b;
+                                flex-grow: 1;
+                            }
+                            
+                            .data-value {
+                                font-weight: 600;
+                                text-align: right;
+                                margin-left: auto;
+                                padding-left: 10px;
+                                white-space: nowrap;
+                            }
+                            
+                            .quantity-low {
+                                color: #dc2626;
+                            }
+                            
+                            .quantity-max {
+                                color: #0891b2;
+                            }
+                            
+                            .percentage {
+                                font-weight: 600;
+                            }
+                            
+                            .percentage.critical {
+                                color: #dc2626;
+                            }
+                            
+                            .percentage.warning {
+                                color: #ea580c;
+                            }
+                            
+                            .percentage.ok {
+                                color: #16a34a;
+                            }
+                            
+                            /* Call to Action */
+                            .cta-section {
+                                text-align: center;
+                                margin: 30px 0;
+                                padding: 20px;
+                                background-color: #f1f5f9;
+                                border-radius: 8px;
+                            }
+                            
+                            .cta-button {
+                                color: white;
+                                display: inline-block;
+                                background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+                                text-decoration: none;
+                                padding: 14px 32px;
+                                border-radius: 6px;
+                                font-weight: 600;
+                                font-size: 16px;
+                                transition: all 0.3s ease;
+                                box-shadow: 0 4px 6px rgba(255, 126, 95, 0.2);
+                            }
+
+                            .cta-button:hover {
+                                color: white;
+                                background: linear-gradient(135deg, #feb47b 0%, #ff7e5f 100%);
+                                transform: translateY(-2px);
+                                box-shadow: 0 6px 8px rgba(255, 126, 95, 0.3);
+                            }
+
+                            
+                            /* Footer */
+                            .email-footer {
+                                background-color: #f1f5f9;
+                                padding: 25px 30px;
+                                text-align: center;
+                                color: #64748b;
+                                font-size: 14px;
+                            }
+                            
+                            .footer-text {
+                                margin: 0 0 15px;
+                            }
+                            
+                            .footer-links {
+                                margin-top: 15px;
+                            }
+                            
+                            .footer-link {
+                                color: #3498db;
+                                text-decoration: none;
+                                margin: 0 10px;
+                                font-weight: 500;
+                            }
+                            
+                            .footer-link:hover {
+                                text-decoration: underline;
+                            }
+                            
+                            /* Responsive styles */
+                            @media (max-width: 600px) {
+                                .email-container {
+                                    border-radius: 0;
+                                }
+                                
+                                .email-content {
+                                    padding: 20px 15px;
+                                }
+                                
+                                .table-header th,
+                                .table-cell {
+                                    padding: 12px 15px;
+                                    font-size: 14px;
+                                }
+                                
+                                .logo {
+                                    font-size: 24px;
+                                }
+                                
+                                .header-title {
+                                    font-size: 18px;
+                                }
+                                
+                                .content-title {
+                                    font-size: 18px;
+                                }
+                                
+                                .cta-button {
+                                    padding: 12px 24px;
+                                    font-size: 15px;
+                                    color: white;
+                                }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="email-container">
+                            <!-- Email Header -->
+                            <div class="email-header">
+                                <div class="logo">
+                                    <div class="logo-text">LUNA</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Email Content -->
+                            <div class="email-content">
+                                <h2 class="content-title">Inventory Items Running Low</h2>
+                                <p class="content-text">The following items in your inventory are running low and require restocking:</p>
+                                
+                                <!-- Items Container -->
+                                <div class="items-container">';
+                                    
                     foreach ($items as $item) {
-                        $percentage = ($item['max_quantity'] > 0) ? round(($item['current_quantity'] / $item['max_quantity']) * 100, 2) : 0;
-                        $body .= '<tr>';
-                        $body .= '<td>' . htmlspecialchars($item['item_name']) . '</td>';
-                        $body .= '<td>' . htmlspecialchars($item['current_quantity']) . ' ' . htmlspecialchars($item['unit']) . '</td>';
-                        $body .= '<td>' . htmlspecialchars($item['max_quantity']) . ' ' . htmlspecialchars($item['unit']) . '</td>';
-                        $body .= '<td>' . $percentage . '%</td>';
-                        $body .= '</tr>';
+                        $quantity = (float)($item['current_quantity'] ?? 0);
+                        $max_quantity = (float)($item['max_quantity'] ?? 0);
+                        $percentage = ($max_quantity > 0) ? round(($quantity / $max_quantity) * 100, 2) : 0;
+                        
+                        // Determine percentage color class
+                        $percentageClass = 'ok';
+                        if ($percentage <= 20) {
+                            $percentageClass = 'critical';
+                        } elseif ($percentage <= 50) {
+                            $percentageClass = 'warning';
+                        }
+                        
+                        $body .= '<div class="item-card">';
+                        $body .= '<div class="card-header">';
+                        $body .= '<h3 class="item-name">' . htmlspecialchars($item['item_name']) . '</h3>';
+                        $body .= '</div>';
+                        $body .= '<div class="card-body">';
+                        $body .= '<div class="data-row">';
+                        $body .= '<span class="data-label">Current Quantity:</span>';
+                        $body .= '<span class="data-value quantity-low">' . htmlspecialchars($item['current_quantity']) . ' ' . htmlspecialchars($item['unit']) . '</span>';
+                        $body .= '</div>';
+                        $body .= '<div class="data-row">';
+                        $body .= '<span class="data-label">Max Quantity:</span>';
+                        $body .= '<span class="data-value quantity-max">' . htmlspecialchars($item['max_quantity']) . ' ' . htmlspecialchars($item['unit']) . '</span>';
+                        $body .= '</div>';
+                        $body .= '<div class="data-row">';
+                        $body .= '<span class="data-label">Percentage:</span>';
+                        $body .= '<span class="data-value percentage ' . $percentageClass . '">' . $percentage . '%</span>';
+                        $body .= '</div>';
+                        $body .= '</div>';
+                        $body .= '</div>';
                     }
                     
-                    $body .= '</table>';
-                    $body .= '<p>Please restock these items as soon as possible.</p>';
-                    $body .= '<p><a href="http://localhost/inventory">View Inventory</a></p>';
+                    $body .= '
+                                </div>
+                                
+                                <!-- Call to Action -->
+                                <div class="cta-section">
+                                    <p>Please restock these items as soon as possible to maintain inventory levels.</p>
+                                    <a href="http://localhost/inventory" class="cta-button">View Inventory</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Email Footer -->
+                            <div class="email-footer">
+                                <p class="footer-text">This is an automated message from the LUNA Inventory System.</p>
+                                <p class="footer-text">You are receiving this email because you are registered as an administrator.</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>';
                     
                     // Send email to each admin
                     $emailHelper = new EmailHelper();
@@ -173,7 +488,11 @@ class LowStockAlertController extends Controller
                             $alertModel->markAsSent($alert['id']);
                         }
                     }
+                    
                 }
+            
+            // Commit the transaction
+            $alertModel->commitTransaction();
             }
             
             header('Content-Type: application/json');
@@ -184,6 +503,9 @@ class LowStockAlertController extends Controller
                 'message' => "$sentCount alerts sent, $newAlerts new alerts created"
             ]);
         } catch (Exception $e) {
+            // Rollback the transaction if there's an error
+            $alertModel->rollbackTransaction();
+            
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
@@ -221,5 +543,27 @@ class LowStockAlertController extends Controller
                 'message' => 'Error updating alerts: ' . $e->getMessage()
             ]);
         }
+    }
+    
+    /**
+     * Check if we should create an alert for an item
+     * @param LowStockAlert $alertModel
+     * @param int $itemId
+     * @return bool True if we should create an alert (no recent alert exists), false if we should NOT create one
+     */
+    private function shouldCreateAlert($alertModel, $itemId) {
+        // Check if there's a recent alert for this item that hasn't been resolved
+        // We'll consider alerts from the last 24 hours to prevent duplicate alerts
+        $stmt = $alertModel->db->prepare("
+            SELECT COUNT(*) as count FROM low_stock_alerts
+            WHERE item_id = :item_id
+            AND (status = 'pending' OR status = 'sent')
+            AND resolved = 0
+            AND alert_date > DATE_SUB(NOW(), INTERVAL 24 HOUR)
+        ");
+        $stmt->execute(['item_id' => $itemId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Return true if we should create an alert (no recent alert exists)
+        return $result['count'] == 0;
     }
 }

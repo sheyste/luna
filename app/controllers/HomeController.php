@@ -76,6 +76,12 @@ public function index()
     $result = $this->conn->query("SELECT COUNT(*) as count FROM purchase_orders WHERE status = 'Pending'");
     $pendingPurchaseOrders = $result->fetch_assoc()['count'] ?? 0;
 
+    $result = $this->conn->query("SELECT COUNT(*) as count FROM purchase_orders WHERE status = 'Ordered'");
+    $orderedPurchaseOrders = $result->fetch_assoc()['count'] ?? 0;
+
+    $result = $this->conn->query("SELECT COUNT(*) as count FROM purchase_orders WHERE expected_delivery = CURDATE()");
+    $arrivingToday = $result->fetch_assoc()['count'] ?? 0;
+
     // Inventory data for pie chart
     $result = $this->conn->query("SELECT name, quantity FROM inventory WHERE quantity > 0 ORDER BY quantity DESC");
     $inventoryData = [];
@@ -98,6 +104,8 @@ public function index()
         'overStockItems' => $overStockItems,
         'totalInventoryValue' => $totalInventoryValue,
         'pendingPurchaseOrders' => $pendingPurchaseOrders,
+        'orderedPurchaseOrders' => $orderedPurchaseOrders,
+        'arrivingToday' => $arrivingToday,
         'inventoryData' => $inventoryData,
         'latestLowStockAlerts' => $latestLowStockAlerts
     ]);

@@ -97,4 +97,10 @@ class Inventory extends Model
         $stmt = $this->db->query("SELECT * FROM inventory WHERE quantity / max_quantity <= 0.2");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    public function updateQuantity($id, $quantity)
+    {
+        $stmt = $this->db->prepare("UPDATE inventory SET quantity = :quantity WHERE id = :id");
+        return $stmt->execute(['id' => $id, 'quantity' => $quantity]);
+    }
 }

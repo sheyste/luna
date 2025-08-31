@@ -14,6 +14,11 @@ const routes = array(
     '/inventory/delete' => array('InventoryController', 'delete'),
     '/inventory/getDetail' => array('InventoryController', 'getDetail'),
     '/inventory/getAll' => array('InventoryController', 'getAll'),
+    '/inventory/physical-count' => array('PhysicalCountController', 'index'),
+    '/inventory/addCountEntry' => array('PhysicalCountController', 'addCountEntry'),
+    '/inventory/getPendingEntries' => array('PhysicalCountController', 'getPendingEntries'),
+    '/inventory/deleteCountEntry' => array('PhysicalCountController', 'deleteCountEntry'),
+    '/inventory/savePhysicalCount' => array('PhysicalCountController', 'savePhysicalCount'),
     '/inventory/check-low-stock-db' => array('InventoryController', 'checkLowStockDb'),
     '/inventory/check-and-send-alerts' => array('InventoryController', 'checkAndSendAlerts'),
     '/inventory/low-stock-alerts' => array('LowStockAlertController', 'index'),
@@ -55,6 +60,9 @@ const routes = array(
     // Backup routes
     '/backup' => array('BackupController', 'index'),
     '/backup/download' => array('BackupController', 'download'),
-    '/backup/upload' => array('BackupController', 'upload')
+    '/backup/upload' => array('BackupController', 'upload'),
+
+    // Barcode routes
+    '/barcode' => array('BarcodeController', 'index'),
 
 );

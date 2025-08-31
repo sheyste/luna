@@ -1,44 +1,28 @@
 <?php
 /**
- * Email Helper for sending emails via SMTP
- * Works with AHA SEND API and other SMTP providers
+ * Email Helper for sending emails via AhaSend API V2
+ * Works with AHA SEND API V2 and other email providers
  */
 
 class EmailHelper
 {
-    private $smtpHost;
-    private $smtpPort;
-    private $smtpUsername;
-    private $smtpPassword;
+    private $apiKey;
+    private $apiUrl;
+    private $accountId;
     private $fromEmail;
     private $fromName;
     
     public function __construct()
     {
-        $this->smtpHost = getenv('SMTP_HOST') ?: 'smtp.gmail.com';
-        $this->smtpPort = getenv('SMTP_PORT') ?: 587;
-        $this->smtpUsername = getenv('SMTP_USERNAME') ?: '';
-        $this->smtpPassword = getenv('SMTP_PASSWORD') ?: '';
+        $this->apiKey = getenv('AHASEND_API_KEY') ?: '';
+        $this->apiUrl = getenv('AHASEND_API_URL') ?: 'https://api.ahasend.com';
+        $this->accountId = getenv('ACCOUNT_ID') ?: '';
         $this->fromEmail = getenv('FROM_EMAIL') ?: 'noreply@luna-mail.8800111.xyz';
         $this->fromName = getenv('FROM_NAME') ?: 'LUNA Inventory System';
     }
     
     /**
-     * Read SMTP response
-     */
-    private function getSmtpResponse($socket) {
-        $response = '';
-        while ($line = fgets($socket, 512)) {
-            $response .= $line;
-            if (substr($line, 3, 1) == ' ') {
-                break;
-            }
-        }
-        return $response;
-    }
-    
-    /**
-     * Send email via SMTP
+     * Send email via AhaSend API V2
      * 
      * @param string $to Recipient email address
      * @param string $subject Email subject
@@ -47,183 +31,123 @@ class EmailHelper
      */
     public function send($to, $subject, $body)
     {
-        // Check if SMTP credentials are configured
-        if (empty($this->smtpUsername) || empty($this->smtpPassword)) {
+        // Check if API key is configured
+        if (empty($this->apiKey)) {
             return [
                 'success' => false,
-                'message' => 'SMTP credentials not configured. Please set SMTP_USERNAME and SMTP_PASSWORD in your .env file.'
+                'message' => 'AhaSend API key not configured. Please set AHASEND_API_KEY in your .env file.'
+            ];
+        }
+        
+        // Check if account ID is configured
+        if (empty($this->accountId)) {
+            return [
+                'success' => false,
+                'message' => 'AhaSend Account ID not configured. Please set ACCOUNT_ID in your .env file.'
             ];
         }
         
         try {
-            // Create socket connection
-            $socket = fsockopen('tcp://' . $this->smtpHost, $this->smtpPort, $errno, $errstr, 30);
-            
-            if (!$socket) {
-                return [
-                    'success' => false,
-                    'message' => 'Failed to connect to SMTP server: ' . $errstr
-                ];
-            }
-            
-            // Read server greeting
-            $response = $this->getSmtpResponse($socket);
-            if (substr($response, 0, 3) != '220') {
-                fclose($socket);
-                return [
-                    'success' => false,
-                    'message' => 'SMTP server greeting failed: ' . $response
-                ];
-            }
-            
-            // Send EHLO
-            fwrite($socket, "EHLO localhost\r\n");
-            $response = $this->getSmtpResponse($socket);
-            if (substr($response, 0, 3) != '250') {
-                fclose($socket);
-                return [
-                    'success' => false,
-                    'message' => 'EHLO command failed: ' . $response
-                ];
-            }
-            
-            // Check if STARTTLS is supported
-            if (strpos($response, 'STARTTLS') !== false) {
-                // Start TLS
-                fwrite($socket, "STARTTLS\r\n");
-                $response = $this->getSmtpResponse($socket);
-                if (substr($response, 0, 3) != '220') {
-                    fclose($socket);
-                    return [
-                        'success' => false,
-                        'message' => 'STARTTLS command failed: ' . $response
-                    ];
-                }
-                
-                // Enable crypto
-                $cryptoEnabled = stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
-                if (!$cryptoEnabled) {
-                    fclose($socket);
-                    return [
-                        'success' => false,
-                        'message' => 'Failed to enable TLS encryption'
-                    ];
-                }
-                
-                // Send EHLO again after STARTTLS
-                fwrite($socket, "EHLO localhost\r\n");
-                $response = $this->getSmtpResponse($socket);
-                if (substr($response, 0, 3) != '250') {
-                    fclose($socket);
-                    return [
-                        'success' => false,
-                        'message' => 'EHLO command after STARTTLS failed: ' . $response
-                    ];
-                }
-            }
-            
-            // Authenticate using AUTH PLAIN (preferred method)
-            $authString = base64_encode("\0" . $this->smtpUsername . "\0" . $this->smtpPassword);
-            fwrite($socket, "AUTH PLAIN " . $authString . "\r\n");
-            $response = $this->getSmtpResponse($socket);
-            
-            // If AUTH PLAIN fails, try AUTH LOGIN as fallback
-            if (substr($response, 0, 3) != '235') {
-                // Try AUTH LOGIN
-                fwrite($socket, "AUTH LOGIN\r\n");
-                $response = $this->getSmtpResponse($socket);
-                if (substr($response, 0, 3) != '334') {
-                    fclose($socket);
-                    return [
-                        'success' => false,
-                        'message' => 'AUTH LOGIN command failed: ' . $response
-                    ];
-                }
-                
-                fwrite($socket, base64_encode($this->smtpUsername) . "\r\n");
-                $response = $this->getSmtpResponse($socket);
-                if (substr($response, 0, 3) != '334') {
-                    fclose($socket);
-                    return [
-                        'success' => false,
-                        'message' => 'Username authentication failed: ' . $response
-                    ];
-                }
-                
-                fwrite($socket, base64_encode($this->smtpPassword) . "\r\n");
-                $response = $this->getSmtpResponse($socket);
-                if (substr($response, 0, 3) != '235') {
-                    fclose($socket);
-                    return [
-                        'success' => false,
-                        'message' => 'Password authentication failed: ' . $response
-                    ];
-                }
-            }
-            
-            // Set sender
-            fwrite($socket, "MAIL FROM: <" . $this->fromEmail . ">\r\n");
-            $response = $this->getSmtpResponse($socket);
-            if (substr($response, 0, 3) != '250') {
-                fclose($socket);
-                return [
-                    'success' => false,
-                    'message' => 'MAIL FROM command failed: ' . $response
-                ];
-            }
-            
-            // Set recipient
-            fwrite($socket, "RCPT TO: <" . $to . ">\r\n");
-            $response = $this->getSmtpResponse($socket);
-            if (substr($response, 0, 3) != '250') {
-                fclose($socket);
-                return [
-                    'success' => false,
-                    'message' => 'RCPT TO command failed: ' . $response
-                ];
-            }
-            
-            // Start data
-            fwrite($socket, "DATA\r\n");
-            $response = $this->getSmtpResponse($socket);
-            if (substr($response, 0, 3) != '354') {
-                fclose($socket);
-                return [
-                    'success' => false,
-                    'message' => 'DATA command failed: ' . $response
-                ];
-            }
-            
-            // Prepare email headers and body
-            $headers = "From: " . $this->fromName . " <" . $this->fromEmail . ">\r\n";
-            $headers .= "Reply-To: " . $this->fromEmail . "\r\n";
-            $headers .= "MIME-Version: 1.0\r\n";
-            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-            $headers .= "Subject: " . $subject . "\r\n";
-            
-            // Send email data
-            fwrite($socket, $headers . "\r\n");
-            fwrite($socket, $body . "\r\n");
-            fwrite($socket, ".\r\n");
-            $response = $this->getSmtpResponse($socket);
-            if (substr($response, 0, 3) != '250') {
-                fclose($socket);
-                return [
-                    'success' => false,
-                    'message' => 'Email data transmission failed: ' . $response
-                ];
-            }
-            
-            // Close connection
-            fwrite($socket, "QUIT\r\n");
-            $this->getSmtpResponse($socket); // Read QUIT response but don't check it
-            fclose($socket);
-            
-            return [
-                'success' => true,
-                'message' => 'Email sent successfully'
+            // Prepare the API request data
+            $data = [
+                'from' => [
+                    'email' => $this->fromEmail,
+                    'name' => $this->fromName
+                ],
+                'recipients' => [
+                    [
+                        'email' => $to
+                    ]
+                ],
+                'subject' => $subject,
+                'html_content' => $body,
+                'text_content' => strip_tags($body)
             ];
+            
+            // Convert data to JSON
+            $jsonData = json_encode($data);
+            
+            // Construct the full API endpoint URL
+            $endpoint = $this->apiUrl . '/v2/accounts/' . $this->accountId . '/messages';
+            
+            // Log the request for debugging
+            error_log("AhaSend API Request: " . $endpoint . " with data: " . $jsonData);
+            
+            // Initialize cURL
+            $ch = curl_init();
+            
+            // Set cURL options
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $endpoint,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => $jsonData,
+                CURLOPT_HTTPHEADER => [
+                    'Content-Type: application/json',
+                    'Authorization: Bearer ' . $this->apiKey
+                ],
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_VERBOSE => true,
+                CURLOPT_HEADER => true
+            ]);
+            
+            // Execute the request
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+            $error = curl_error($ch);
+            
+            // Close cURL
+            curl_close($ch);
+            
+            // Check for cURL errors
+            if ($error) {
+                error_log("AhaSend API cURL Error: " . $error);
+                return [
+                    'success' => false,
+                    'message' => 'cURL error: ' . $error
+                ];
+            }
+            
+            // Separate headers and body
+            $headers = substr($response, 0, $headerSize);
+            $bodyResponse = substr($response, $headerSize);
+            
+            // Log the response for debugging
+            error_log("AhaSend API Response Headers: " . $headers);
+            error_log("AhaSend API Response Body: " . $bodyResponse);
+            
+            // Decode the response
+            $responseData = json_decode($bodyResponse, true);
+            
+            // Check HTTP status code
+            if ($httpCode >= 200 && $httpCode < 300) {
+                return [
+                    'success' => true,
+                    'message' => 'Email sent successfully',
+                    'data' => $responseData
+                ];
+            } else {
+                // Handle API errors
+                $errorMessage = 'API error (HTTP ' . $httpCode . ')';
+                if (isset($responseData['message'])) {
+                    $errorMessage = $responseData['message'];
+                } elseif (isset($responseData['error'])) {
+                    $errorMessage = $responseData['error'];
+                } elseif ($httpCode == 404) {
+                    $errorMessage = 'Endpoint not found. Please check the API URL and endpoint.';
+                }
+                
+                return [
+                    'success' => false,
+                    'message' => 'Failed to send email: ' . $errorMessage,
+                    'http_code' => $httpCode,
+                    'response' => $responseData,
+                    'headers' => $headers
+                ];
+            }
         } catch (Exception $e) {
+            error_log("AhaSend API Exception: " . $e->getMessage());
             return [
                 'success' => false,
                 'message' => 'Failed to send email: ' . $e->getMessage()

@@ -37,8 +37,8 @@
         });
     }
     
-    // Check for and send low stock alerts every 30 seconds
-    setInterval(checkAndSendLowStockAlerts, 30000);
+    // Check for and send low stock alerts every 3 seconds
+    setInterval(checkAndSendLowStockAlerts, 3000);
     
     // Also check on page load
     checkAndSendLowStockAlerts();
@@ -65,11 +65,11 @@
     
     // Also check on page load
     autoUpdateAlerts();
-    
     // Log "checking is finish" every 3 seconds
     setInterval(function() {
         console.log("checking is finish");
     }, 3000);
+    
 </script>
 </body>
 </html>
