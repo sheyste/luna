@@ -281,4 +281,65 @@ public function getDetail() {
     header('Content-Type: application/json');
     echo json_encode($item);
 }
+
+public function getMenuIngredients() {
+    header('Content-Type: application/json');
+    
+    if ($_SERVER['REQUEST_METHOD'] !== 'GET' || !isset($_GET['menu_id'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid request']);
+        return;
+    }
+    
+    $menu_id = intval($_GET['menu_id']);
+    
+    // Get menu ingredients with current inventory levels
+    $sql = "
+        SELECT
+            mi.inventory_id,
+            mi.quantity as required_quantity,
+            i.name as ingredient_name,
+            i.quantity as available_quantity,
+            i.unit,
+            i.price as unit_price
+        FROM menu_ingredients mi
+        LEFT JOIN inventory i ON mi.inventory_id = i.id
+        WHERE mi.menu_id = ?
+        ORDER BY i.name ASC
+    ";
+    
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $menu_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    $ingredients = [];
+    $canProduce = 0;
+    $hasIngredients = false;
+    
+    while ($row = $result->fetch_assoc()) {
+        $required = floatval($row['required_quantity']);
+        $available = floatval($row['available_quantity']);
+        
+        if ($required > 0) {
+            $maxPossible = floor($available / $required);
+            if (!$hasIngredients || $maxPossible < $canProduce) {
+                $canProduce = $maxPossible;
+            }
+            $hasIngredients = true;
+        }
+        
+        $row['max_production'] = $required > 0 ? floor($available / $required) : 0;
+        $row['sufficient'] = $available >= $required;
+        $ingredients[] = $row;
+    }
+    
+    $stmt->close();
+    
+    echo json_encode([
+        'success' => true,
+        'ingredients' => $ingredients,
+        'max_production' => max(0, $canProduce)
+    ]);
+}
 }

@@ -31,6 +31,7 @@ const routes = array(
     '/production/edit' => array('ProductionController', 'edit'),
     '/production/delete' => array('ProductionController', 'delete'),
     '/production/getDetail' => array('ProductionController', 'getDetail'),
+    '/production/getMenuIngredients' => array('ProductionController', 'getMenuIngredients'),
     '/production/updateSold' => array('ProductionController', 'updateSold'),
     '/production/updateWastage' => array('ProductionController', 'updateWastage'),
 
@@ -64,5 +65,11 @@ const routes = array(
 
     // Barcode routes
     '/barcode' => array('BarcodeController', 'index'),
+    '/barcode/physical-count' => array('BarcodeController', 'physicalCount'),
+    '/barcode/production-actions' => array('BarcodeController', 'productionActions'),
+    '/barcode/add-production' => array('BarcodeController', 'addProduction'),
+    '/barcode/update-sold' => array('BarcodeController', 'updateSold'),
+    '/barcode/update-wastage' => array('BarcodeController', 'updateWastage'),
+    '/barcode/menu-actions' => array('BarcodeController', 'menuActions'),
 
 );
