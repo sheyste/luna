@@ -5,10 +5,41 @@ DB_USERNAME=root
 DB_PASSWORD=rootroot
 DB_PORT=3306
 
-# API Keys
-# Email Configuration
-AHASEND_API_KEY=
-AHASEND_API_URL=
-ACCOUNT_ID=
-FROM_EMAIL=
-FROM_NAME=
+# SMTP Email Configuration
+SMTP_HOST=
+SMTP_PORT=587
+SMTP_USERNAME=
+SMTP_PASSWORD=
+SMTP_SECURITY=tls
+FROM_EMAIL=noreply@ahasend.com
+FROM_NAME=LUNA Inventory System
+
+# Example SMTP configurations for common providers:
+#
+# Gmail:
+# SMTP_HOST=smtp.gmail.com
+# SMTP_PORT=587
+# SMTP_SECURITY=tls
+# SMTP_USERNAME=your-email@gmail.com
+# SMTP_PASSWORD=your-app-password
+#
+# Outlook/Hotmail:
+# SMTP_HOST=smtp-mail.outlook.com
+# SMTP_PORT=587
+# SMTP_SECURITY=tls
+# SMTP_USERNAME=your-email@outlook.com
+# SMTP_PASSWORD=your-password
+#
+# Yahoo Mail:
+# SMTP_HOST=smtp.mail.yahoo.com
+# SMTP_PORT=587
+# SMTP_SECURITY=tls
+# SMTP_USERNAME=your-email@yahoo.com
+# SMTP_PASSWORD=your-app-password
+#
+# Custom SMTP Server:
+# SMTP_HOST=mail.yourdomain.com
+# SMTP_PORT=587
+# SMTP_SECURITY=tls
+# SMTP_USERNAME=noreply@yourdomain.com
+# SMTP_PASSWORD=your-password
