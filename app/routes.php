@@ -65,6 +65,7 @@ const routes = array(
 
     // Barcode routes
     '/barcode' => array('BarcodeController', 'index'),
+    '/barcode/selection' => array('BarcodeController', 'selection'),
     '/barcode/physical-count' => array('BarcodeController', 'physicalCount'),
     '/barcode/production-actions' => array('BarcodeController', 'productionActions'),
     '/barcode/add-production' => array('BarcodeController', 'addProduction'),
