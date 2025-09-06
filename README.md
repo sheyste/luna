@@ -139,3 +139,6 @@ A comprehensive inventory and production management system built with PHP using 
 - Download database backups
 - Upload and restore from backup files
 - Complete data protection solution
+
+
+Thank you!
