@@ -66,8 +66,12 @@ class BarcodeController extends Controller
         }
         
         // Get inventory item details
-        $result = $this->conn->query("SELECT id, name, barcode, quantity, unit, price FROM inventory WHERE id = " . intval($itemId));
+        $stmt = $this->conn->prepare("SELECT id, name, barcode, quantity, unit, price FROM inventory WHERE id = ?");
+        $stmt->bind_param("i", $itemId);
+        $stmt->execute();
+        $result = $stmt->get_result();
         $item = $result->fetch_assoc();
+        $stmt->close();
         
         if (!$item) {
             header('Location: /barcode');
@@ -91,14 +95,18 @@ class BarcodeController extends Controller
         }
         
         // Get production item details
-        $result = $this->conn->query("
+        $stmt = $this->conn->prepare("
             SELECT p.id, p.menu_id, p.barcode, p.quantity_produced, p.quantity_available,
                    p.quantity_sold, p.wastage, m.name AS menu_name, m.price
             FROM production p
             JOIN menus m ON p.menu_id = m.id
-            WHERE p.id = " . intval($itemId)
-        );
+            WHERE p.id = ?
+        ");
+        $stmt->bind_param("i", $itemId);
+        $stmt->execute();
+        $result = $stmt->get_result();
         $item = $result->fetch_assoc();
+        $stmt->close();
         
         if (!$item) {
             header('Location: /barcode');
@@ -122,8 +130,12 @@ class BarcodeController extends Controller
         }
         
         // Get menu item details
-        $result = $this->conn->query("SELECT id, name, barcode, price FROM menus WHERE id = " . intval($itemId));
+        $stmt = $this->conn->prepare("SELECT id, name, barcode, price FROM menus WHERE id = ?");
+        $stmt->bind_param("i", $itemId);
+        $stmt->execute();
+        $result = $stmt->get_result();
         $item = $result->fetch_assoc();
+        $stmt->close();
         
         if (!$item) {
             header('Location: /barcode');
@@ -147,8 +159,12 @@ class BarcodeController extends Controller
         }
         
         // Get menu details
-        $result = $this->conn->query("SELECT id, name, price FROM menus WHERE id = " . intval($menuId));
+        $stmt = $this->conn->prepare("SELECT id, name, price FROM menus WHERE id = ?");
+        $stmt->bind_param("i", $menuId);
+        $stmt->execute();
+        $result = $stmt->get_result();
         $menu = $result->fetch_assoc();
+        $stmt->close();
         
         if (!$menu) {
             header('Location: /barcode');
@@ -172,16 +188,20 @@ class BarcodeController extends Controller
         }
         
         // Get menu details and current production stats
-        $result = $this->conn->query("
+        $stmt = $this->conn->prepare("
             SELECT m.id, m.name, m.price,
                    SUM(p.quantity_available) as total_available,
                    SUM(p.quantity_sold) as total_sold
             FROM menus m
             LEFT JOIN production p ON m.id = p.menu_id
-            WHERE m.id = " . intval($menuId) . "
+            WHERE m.id = ?
             GROUP BY m.id, m.name, m.price
         ");
+        $stmt->bind_param("i", $menuId);
+        $stmt->execute();
+        $result = $stmt->get_result();
         $menu = $result->fetch_assoc();
+        $stmt->close();
         
         if (!$menu) {
             header('Location: /barcode');
@@ -205,16 +225,20 @@ class BarcodeController extends Controller
         }
         
         // Get menu details and current production stats
-        $result = $this->conn->query("
+        $stmt = $this->conn->prepare("
             SELECT m.id, m.name, m.price,
                    SUM(p.quantity_available) as total_available,
                    SUM(p.wastage) as total_wastage
             FROM menus m
             LEFT JOIN production p ON m.id = p.menu_id
-            WHERE m.id = " . intval($menuId) . "
+            WHERE m.id = ?
             GROUP BY m.id, m.name, m.price
         ");
+        $stmt->bind_param("i", $menuId);
+        $stmt->execute();
+        $result = $stmt->get_result();
         $menu = $result->fetch_assoc();
+        $stmt->close();
         
         if (!$menu) {
             header('Location: /barcode');
