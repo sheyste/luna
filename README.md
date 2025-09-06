@@ -5,22 +5,40 @@ A comprehensive inventory and production management system built with PHP using 
 ## Features
 
 ### Core Functionality
-- **Secure User Authentication**: Login and logout functionality with password hashing and session management
+- **Secure User Authentication**: Username-based login and logout functionality with password hashing and session management
 - **User Management (CRUD)**: Add, view, edit, and delete users with role-based permissions
 - **Dashboard Overview**: Home page with quick access to all system modules
 
 ### Inventory Management
 - **Complete CRUD Operations**: Create, read, update, and delete inventory items
-- **Detailed Item Tracking**: Track item name, quantity, unit, price, purchase date, and maximum quantity
+- **Detailed Item Tracking**: Track item name, barcode, quantity, unit, price, purchase date, maximum quantity, and category
 - **Real-time Inventory Updates**: Automatic inventory adjustments based on production and purchase orders
 - **Data Visualization**: Dynamic tables with sorting, searching, and pagination using DataTables
 
+### Physical Count System
+- **Physical Count Tracking**: Dedicated system for inventory physical counting operations
+- **Variance Analysis**: Automatic calculation of differences between system count and physical count
+- **Percentage Variance**: Calculate variance percentages for accuracy assessment
+- **Value Impact Analysis**: Calculate financial impact of inventory discrepancies
+- **Pending Entries Management**: Track and manage pending physical count entries before applying to inventory
+- **Batch Processing**: Save multiple physical count entries to inventory in batches
+
+### Barcode System
+- **Comprehensive Barcode Support**: Full barcode scanning functionality across all modules
+- **Barcode Physical Count**: Use barcode scanners for physical inventory counting
+- **Barcode Production Management**: Scan barcodes for production operations
+- **Barcode Menu Actions**: Barcode integration with menu item operations
+- **Production Updates via Barcode**: Update sold quantities and wastage using barcode scanning
+- **Multi-Entity Barcode Support**: Barcodes for inventory items, menu items, and production batches
+
 ### Production Management
 - **Menu-Based Production Tracking**: Manage production based on menu items with ingredient requirements
-- **Batch Production Records**: Track quantity produced, available, sold, and wastage
-- **Automatic Ingredient Deduction**: Automatically deduct ingredients from inventory when production is recorded
-- **Sales and Wastage Tracking**: Update sold quantities and wastage for accurate inventory management
-- **Barcode Support**: Optional barcode tracking for production items
+- **Advanced Batch Processing**: Track quantity produced, available, sold, and wastage with detailed analytics
+- **Automatic Ingredient Deduction**: FIFO-based ingredient deduction from inventory when production is recorded
+- **Cost and Profit Analysis**: Calculate unit costs, total costs, sales revenue, waste costs, and profit margins
+- **Sales and Wastage Tracking**: FIFO-based updates for sold quantities and wastage across production batches
+- **Production Capacity Planning**: Real-time calculation of maximum production based on available ingredients
+- **Barcode Integration**: Full barcode support for production tracking and updates
 
 ### Purchase Order Management
 - **Multi-Item Purchase Orders**: Create purchase orders with multiple inventory items
@@ -29,20 +47,26 @@ A comprehensive inventory and production management system built with PHP using 
 - **Automatic Inventory Updates**: Automatically update inventory when purchase orders are marked as received
 - **Price and Quantity Tracking**: Maintain records of unit prices and quantities for purchasing history
 
-### Low Stock Alert System
-- **Automated Detection**: Automatic identification of low stock items (below 20% of maximum quantity)
-- **Email Notifications**: Automated email alerts to administrators when low stock items are detected
-- **Alert Resolution Tracking**: Automatic resolution of alerts when inventory levels are restored
-- **Alert History**: Complete history of all low stock alerts with resolution status
-- **Manual Alert Checking**: On-demand checking for low stock items
+### Advanced Low Stock Alert System
+- **Intelligent Detection**: Automatic identification of low stock items (below 20% of maximum quantity)
+- **Rich Email Notifications**: Professional HTML email alerts to administrators with modern responsive design
+- **Smart Alert Management**: Prevents duplicate alerts with transaction-level locking
+- **Auto-Resolution System**: Automatically resolves alerts when inventory levels are restored
+- **Alert History Tracking**: Complete history of all low stock alerts with detailed resolution status
+- **Manual Alert Processing**: On-demand checking and sending of low stock alerts
+- **AhaSend Integration**: Email notifications via AhaSend API V2
 
 ### Menu Management
-- **Menu Item Creation**: Define menu items with names for production tracking
-- **Ingredient Mapping**: Associate inventory items as ingredients for menu items with required quantities
-- **Recipe Management**: Maintain ingredient recipes for consistent production planning
+- **Menu Item Creation**: Define menu items with names, barcodes, and pricing
+- **Advanced Ingredient Mapping**: Associate inventory items as ingredients with precise required quantities
+- **Recipe Cost Analysis**: Automatic calculation of menu item costs based on ingredient prices
+- **Recipe Management**: Maintain detailed ingredient recipes for consistent production planning
+- **Barcode Support**: Full barcode integration for menu items
 
 ### System Administration
 - **Database Backup & Restore**: Export database to SQL files and import from backups
+- **Email Configuration**: AhaSend API V2 integration for system notifications
+- **Email Testing Tools**: Built-in email testing and configuration debugging
 - **Responsive UI**: Mobile-friendly interface built with Bootstrap 5
 - **MVC Architecture**: Clean separation of business logic, data, and presentation layers
 
@@ -58,39 +82,47 @@ A comprehensive inventory and production management system built with PHP using 
    - Extract the contents to `htdocs` directory in your XAMPP installation
 
 2. **Create the Database:**
-   - Create a new database in MySQL (e.g., `luna_inventory`)
-   - Import the provided SQL schema file (`luna.sql`) to create tables and initial data
+   - Create a new database in MySQL named `luna`
+   - Import the provided SQL backup file (`luna_backup_2025-08-31_14-44-52.sql`) to create tables and initial data
+   - Or create the database schema manually if no backup file is available
 
 3. **Configure Database Connection:**
-   - Copy `.env.sample` to `.env`
-   - Update the database connection details in the `.env` file to match your environment:
+   - Copy `.env sample` to `.env` (remove the space in the filename)
+   - The default configuration should work with standard XAMPP setup:
      ```
      DB_HOST=localhost
-     DB_USERNAME=your_username
-     DB_PASSWORD=your_password
-     DB_NAME=luna_inventory
+     DB_NAME=luna
+     DB_USERNAME=root
+     DB_PASSWORD=rootroot
      DB_PORT=3306
      ```
+   - Update the database credentials if your MySQL setup differs from the defaults
 
 4. **Configure Email Settings (Optional):**
-   - Update email configuration in `.env` for low stock alert notifications:
+   - Update email configuration in `.env` for low stock alert notifications via AhaSend API V2:
      ```
-     EMAIL_HOST=smtp.gmail.com
-     EMAIL_PORT=587
-     EMAIL_USERNAME=your_email@gmail.com
-     EMAIL_PASSWORD=your_app_password
-     EMAIL_ENCRYPTION=tls
+     AHASEND_API_KEY=your_ahasend_api_key
+     AHASEND_API_URL=https://api.ahasend.com
+     ACCOUNT_ID=your_account_id
+     FROM_EMAIL=noreply@yourdomain.com
+     FROM_NAME=LUNA Inventory System
      ```
+   - Email configuration is optional - the system will work without it, but low stock alerts won't be sent
 
 5. **Run the Application:**
-   - Start Apache and MySQL services in XAMPP
-   - Place the project folder inside your web server's root directory (e.g., `htdocs` for XAMPP)
+   - Start Apache and MySQL services in XAMPP Control Panel
    - Open your web browser and navigate to `http://localhost/your-folder-name`
    - You should see the login page
+   - Use the default login credentials below to access the system
+
+6. **Post-Installation Setup:**
+   - After first login, consider changing the default admin password
+   - Configure email settings if you want to receive low stock alerts
+   - Test email functionality using the built-in email testing tools (Users → Test Email)
 
 ## Default Login Credentials
 
-- **Email:** `admin@admin.com`
+- **Username:** `admin`
 - **Password:** `admin`
 
 ## System Modules
@@ -100,42 +132,59 @@ A comprehensive inventory and production management system built with PHP using 
 - Quick navigation to all modules
 
 ### 2. Inventory Management
-- View all inventory items in a searchable table
-- Add new inventory items
+- View all inventory items in a searchable table with barcode support
+- Add new inventory items with category and barcode fields
 - Edit existing inventory details
 - Delete inventory items
 - Real-time low stock indicators
 
-### 3. Production Management
-- Track production of menu items
-- Record quantities produced, sold, and wasted
-- View production history
-- Automatic ingredient deduction from inventory
+### 3. Physical Count System
+- Barcode-enabled physical inventory counting
+- Variance analysis with percentage calculations
+- Value impact assessment for discrepancies
+- Pending entries management before inventory updates
+- Batch processing of physical count results
 
-### 4. Purchase Orders
+### 4. Production Management
+- Menu-based production tracking with barcode integration
+- Advanced batch processing with cost and profit analysis
+- FIFO-based ingredient deduction and sales tracking
+- Production capacity planning based on available ingredients
+- Real-time updates for sold quantities and wastage
+
+### 5. Purchase Orders
 - Create and manage purchase orders
 - Track order status (Pending, Received, Cancelled)
 - Record expected delivery dates
-- Multi-item purchase orders
+- Multi-item purchase orders with automatic inventory updates
 
-### 5. Low Stock Alerts
-- View all low stock alerts
-- Track alert resolution status
-- Manual trigger for low stock checks
-- Automated email notifications
+### 6. Advanced Low Stock Alerts
+- Intelligent alert detection with duplicate prevention
+- Professional HTML email notifications via AhaSend API
+- Auto-resolution system when stock is replenished
+- Alert history tracking with detailed status information
+- Manual alert processing and email testing tools
 
-### 6. Menu Management
-- Manage menu items
-- Define ingredient requirements for menu items
-- View menu item details
+### 7. Menu Management
+- Comprehensive menu item management with barcode support
+- Advanced ingredient mapping with cost analysis
+- Recipe management for consistent production planning
+- Automatic cost calculation based on ingredient prices
 
-### 7. User Management
-- Add new users
-- Edit user details
-- Delete users
-- Role-based access control
+### 8. Barcode System
+- Universal barcode scanning across all modules
+- Barcode-enabled physical counting operations
+- Production management via barcode scanning
+- Menu item operations with barcode integration
+- Support for inventory, menu, and production item barcodes
 
-### 8. Backup & Restore
+### 9. User Management
+- Username-based authentication system
+- Add, edit, and delete users with role-based permissions
+- Email testing and configuration tools for administrators
+- Secure password hashing and session management
+
+### 10. Backup & Restore
 - Download database backups
 - Upload and restore from backup files
 - Complete data protection solution
