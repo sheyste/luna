@@ -1,4 +1,4 @@
-<?php include_once __DIR__ . '/layout/header_simple.php'; ?>
+<?php include_once __DIR__ . '/../layout/header_simple.php'; ?>
 
 <style>
     body {
@@ -302,4 +302,4 @@ $(document).ready(function() {
 });
 </script>
 
-<?php include_once __DIR__ . '/layout/footer_simple.php' ?>
+<?php include_once __DIR__ . '/../layout/footer_simple.php' ?>

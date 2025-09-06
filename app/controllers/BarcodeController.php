@@ -22,7 +22,7 @@ class BarcodeController extends Controller
     {
         // Get all inventory items for barcode lookup
         $inventoryItems = [];
-        $result = $this->conn->query("SELECT id, name, barcode, quantity, unit, price FROM inventory ORDER BY name ASC");
+        $result = $this->conn->query("SELECT id, name, barcode, quantity, unit, price, max_quantity FROM inventory ORDER BY name ASC");
         while ($row = $result->fetch_assoc()) {
             $inventoryItems[] = $row;
         }
@@ -48,10 +48,84 @@ class BarcodeController extends Controller
             $productionItems[] = $row;
         }
 
-        $this->view('barcode', [
+        $this->view('barcode/scanner', [
             'inventoryItems' => $inventoryItems,
             'menuItems' => $menuItems,
             'productionItems' => $productionItems
+        ]);
+    }
+
+    public function selection()
+    {
+        $barcode = $_GET['barcode'] ?? '';
+        $inventoryId = $_GET['inventory_id'] ?? '';
+        $productionId = $_GET['production_id'] ?? '';
+        $menuId = $_GET['menu_id'] ?? '';
+        
+        if (empty($barcode) || (empty($inventoryId) && empty($productionId) && empty($menuId))) {
+            header('Location: /barcode');
+            exit;
+        }
+
+        $inventoryItem = null;
+        $productionItem = null;
+        $menuItem = null;
+        $hasInventory = false;
+        $hasProduction = false;
+        $hasMenu = false;
+
+        // Get inventory item if provided
+        if (!empty($inventoryId)) {
+            $stmt = $this->conn->prepare("SELECT id, name, barcode, quantity, unit, price, max_quantity FROM inventory WHERE id = ?");
+            $stmt->bind_param("i", $inventoryId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $inventoryItem = $result->fetch_assoc();
+            $stmt->close();
+            $hasInventory = !empty($inventoryItem);
+        }
+
+        // Get production item if provided
+        if (!empty($productionId)) {
+            $stmt = $this->conn->prepare("
+                SELECT p.id, p.menu_id, p.barcode, p.quantity_produced, p.quantity_available,
+                       p.quantity_sold, p.wastage, m.name AS menu_name, m.price
+                FROM production p
+                JOIN menus m ON p.menu_id = m.id
+                WHERE p.id = ?
+            ");
+            $stmt->bind_param("i", $productionId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $productionItem = $result->fetch_assoc();
+            $stmt->close();
+            $hasProduction = !empty($productionItem);
+        }
+
+        // Get menu item if provided
+        if (!empty($menuId)) {
+            $stmt = $this->conn->prepare("SELECT id, name, barcode, price FROM menus WHERE id = ?");
+            $stmt->bind_param("i", $menuId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $menuItem = $result->fetch_assoc();
+            $stmt->close();
+            $hasMenu = !empty($menuItem);
+        }
+
+        if (!$hasInventory && !$hasProduction && !$hasMenu) {
+            header('Location: /barcode');
+            exit;
+        }
+
+        $this->view('barcode/selection', [
+            'barcode' => $barcode,
+            'hasInventory' => $hasInventory,
+            'hasProduction' => $hasProduction,
+            'hasMenu' => $hasMenu,
+            'inventoryItem' => $inventoryItem,
+            'productionItem' => $productionItem,
+            'menuItem' => $menuItem
         ]);
     }
 
@@ -66,7 +140,7 @@ class BarcodeController extends Controller
         }
         
         // Get inventory item details
-        $stmt = $this->conn->prepare("SELECT id, name, barcode, quantity, unit, price FROM inventory WHERE id = ?");
+        $stmt = $this->conn->prepare("SELECT id, name, barcode, quantity, unit, price, max_quantity FROM inventory WHERE id = ?");
         $stmt->bind_param("i", $itemId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -78,7 +152,7 @@ class BarcodeController extends Controller
             exit;
         }
         
-        $this->view('barcode_physical_count', [
+        $this->view('barcode/physical-count', [
             'item' => $item,
             'barcode' => $barcode
         ]);
@@ -113,7 +187,7 @@ class BarcodeController extends Controller
             exit;
         }
         
-        $this->view('barcode_production_actions', [
+        $this->view('barcode/production-actions', [
             'item' => $item,
             'barcode' => $barcode
         ]);
@@ -142,7 +216,7 @@ class BarcodeController extends Controller
             exit;
         }
         
-        $this->view('barcode_menu_actions', [
+        $this->view('barcode/menu-actions', [
             'item' => $item,
             'barcode' => $barcode
         ]);
@@ -171,7 +245,7 @@ class BarcodeController extends Controller
             exit;
         }
         
-        $this->view('barcode_add_production', [
+        $this->view('barcode/add-production', [
             'menu' => $menu,
             'barcode' => $barcode
         ]);
@@ -208,7 +282,7 @@ class BarcodeController extends Controller
             exit;
         }
         
-        $this->view('barcode_update_sold', [
+        $this->view('barcode/update-sold', [
             'menu' => $menu,
             'barcode' => $barcode
         ]);
@@ -245,7 +319,7 @@ class BarcodeController extends Controller
             exit;
         }
         
-        $this->view('barcode_update_wastage', [
+        $this->view('barcode/update-wastage', [
             'menu' => $menu,
             'barcode' => $barcode
         ]);

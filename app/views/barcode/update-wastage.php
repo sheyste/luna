@@ -1,4 +1,4 @@
-<?php include_once __DIR__ . '/layout/header_simple.php'; ?>
+<?php include_once __DIR__ . '/../layout/header_simple.php'; ?>
 
 <style>
     body {
@@ -12,8 +12,8 @@
     }
     
     .item-header {
-        background: linear-gradient(135deg, #ffc107, #e0a800);
-        color: #212529;
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
         padding: 20px;
         border-radius: 12px 12px 0 0;
         text-align: center;
@@ -36,7 +36,7 @@
         padding: 15px;
         border-radius: 8px;
         margin-bottom: 20px;
-        border-left: 4px solid #ffc107;
+        border-left: 4px solid #dc3545;
     }
     
     .detail-item h5 {
@@ -75,8 +75,8 @@
     
     .count-input input:focus {
         outline: none;
-        border-color: #ffc107;
-        box-shadow: 0 0 0 3px rgba(255,193,7,0.1);
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220,53,69,0.1);
     }
     
     .action-buttons {
@@ -101,12 +101,12 @@
     }
     
     .btn-primary {
-        background: #ffc107;
-        color: #212529;
+        background: #dc3545;
+        color: white;
     }
     
     .btn-primary:hover {
-        background: #e0a800;
+        background: #c82333;
     }
     
     .btn-secondary {
@@ -170,7 +170,7 @@
 
 <div class="barcode-page">
     <div class="item-header">
-        <h3><i class="fa fa-shopping-cart"></i> Update Sold</h3>
+        <h3><i class="fa fa-trash"></i> Update Wastage</h3>
     </div>
     
     <div class="item-details">
@@ -180,13 +180,13 @@
             <h5><?php echo htmlspecialchars($menu['name']); ?></h5>
             <p><strong>Barcode:</strong> <?php echo htmlspecialchars($barcode); ?></p>
             <p><strong>Available Units:</strong> <?php echo $menu['total_available'] ?? 0; ?> units</p>
-            <p><strong>Total Sold:</strong> <?php echo $menu['total_sold'] ?? 0; ?> units</p>
+            <p><strong>Current Wastage:</strong> <?php echo $menu['total_wastage'] ?? 0; ?> units</p>
             <p><strong>Price:</strong> ₱<?php echo number_format($menu['price'], 2); ?></p>
         </div>
         
         <div class="count-input">
-            <label for="sold-quantity">Quantity Sold:</label>
-            <input type="number" id="sold-quantity" min="0" step="1" max="<?php echo $menu['total_available'] ?? 0; ?>" placeholder="Enter quantity sold">
+            <label for="wastage-quantity">Wastage Quantity:</label>
+            <input type="number" id="wastage-quantity" min="0" step="1" max="<?php echo $menu['total_available'] ?? 0; ?>" placeholder="Enter wastage quantity">
             <small class="form-text text-muted">Maximum available: <?php echo $menu['total_available'] ?? 0; ?> units</small>
         </div>
         
@@ -194,8 +194,8 @@
             <a href="/barcode/production-actions?barcode=<?php echo urlencode($barcode); ?>&item_id=<?php echo $menu['id']; ?>" class="btn btn-secondary">
                 <i class="fa fa-arrow-left"></i> Back
             </a>
-            <button class="btn btn-primary" id="save-sold">
-                <i class="fa fa-save"></i> Update Sold
+            <button class="btn btn-primary" id="save-wastage">
+                <i class="fa fa-save"></i> Update Wastage
             </button>
         </div>
     </div>
@@ -207,20 +207,20 @@ $(document).ready(function() {
     const menuId = <?php echo $menu['id']; ?>;
     const maxAvailable = <?php echo $menu['total_available'] ?? 0; ?>;
     
-    $('#sold-quantity').focus();
+    $('#wastage-quantity').focus();
     
-    $('#save-sold').click(function() {
-        updateSold();
+    $('#save-wastage').click(function() {
+        updateWastage();
     });
     
-    $('#sold-quantity').keypress(function(e) {
+    $('#wastage-quantity').keypress(function(e) {
         if (e.which === 13) {
-            updateSold();
+            updateWastage();
         }
     });
     
-    function updateSold() {
-        const quantity = parseInt($('#sold-quantity').val());
+    function updateWastage() {
+        const quantity = parseInt($('#wastage-quantity').val());
         
         if (isNaN(quantity) || quantity <= 0) {
             showNotification('Please enter a valid quantity', 'error');
@@ -228,30 +228,30 @@ $(document).ready(function() {
         }
         
         if (quantity > maxAvailable) {
-            showNotification(`Cannot sell ${quantity} units. Only ${maxAvailable} units available.`, 'error');
+            showNotification(`Cannot waste ${quantity} units. Only ${maxAvailable} units available.`, 'error');
             return;
         }
         
-        $('#save-sold').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Updating...');
+        $('#save-wastage').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Updating...');
         
         const formData = new FormData();
-        formData.append(`sold[${menuId}]`, quantity);
+        formData.append(`wastage[${menuId}]`, quantity);
         
         $.ajax({
-            url: '/production/updateSold',
+            url: '/production/updateWastage',
             method: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             success: function(response) {
-                showNotification('Sold quantity updated successfully!', 'success');
+                showNotification('Wastage updated successfully!', 'success');
                 setTimeout(() => {
                     window.location.href = '/barcode';
                 }, 1500);
             },
             error: function() {
-                showNotification('Error updating sold quantity', 'error');
-                $('#save-sold').prop('disabled', false).html('<i class="fa fa-save"></i> Update Sold');
+                showNotification('Error updating wastage', 'error');
+                $('#save-wastage').prop('disabled', false).html('<i class="fa fa-save"></i> Update Wastage');
             }
         });
     }
@@ -270,4 +270,4 @@ $(document).ready(function() {
 });
 </script>
 
-<?php include_once __DIR__ . '/layout/footer_simple.php' ?>
+<?php include_once __DIR__ . '/../layout/footer_simple.php' ?>

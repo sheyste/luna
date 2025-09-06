@@ -1,4 +1,4 @@
-<?php include_once __DIR__ . '/layout/header_simple.php'; ?>
+<?php include_once __DIR__ . '/../layout/header_simple.php'; ?>
 
 <style>
     body {
@@ -281,6 +281,179 @@
             flex-direction: column;
         }
     }
+    
+    /* Confirmation Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    
+    .modal-overlay.show {
+        display: flex;
+    }
+    
+    .confirmation-modal {
+        background: white;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, #28a745, #1e7e34);
+        color: white;
+        padding: 20px;
+        border-radius: 12px 12px 0 0;
+        text-align: center;
+    }
+    
+    .modal-header h4 {
+        margin: 0;
+        font-weight: 500;
+        font-size: 1.3rem;
+    }
+    
+    .modal-body {
+        padding: 25px;
+    }
+    
+    .production-summary {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #28a745;
+    }
+    
+    .production-summary h5 {
+        margin: 0 0 10px 0;
+        color: #333;
+        font-size: 1.1rem;
+    }
+    
+    .production-summary .quantity-info {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #28a745;
+    }
+    
+    .ingredients-usage {
+        margin-bottom: 25px;
+    }
+    
+    .ingredients-usage h6 {
+        margin-bottom: 15px;
+        font-weight: 600;
+        color: #333;
+        font-size: 1rem;
+    }
+    
+    .ingredient-usage-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        margin-bottom: 8px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #28a745;
+    }
+    
+    .ingredient-usage-name {
+        font-weight: 500;
+        color: #2c3e50;
+        flex: 1;
+    }
+    
+    .ingredient-usage-amount {
+        font-weight: 600;
+        color: #28a745;
+        font-size: 0.95rem;
+    }
+    
+    .modal-footer {
+        padding: 20px 25px;
+        border-top: 1px solid #e9ecef;
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+    }
+    
+    .modal-btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 120px;
+    }
+    
+    .modal-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    .modal-btn-primary {
+        background: #28a745;
+        color: white;
+    }
+    
+    .modal-btn-primary:hover:not(:disabled) {
+        background: #218838;
+    }
+    
+    .modal-btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .modal-btn-secondary:hover {
+        background: #545b62;
+    }
+    
+    /* Mobile modal optimizations */
+    @media (max-width: 768px) {
+        .modal-overlay {
+            padding: 10px;
+        }
+        
+        .modal-header {
+            padding: 16px;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            padding: 16px 20px;
+            flex-direction: column;
+        }
+        
+        .modal-btn {
+            width: 100%;
+        }
+    }
 </style>
 
 <div class="barcode-page">
@@ -324,6 +497,38 @@
     </div>
 </div>
 
+<!-- Confirmation Modal -->
+<div id="confirmationModal" class="modal-overlay">
+    <div class="confirmation-modal">
+        <div class="modal-header">
+            <h4><i class="fa fa-check-circle"></i> Confirm Production</h4>
+        </div>
+        <div class="modal-body">
+            <div class="production-summary">
+                <h5>Production Details</h5>
+                <div class="quantity-info">
+                    Producing <span id="modal-quantity">0</span> units of <strong id="modal-item-name"></strong>
+                </div>
+            </div>
+            
+            <div class="ingredients-usage">
+                <h6><i class="fa fa-list"></i> Total Ingredients to be Used:</h6>
+                <div id="modal-ingredients-list">
+                    <!-- Ingredient usage details will be populated here -->
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn modal-btn-secondary" id="modal-cancel">
+                <i class="fa fa-times"></i> Cancel
+            </button>
+            <button class="modal-btn modal-btn-primary" id="modal-confirm">
+                <i class="fa fa-save"></i> Confirm & Save
+            </button>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 $(document).ready(function() {
@@ -334,12 +539,29 @@ $(document).ready(function() {
     $('#production-quantity').focus();
     
     $('#save-production').click(function() {
-        saveProduction();
+        showConfirmationModal();
     });
     
     $('#production-quantity').keypress(function(e) {
         if (e.which === 13) {
-            saveProduction();
+            showConfirmationModal();
+        }
+    });
+    
+    // Modal event handlers
+    $('#modal-cancel').click(function() {
+        hideConfirmationModal();
+    });
+    
+    $('#modal-confirm').click(function() {
+        hideConfirmationModal();
+        saveProduction();
+    });
+    
+    // Close modal when clicking outside
+    $('#confirmationModal').click(function(e) {
+        if (e.target === this) {
+            hideConfirmationModal();
         }
     });
     
@@ -394,6 +616,62 @@ $(document).ready(function() {
             $('#production-limit-text').text(`Maximum possible: ${maxProduction} units`).css('color', '#28a745');
             $('#save-production').prop('disabled', false);
         }
+    }
+    
+    function showConfirmationModal() {
+        const quantity = parseInt($('#production-quantity').val());
+        const maxAllowed = parseInt($('#production-quantity').attr('max')) || 0;
+        
+        if (isNaN(quantity) || quantity <= 0) {
+            showNotification('Please enter a valid quantity', 'error');
+            return;
+        }
+        
+        if (maxAllowed === 0) {
+            showNotification('Cannot produce - insufficient ingredients in inventory', 'error');
+            return;
+        }
+        
+        if (quantity > maxAllowed) {
+            const limitingIngredient = findLimitingIngredient(quantity);
+            const errorMsg = limitingIngredient ?
+                `Cannot produce ${quantity} units. Limited by "${limitingIngredient.name}" (need ${(quantity * limitingIngredient.required).toFixed(2)} ${limitingIngredient.unit}, have ${limitingIngredient.available.toFixed(2)} ${limitingIngredient.unit}). Maximum possible: ${maxAllowed} units.` :
+                `Cannot produce ${quantity} units. Maximum possible is ${maxAllowed} units.`;
+            
+            showNotification(errorMsg, 'error');
+            return;
+        }
+        
+        // Populate modal with production details
+        $('#modal-quantity').text(quantity);
+        $('#modal-item-name').text('<?php echo htmlspecialchars($menu['name']); ?>');
+        
+        // Calculate and display total ingredient usage
+        displayIngredientUsage(quantity);
+        
+        // Show the modal
+        $('#confirmationModal').addClass('show');
+    }
+    
+    function hideConfirmationModal() {
+        $('#confirmationModal').removeClass('show');
+    }
+    
+    function displayIngredientUsage(quantity) {
+        let ingredientsHtml = '';
+        
+        currentIngredients.forEach(function(ingredient) {
+            const totalUsage = (ingredient.required_quantity * quantity).toFixed(2);
+            
+            ingredientsHtml += `
+                <div class="ingredient-usage-item">
+                    <div class="ingredient-usage-name">${escapeHtml(ingredient.ingredient_name)}</div>
+                    <div class="ingredient-usage-amount">${totalUsage} ${escapeHtml(ingredient.unit)}</div>
+                </div>
+            `;
+        });
+        
+        $('#modal-ingredients-list').html(ingredientsHtml);
     }
     
     function saveProduction() {
@@ -498,4 +776,4 @@ $(document).ready(function() {
 });
 </script>
 
-<?php include_once __DIR__ . '/layout/footer_simple.php' ?>
+<?php include_once __DIR__ . '/../layout/footer_simple.php' ?>

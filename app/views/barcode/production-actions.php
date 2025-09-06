@@ -1,4 +1,4 @@
-<?php include_once __DIR__ . '/layout/header_simple.php'; ?>
+<?php include_once __DIR__ . '/../layout/header_simple.php'; ?>
 
 <style>
     body {
@@ -167,4 +167,4 @@
     </div>
 </div>
 
-<?php include_once __DIR__ . '/layout/footer_simple.php' ?>
+<?php include_once __DIR__ . '/../layout/footer_simple.php' ?>
