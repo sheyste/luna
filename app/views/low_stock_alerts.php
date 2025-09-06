@@ -138,4 +138,5 @@
       "ordering": false // Disable sorting functionality
     });
   });
+
 </script>

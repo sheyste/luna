@@ -60,7 +60,7 @@
                      <i class="fa fa-user-plus me-1"></i> Add User
                  </button>
                  <button class="btn btn-info btn-sm" id="debugEmailBtn">
-                     <i class="fa fa-bug me-1"></i> Debug Email Config
+                     <i class="fa fa-cog me-1"></i> Debug SMTP Config
                  </button>
              </div>
         </div>
@@ -104,6 +104,29 @@
                     <?php endif; ?>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- SMTP Testing Card -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 fw-bold text-success">SMTP Email Testing</h6>
+        <small class="text-muted">Test your SMTP configuration</small>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <button type="button" class="btn btn-info btn-sm me-2" onclick="testSMTPConnection()">
+                    <i class="fas fa-plug"></i> Test SMTP Connection
+                </button>
+                <button type="button" class="btn btn-success btn-sm" onclick="showTestEmailModal()">
+                    <i class="fas fa-envelope"></i> Send Test Email
+                </button>
+            </div>
+            <div class="col-md-6">
+                <div id="smtp-test-result" class="alert" style="display: none; margin-bottom: 0;"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -226,6 +249,37 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" id="deleteUserBtn">Delete</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Test Email Modal -->
+<div class="modal fade" id="testEmailModal" tabindex="-1" aria-labelledby="testEmailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="testEmailModalLabel">Send Test Email</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="testEmailForm">
+                    <div class="mb-3">
+                        <label for="testEmail" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="testEmail" placeholder="Enter email address" required>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        This will send a test email to verify your SMTP configuration is working correctly.
+                    </div>
+                    <div id="test-email-result" class="alert" style="display: none;"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="sendTestEmail()">
+                    <i class="fas fa-paper-plane"></i> Send Test Email
+                </button>
             </div>
         </div>
     </div>
@@ -361,24 +415,75 @@ $(document).ready(function() {
             $.ajax({
                 url: '/users/test-email',
                 type: 'POST',
-                dataType: 'JSON',
                 data: data,
-                success: function(response) {
-                    if (response.success) {
-                        alert('Test email sent successfully to ' + name);
-                    } else {
-                        let errorMessage = 'Failed to send test email: ' + (response.message || 'Unknown error');
-                        if (response.http_code) {
-                            errorMessage += '\nHTTP Code: ' + response.http_code;
+                beforeSend: function() {
+                    // Show loading message
+                    alert('📧 Sending test email via SMTP...\n\nPlease wait...');
+                },
+                success: function(response, textStatus, xhr) {
+                    try {
+                        // Try to parse JSON if response is string
+                        if (typeof response === 'string') {
+                            response = JSON.parse(response);
                         }
-                        if (response.response) {
-                            errorMessage += '\nResponse: ' + JSON.stringify(response.response);
+                        
+                        if (response.success) {
+                            let successMessage = '✅ SMTP Test Email Sent Successfully!\n\n';
+                            successMessage += 'Recipient: ' + name + ' (' + email + ')\n';
+                            successMessage += 'Method: ' + (response.method || 'SMTP') + '\n';
+                            if (response.smtp_host) {
+                                successMessage += 'SMTP Host: ' + response.smtp_host + '\n';
+                            }
+                            successMessage += 'Message: ' + response.message;
+                            alert(successMessage);
+                        } else {
+                            let errorMessage = '❌ SMTP Test Email Failed\n\n';
+                            errorMessage += 'Recipient: ' + name + ' (' + email + ')\n';
+                            errorMessage += 'Error: ' + (response.message || 'Unknown error');
+                            if (response.http_code) {
+                                errorMessage += '\nHTTP Code: ' + response.http_code;
+                            }
+                            alert(errorMessage);
                         }
+                    } catch (parseError) {
+                        // Handle JSON parsing error - server returned HTML/PHP error
+                        let errorMessage = '❌ Server Response Error\n\n';
+                        errorMessage += 'The server returned an invalid response (likely PHP error)\n\n';
+                        errorMessage += 'Server Response (first 200 chars):\n';
+                        errorMessage += response.toString().substring(0, 200) + '...\n\n';
+                        errorMessage += 'Please check:\n';
+                        errorMessage += '1. PHP error logs\n';
+                        errorMessage += '2. SMTP configuration in .env file\n';
+                        errorMessage += '3. Server permissions and extensions';
                         alert(errorMessage);
                     }
                 },
                 error: function(xhr, status, error) {
-                    alert('An error occurred while sending the test email: ' + error);
+                    let errorMessage = '❌ Request Failed\n\n';
+                    
+                    if (xhr.status === 0) {
+                        errorMessage += 'Network Error: Could not connect to server\n';
+                        errorMessage += 'Check if the server is running and accessible.';
+                    } else if (xhr.status >= 500) {
+                        errorMessage += 'Server Error (' + xhr.status + ')\n';
+                        errorMessage += 'The server encountered an internal error.\n';
+                        errorMessage += 'Check server logs for details.';
+                    } else if (xhr.status === 404) {
+                        errorMessage += 'Endpoint Not Found (404)\n';
+                        errorMessage += 'The test email endpoint may not be configured correctly.';
+                    } else {
+                        errorMessage += 'HTTP Error: ' + xhr.status + '\n';
+                        errorMessage += 'Status: ' + status + '\n';
+                        errorMessage += 'Error: ' + error;
+                    }
+                    
+                    // Try to get more info from response
+                    if (xhr.responseText && xhr.responseText.length > 0) {
+                        errorMessage += '\n\nServer Response (first 200 chars):\n';
+                        errorMessage += xhr.responseText.substring(0, 200) + '...';
+                    }
+                    
+                    alert(errorMessage);
                 }
             });
         }
@@ -419,17 +524,21 @@ $(document).ready(function() {
             type: 'GET',
             dataType: 'JSON',
             success: function(response) {
-                let message = 'Email Configuration Debug:\n\n';
+                let message = 'SMTP Email Configuration Debug:\n\n';
                 message += 'Environment file exists: ' + response.env_file_exists + '\n';
-                message += 'API Key: ' + response.api_key + '\n';
-                message += 'API URL: ' + response.api_url + '\n';
+                message += 'SMTP Host: ' + response.smtp_host + '\n';
+                message += 'SMTP Port: ' + response.smtp_port + '\n';
+                message += 'SMTP Username: ' + response.smtp_username + '\n';
+                message += 'SMTP Password: ' + response.smtp_password + '\n';
+                message += 'SMTP Security: ' + response.smtp_security + '\n';
                 message += 'From Email: ' + response.from_email + '\n';
                 message += 'From Name: ' + response.from_name + '\n';
-                message += 'cURL Extension: ' + response.curl_extension;
+                message += 'cURL Extension: ' + response.curl_extension + '\n';
+                message += 'OpenSSL Extension: ' + response.openssl_extension;
                 alert(message);
             },
             error: function() {
-                alert('Error checking email configuration');
+                alert('Error checking SMTP configuration');
             }
         });
     });
@@ -444,5 +553,95 @@ $(document).ready(function() {
         $(this).find('form').trigger('reset');
         $(this).find('.alert').hide();
     });
+
+    // SMTP Testing Functions
+    window.testSMTPConnection = function() {
+        const resultDiv = $('#smtp-test-result');
+        resultDiv.removeClass('alert-success alert-danger alert-warning').addClass('alert-info').show();
+        resultDiv.html('<i class="fas fa-spinner fa-spin"></i> Testing SMTP connection...');
+        
+        $.ajax({
+            url: '/inventory/test-smtp-connection',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    resultDiv.removeClass('alert-info alert-danger').addClass('alert-success');
+                    resultDiv.html(`
+                        <i class="fas fa-check-circle"></i> <strong>Connection Successful!</strong><br>
+                        <small>SMTP Host: ${response.smtp_host || 'Not configured'}<br>
+                        Port: ${response.smtp_port || 'Not configured'}<br>
+                        Security: ${response.smtp_security || 'Not configured'}</small>
+                    `);
+                } else {
+                    resultDiv.removeClass('alert-info alert-success').addClass('alert-danger');
+                    resultDiv.html(`<i class="fas fa-exclamation-circle"></i> <strong>Connection Failed:</strong> ${response.message}`);
+                }
+            },
+            error: function(xhr, status, error) {
+                resultDiv.removeClass('alert-info alert-success').addClass('alert-danger');
+                resultDiv.html(`<i class="fas fa-exclamation-circle"></i> <strong>Error:</strong> Failed to test SMTP connection`);
+            }
+        });
+    };
+
+    window.showTestEmailModal = function() {
+        $('#testEmailModal').modal('show');
+        $('#test-email-result').hide();
+        $('#testEmail').val('');
+    };
+
+    window.sendTestEmail = function() {
+        const email = $('#testEmail').val();
+        const resultDiv = $('#test-email-result');
+        
+        if (!email) {
+            resultDiv.removeClass('alert-success alert-danger').addClass('alert-warning').show();
+            resultDiv.html('<i class="fas fa-exclamation-triangle"></i> Please enter an email address.');
+            return;
+        }
+        
+        if (!isValidEmail(email)) {
+            resultDiv.removeClass('alert-success alert-danger').addClass('alert-warning').show();
+            resultDiv.html('<i class="fas fa-exclamation-triangle"></i> Please enter a valid email address.');
+            return;
+        }
+        
+        resultDiv.removeClass('alert-success alert-danger alert-warning').addClass('alert-info').show();
+        resultDiv.html('<i class="fas fa-spinner fa-spin"></i> Sending test email...');
+        
+        $.ajax({
+            url: '/inventory/send-test-email',
+            method: 'POST',
+            data: { email: email },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    resultDiv.removeClass('alert-info alert-danger').addClass('alert-success');
+                    resultDiv.html(`
+                        <i class="fas fa-check-circle"></i> <strong>Email Sent Successfully!</strong><br>
+                        <small>Test email sent to: ${response.recipient}</small>
+                    `);
+                    
+                    // Also update the main SMTP test result
+                    const mainResultDiv = $('#smtp-test-result');
+                    mainResultDiv.removeClass('alert-info alert-danger').addClass('alert-success').show();
+                    mainResultDiv.html(`<i class="fas fa-check-circle"></i> <strong>SMTP Working!</strong> Test email sent to ${response.recipient}`);
+                } else {
+                    resultDiv.removeClass('alert-info alert-success').addClass('alert-danger');
+                    resultDiv.html(`<i class="fas fa-exclamation-circle"></i> <strong>Failed to send email:</strong> ${response.message}`);
+                }
+            },
+            error: function(xhr, status, error) {
+                resultDiv.removeClass('alert-info alert-success').addClass('alert-danger');
+                resultDiv.html(`<i class="fas fa-exclamation-circle"></i> <strong>Error:</strong> Failed to send test email`);
+            }
+        });
+    };
+
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
 });
 </script>

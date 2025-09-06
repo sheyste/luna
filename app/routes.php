@@ -25,6 +25,8 @@ const routes = array(
     '/inventory/auto-update-alerts' => array('LowStockAlertController', 'autoUpdateAlerts'),
     '/inventory/check-low-stock-db' => array('LowStockAlertController', 'checkLowStockDb'),
     '/inventory/check-and-send-alerts' => array('LowStockAlertController', 'checkAndSendAlerts'),
+    '/inventory/test-smtp-connection' => array('LowStockAlertController', 'testSMTPConnection'),
+    '/inventory/send-test-email' => array('LowStockAlertController', 'sendTestEmail'),
 
     '/production'    => array('ProductionController', 'index'),
     '/production/add' => array('ProductionController', 'add'),

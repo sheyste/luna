@@ -469,16 +469,17 @@ class LowStockAlertController extends Controller
                     </body>
                     </html>';
                     
-                    // Send email to each admin
+                    // Send email to each admin via SMTP
                     $emailHelper = new EmailHelper();
                     
                     foreach ($admins as $admin) {
                         $result = $emailHelper->send($admin['email'], $subject, $body);
                         if ($result['success']) {
                             $sentCount++;
-                            error_log("Low stock alert email sent successfully to: " . $admin['email']);
+                            error_log("Low stock alert email sent successfully via SMTP to: " . $admin['email'] .
+                                     (isset($result['method']) ? " (Method: " . $result['method'] . ")" : ""));
                         } else {
-                            error_log("Failed to send low stock alert email to: " . $admin['email'] . ". Error: " . $result['message']);
+                            error_log("Failed to send low stock alert email via SMTP to: " . $admin['email'] . ". Error: " . $result['message']);
                         }
                     }
                     
@@ -565,5 +566,116 @@ class LowStockAlertController extends Controller
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         // Return true if we should create an alert (no recent alert exists)
         return $result['count'] == 0;
+    }
+    
+    /**
+     * Test SMTP connection and configuration
+     * This method helps debug email sending issues
+     */
+    public function testSMTPConnection()
+    {
+        try {
+            $emailHelper = new EmailHelper();
+            $result = $emailHelper->testConnection();
+            
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => $result['success'],
+                'message' => $result['message'],
+                'smtp_host' => getenv('SMTP_HOST') ?: 'Not configured',
+                'smtp_port' => getenv('SMTP_PORT') ?: 'Not configured',
+                'smtp_security' => getenv('SMTP_SECURITY') ?: 'Not configured',
+                'from_email' => getenv('FROM_EMAIL') ?: 'Not configured'
+            ]);
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'SMTP test failed: ' . $e->getMessage()
+            ]);
+        }
+    }
+    
+    /**
+     * Send a test email to verify SMTP configuration
+     * This method sends a test email to the specified recipient
+     */
+    public function sendTestEmail()
+    {
+        try {
+            $to = $_POST['email'] ?? '';
+            
+            if (empty($to)) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Email address is required'
+                ]);
+                return;
+            }
+            
+            if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Invalid email address format'
+                ]);
+                return;
+            }
+            
+            $emailHelper = new EmailHelper();
+            $subject = 'LUNA Inventory System - SMTP Test Email';
+            $body = '
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>SMTP Test Email</title>
+                <style>
+                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                    .header { background-color: #293145; color: white; padding: 20px; text-align: center; }
+                    .content { padding: 20px; background-color: #f9f9f9; }
+                    .success { color: #16a34a; font-weight: bold; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h2>LUNA Inventory System</h2>
+                    </div>
+                    <div class="content">
+                        <h3>SMTP Configuration Test</h3>
+                        <p class="success">✅ Congratulations! Your SMTP configuration is working correctly.</p>
+                        <p>This test email was sent successfully via SMTP to verify your email settings.</p>
+                        <hr>
+                        <p><strong>Test Details:</strong></p>
+                        <ul>
+                            <li>Sent at: ' . date('Y-m-d H:i:s') . '</li>
+                            <li>SMTP Host: ' . (getenv('SMTP_HOST') ?: 'Not configured') . '</li>
+                            <li>SMTP Port: ' . (getenv('SMTP_PORT') ?: 'Not configured') . '</li>
+                            <li>Security: ' . (getenv('SMTP_SECURITY') ?: 'Not configured') . '</li>
+                        </ul>
+                    </div>
+                </div>
+            </body>
+            </html>';
+            
+            $result = $emailHelper->send($to, $subject, $body);
+            
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => $result['success'],
+                'message' => $result['message'],
+                'recipient' => $to
+            ]);
+            
+        } catch (Exception $e) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Test email failed: ' . $e->getMessage()
+            ]);
+        }
     }
 }
