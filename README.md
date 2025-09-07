@@ -69,6 +69,7 @@ A comprehensive inventory and production management system built with PHP using 
 - **Email Testing Tools**: Built-in email testing and configuration debugging
 - **Responsive UI**: Mobile-friendly interface built with Bootstrap 5
 - **MVC Architecture**: Clean separation of business logic, data, and presentation layers
+- **Email Testing Tools**: Built-in email testing and configuration debugging
 
 ## Requirements
 
@@ -181,7 +182,6 @@ A comprehensive inventory and production management system built with PHP using 
 ### 9. User Management
 - Username-based authentication system
 - Add, edit, and delete users with role-based permissions
-- Email testing and configuration tools for administrators
 - Secure password hashing and session management
 
 ### 10. Backup & Restore
