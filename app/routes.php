@@ -1,13 +1,13 @@
 <?php
 /**
- *  define routes with its controllers and actions 
+ *  define routes with its controllers and actions
  */
-const routes = array(
+$routes = array(
     '/'             => array('AuthController', 'index'),
     '/login'        => array('AuthController', 'login'),
     '/logout'       => array('AuthController', 'logout'),
     '/home'         => array('HomeController', 'index'),
-
+    
     '/inventory'    => array('InventoryController', 'index'),
     '/inventory/add' => array('InventoryController', 'add'),
     '/inventory/edit' => array('InventoryController', 'edit'),
@@ -76,3 +76,10 @@ const routes = array(
     '/barcode/menu-actions' => array('BarcodeController', 'menuActions'),
 
 );
+
+session_start();
+if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'User') {
+    unset($routes['/users']);
+    unset($routes['/backup']);
+}
+

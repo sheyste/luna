@@ -22,7 +22,7 @@
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-header">
-                <h5 class="mb-0">Download Backup</h5>
+                <h5 class="mb-0">Backup</h5>
             </div>
             <div class="card-body">
                 <p>Click the button below to download a complete backup of the database.</p>
@@ -38,7 +38,7 @@
     <div class="col-md-6">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Upload Backup</h5>
+                <h5 class="mb-0">Restore</h5>
             </div>
             <div class="card-body">
                 <p>Upload a previously downloaded backup file to restore the database.</p>

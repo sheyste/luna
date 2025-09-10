@@ -244,6 +244,14 @@
     .react-style-icon {
         font-size: 1.5rem;
     }
+
+    .react-style-card-header .btn-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 0.5rem 0.5rem;
+        z-index: 1;
+    }
 </style>
 
 <?php
@@ -379,7 +387,7 @@ if (!empty($items)) {
           
           <!-- Search Bar -->
           <div class="row mb-3">
-              <div class="col-12">
+              <div class="col-md-6 mx-auto">
                   <input type="text" class="form-control" id="soldSearch" placeholder="Search menu items...">
               </div>
           </div>
@@ -551,7 +559,7 @@ if (!empty($items)) {
           
           <!-- Search Bar -->
           <div class="row mb-3">
-              <div class="col-12">
+              <div class="col-md-6 mx-auto">
                   <input type="text" class="form-control" id="wastageSearch" placeholder="Search menu items...">
               </div>
           </div>
