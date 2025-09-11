@@ -57,8 +57,32 @@ class MenuController extends Controller
     }
 
     public function getMenus()
-    {
-        header('Content-Type: application/json');
-        echo json_encode($this->menuModel->getAll());
+        {
+            header('Content-Type: application/json');
+            echo json_encode($this->menuModel->getAll());
+        }
+        
+        public function printBarcode()
+        {
+            if (isset($_GET['id']) && isset($_GET['barcode'])) {
+                $menuId = $_GET['id'];
+                $barcode = $_GET['barcode'];
+                
+                // Get menu details
+                $menu = $this->menuModel->getById($menuId);
+                
+                if (!$menu) {
+                    header('Location: /menu');
+                    exit();
+                }
+                
+                $this->view('barcode/print', [
+                    'menu' => $menu,
+                    'barcode' => $barcode
+                ]);
+            } else {
+                header('Location: /menu');
+                exit();
+            }
+        }
     }
-}

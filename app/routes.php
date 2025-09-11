@@ -13,8 +13,9 @@ $routes = array(
     '/inventory/edit' => array('InventoryController', 'edit'),
     '/inventory/delete' => array('InventoryController', 'delete'),
     '/inventory/getDetail' => array('InventoryController', 'getDetail'),
-    '/inventory/getAll' => array('InventoryController', 'getAll'),
-    '/inventory/physical-count' => array('PhysicalCountController', 'index'),
+        '/inventory/getAll' => array('InventoryController', 'getAll'),
+        '/inventory/print-barcode' => array('InventoryController', 'printBarcode'),
+        '/inventory/physical-count' => array('PhysicalCountController', 'index'),
     '/inventory/addCountEntry' => array('PhysicalCountController', 'addCountEntry'),
     '/inventory/getPendingEntries' => array('PhysicalCountController', 'getPendingEntries'),
     '/inventory/deleteCountEntry' => array('PhysicalCountController', 'deleteCountEntry'),
@@ -50,8 +51,9 @@ $routes = array(
     '/menu/add'     => array('MenuController', 'add'),
     '/menu/edit'    => array('MenuController', 'edit'),
     '/menu/delete'  => array('MenuController', 'delete'),
-    '/menu/getMenus' => array('MenuController', 'getMenus'),
-    '/menu/getDetail' => array('MenuController', 'getDetail'),
+        '/menu/getMenus' => array('MenuController', 'getMenus'),
+        '/menu/getDetail' => array('MenuController', 'getDetail'),
+        '/menu/print-barcode' => array('MenuController', 'printBarcode'),
 
     // Updated Purchase Orders routes
     '/purchase_order' => array('PurchaseOrderController', 'index'),
