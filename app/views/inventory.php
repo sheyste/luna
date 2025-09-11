@@ -105,13 +105,16 @@
                               <td data-label="Purchase Date"><?= htmlspecialchars(isset($item['purchase_date']) ? date('F j, Y', strtotime($item['purchase_date'])):'') ?></td>
                               <td data-label="Barcode"><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
                               <td data-label="Actions">
-                                  <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
-                                      <i class="fa fa-edit"></i> Edit
-                                  </button>
-                                  <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
-                                      <i class="fa fa-trash"></i> Delete
-                                  </button>
-                              </td>
+                                                                  <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
+                                                                      <i class="fa fa-edit"></i> Edit
+                                                                  </button>
+                                                                  <button class="btn btn-primary btn-sm print-btn" data-id="<?= htmlspecialchars($item['id']) ?>" data-barcode="<?= htmlspecialchars($item['barcode'] ?? '') ?>">
+                                                                      <i class="fa fa-print"></i> Print
+                                                                  </button>
+                                                                  <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
+                                                                      <i class="fa fa-trash"></i> Delete
+                                                                  </button>
+                                                              </td>
                           </tr>
                       <?php endforeach; ?>
                   <?php endif; ?>
@@ -328,9 +331,24 @@
     });
 
     // Handle Barcode generation
-    $('#generateBarcodeBtn').on('click', function() {
-        var barcode = Date.now();
-        $('#itemBarcode').val(barcode);
-    });
+        $('#generateBarcodeBtn').on('click', function() {
+            var barcode = Date.now();
+            $('#itemBarcode').val(barcode);
+        });
+        
+        // Handle Print button click
+        $('#inventoryTable').on('click', '.print-btn', function() {
+            var itemId = $(this).data('id');
+            var barcode = $(this).data('barcode');
+            
+            if (!barcode) {
+                alert('No barcode available for this item.');
+                return;
+            }
+            
+            // Open a new window for printing
+            var printWindow = window.open('/inventory/print-barcode?id=' + itemId + '&barcode=' + encodeURIComponent(barcode), '_blank');
+            printWindow.focus();
+        });
 });
 </script>

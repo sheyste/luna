@@ -74,11 +74,29 @@ class InventoryController extends Controller
     {
         $items = $this->inventoryModel->getAllItems();
         $this->view('physical_count', ['items' => $items]);
+    }
 
-
-
-
-
-        $this->view('physical_count', ['items' => $items]);
+    public function printBarcode()
+    {
+        if (isset($_GET['id']) && isset($_GET['barcode'])) {
+            $itemId = $_GET['id'];
+            $barcode = $_GET['barcode'];
+            
+            // Get item details
+            $item = $this->inventoryModel->getItemById($itemId);
+            
+            if (!$item) {
+                header('Location: /inventory');
+                exit();
+            }
+            
+            $this->view('barcode/print', [
+                'item' => $item,
+                'barcode' => $barcode
+            ]);
+        } else {
+            header('Location: /inventory');
+            exit();
+        }
     }
 }

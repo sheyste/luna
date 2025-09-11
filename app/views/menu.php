@@ -69,13 +69,16 @@
                         </div>
                     </div>
                     <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
-                        <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
-                            <i class="fa fa-edit"></i> Edit
-                        </button>
-                        <button class="btn btn-outline-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
-                            <i class="fa fa-trash"></i> Delete
-                        </button>
-                    </div>
+                                            <button class="btn btn-primary btn-sm print-btn" data-id="<?= htmlspecialchars($menu['id']) ?>" data-barcode="<?= htmlspecialchars($menu['barcode']) ?>">
+                                                <i class="fa fa-print"></i> Print
+                                            </button>
+                                            <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
+                                                <i class="fa fa-edit"></i> Edit
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </button>
+                                        </div>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -475,7 +478,22 @@ $(document).ready(function() {
     // Clear search functionality
     $('#clearMenuSearch').on('click', function() {
         $('#menuSearch').val('');
-        $('#menuSearch').trigger('input');
-    });
-});
-</script>
+                $('#menuSearch').trigger('input');
+            });
+            
+            // Handle Print button click
+            $('#menu-container').on('click', '.print-btn', function() {
+                var menuId = $(this).data('id');
+                var barcode = $(this).data('barcode');
+                
+                if (!barcode) {
+                    alert('No barcode available for this menu item.');
+                    return;
+                }
+                
+                // Open a new window for printing
+                var printWindow = window.open('/menu/print-barcode?id=' + menuId + '&barcode=' + encodeURIComponent(barcode), '_blank');
+                printWindow.focus();
+            });
+        });
+        </script>
