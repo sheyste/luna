@@ -1,6 +1,29 @@
 <?php include_once __DIR__ . '/layout/header.php'; ?>
 
 <style>
+    /* Clickable row styling */
+    .clickable-row {
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        position: relative; /* Needed for z-index to work */
+    }
+
+    .clickable-row:hover {
+        background-color: #adb5bd !important; /* Darker background for more noticeable hover */
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.4); /* More pronounced shadow for depth */
+        transform: translateY(-1px) scale(1.00); /* Move up slightly and scale for "pop" effect */
+        z-index: 1; /* Bring to front on hover */
+    }
+
+    .clickable-row:hover td {
+        background-color: transparent;
+    }
+
+    /* Prevent button clicks from triggering row click */
+    .clickable-row td button {
+        pointer-events: auto;
+    }
+
     /* Responsive table for mobile */
     @media (max-width: 767px) {
         #inventoryTable thead {
@@ -61,7 +84,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" id="inventoryTable" width="100%" cellspacing="0">
+            <table class="table" id="inventoryTable" width="100%" cellspacing="0">
                 <thead class="table-dark">
                     <tr>
                         <th>Name</th>
@@ -94,7 +117,7 @@
                                   }
                               }
                           ?>
-                          <tr class="<?= $rowClass ?>">
+                          <tr class="<?= $rowClass ?> clickable-row" data-id="<?= htmlspecialchars($item['id']) ?>">
                               <td data-label="Name"><?= htmlspecialchars($item['name'] ?? '') ?></td>
                               <td data-label="Category"><?= htmlspecialchars($item['category'] ?? '') ?></td>
                               <td data-label="Stock Quantity"><?= htmlspecialchars($item['quantity'] ?? '') ?></td>
@@ -105,9 +128,6 @@
                               <td data-label="Purchase Date"><?= htmlspecialchars(isset($item['purchase_date']) ? date('F j, Y', strtotime($item['purchase_date'])):'') ?></td>
                               <td data-label="Barcode"><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
                               <td data-label="Actions">
-                                                                  <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
-                                                                      <i class="fa fa-edit"></i> Edit
-                                                                  </button>
                                                                   <button class="btn btn-primary btn-sm print-btn" data-id="<?= htmlspecialchars($item['id']) ?>" data-barcode="<?= htmlspecialchars($item['barcode'] ?? '') ?>">
                                                                       <i class="fa fa-print"></i> Print
                                                                   </button>
@@ -285,6 +305,25 @@
   </div>
 </div>
 
+<!-- Print Barcode Modal -->
+<div class="modal fade" id="printBarcodeModal" tabindex="-1" aria-labelledby="printBarcodeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="printBarcodeModalLabel">Print Barcode</h5>
+        <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex flex-column">
+        <iframe id="printBarcodeIframe" style="width: 100%; flex-grow: 1; border: none;"></iframe>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+		<button type="button" class="btn btn-primary" id="printIframeContent">Print</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <?php include_once __DIR__ . '/layout/footer.php' ?>
 
 <script>
@@ -295,8 +334,13 @@
       }
     });
 
-    // Handle Edit button click
-    $('#inventoryTable').on('click', '.edit-btn', function() {
+    // Handle clickable row click (for editing)
+    $('#inventoryTable').on('click', '.clickable-row', function(e) {
+      // Don't trigger row click if a button was clicked
+      if ($(e.target).closest('button').length) {
+        return;
+      }
+      
       var itemId = $(this).data('id');
 
       $.ajax({
@@ -324,7 +368,8 @@
     });
 
     // Handle Delete button click
-    $('#inventoryTable').on('click', '.delete-btn', function() {
+    $('#inventoryTable').on('click', '.delete-btn', function(e) {
+        e.stopPropagation(); // Prevent row click
         var itemId = $(this).data('id');
         $('#deleteItemId').val(itemId);
         $('#deleteInventoryModal').modal('show');
@@ -337,7 +382,8 @@
         });
         
         // Handle Print button click
-        $('#inventoryTable').on('click', '.print-btn', function() {
+        $('#inventoryTable').on('click', '.print-btn', function(e) {
+            e.stopPropagation(); // Prevent row click
             var itemId = $(this).data('id');
             var barcode = $(this).data('barcode');
             
@@ -346,9 +392,19 @@
                 return;
             }
             
-            // Open a new window for printing
-            var printWindow = window.open('/inventory/print-barcode?id=' + itemId + '&barcode=' + encodeURIComponent(barcode), '_blank');
-            printWindow.focus();
+            // Set the iframe source and show the modal
+            var iframeSrc = '/inventory/print-barcode?id=' + itemId + '&barcode=' + encodeURIComponent(barcode);
+            $('#printBarcodeIframe').attr('src', iframeSrc);
+            $('#printBarcodeModal').modal('show');
+        });
+
+        // Handle printing from the modal iframe
+        $('#printIframeContent').on('click', function() {
+            var iframe = document.getElementById('printBarcodeIframe');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+            }
         });
 });
 </script>
