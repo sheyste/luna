@@ -5,3 +5,185 @@ body {
 .container {
   width: auto;
 }
+
+:root {
+    --sidebar-width: 260px; /* Slightly wider */
+    --sidebar-bg: #1a202c; /* Darker background */
+    --sidebar-link-color: #a0aec0; /* Lighter gray text */
+    --sidebar-link-hover-bg: #2d3748; /* Subtle hover background */
+    --sidebar-link-active-bg: #3a4452; /* More prominent active background */
+    --sidebar-link-active-border: #4299e1; /* Filament blue accent */
+    --topbar-height: 64px; /* Slightly taller topbar */
+    --page-bg: #f7fafc; /* Lighter page background */
+}
+
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: var(--page-bg);
+    font-size: 0.9rem;
+    overflow-x: hidden;
+}
+
+.page-wrapper {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#sidebar {
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--sidebar-bg);
+    color: #fff;
+    transition: margin-left 0.35s ease-in-out;
+    box-shadow: 0 0 25px rgba(0,0,0,0.1);
+    z-index: 1030;
+}
+
+.sidebar-header {
+    padding: 1.25rem 1.5rem; /* Adjusted padding */
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Softer border */
+    height: var(--topbar-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-header .navbar-brand {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+
+.side-menu {
+    padding: 0.5rem 0; /* Reduced top/bottom padding */
+    list-style: none;
+    margin: 0;
+}
+
+.side-menu .nav-item a {
+    color: var(--sidebar-link-color);
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem; /* Adjusted padding */
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    font-weight: 500;
+    border-radius: 0.375rem; /* Rounded corners */
+    margin: 0 0.75rem; /* Margin for rounded corners */
+    border-left: none; /* Remove left border */
+}
+
+.side-menu .nav-item a:hover {
+    background: var(--sidebar-link-hover-bg);
+    color: #fff;
+}
+
+.side-menu .nav-item.active > a {
+    background: var(--sidebar-link-active-bg);
+    color: #fff;
+    /* border-left-color: var(--sidebar-link-active-border); */ /* Removed */
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* Subtle shadow */
+}
+
+.side-menu .nav-item i {
+    width: 28px; /* Slightly larger icon area */
+    text-align: center;
+    font-size: 1.2rem; /* Slightly larger icon */
+    margin-right: 12px; /* Increased margin */
+    color: var(--sidebar-link-color); /* Ensure icon color matches link */
+}
+
+.side-menu .nav-item.active > a i {
+    color: #fff; /* Active icon color */
+}
+
+.sidebar-heading {
+    color: #6b7280 !important; /* Muted gray for headings */
+    font-size: 0.75rem; /* Smaller font size */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1.5rem 0.25rem 1.5rem !important; /* Adjusted padding */
+}
+
+#content-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    height: var(--topbar-height);
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    flex-shrink: 0;
+    z-index: 1020;
+    border-bottom: 1px solid #e2e8f0; /* Subtle border for topbar */
+}
+
+.sidebar-toggler {
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+
+.navbar-toolbar {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+main {
+    padding: 1.5rem;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* Sidebar Toggled State */
+body.sidebar-toggled #sidebar {
+    margin-left: calc(-1 * var(--sidebar-width));
+}
+
+/* Adjust content wrapper when sidebar is toggled on desktop */
+@media (min-width: 992px) {
+    body.sidebar-toggled #content-wrapper {
+        margin-left: 0; /* Content takes full width when sidebar is hidden */
+    }
+}
+
+@media (max-width: 991.98px) {
+    #sidebar {
+        position: fixed;
+        height: 100%;
+        margin-left: calc(-1 * var(--sidebar-width));
+    }
+    body.sidebar-toggled #sidebar {
+        margin-left: 0;
+    }
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1029; /* Below sidebar (1030) */
+        display: none;
+    }
+    body.sidebar-toggled .sidebar-overlay {
+        display: block;
+    }
+}

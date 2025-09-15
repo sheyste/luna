@@ -16,166 +16,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/all.min.css">
     <!-- DataTables Bootstrap 5 -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
     <!-- JsBarcode -->
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-    <style>
-        :root {
-            --sidebar-width: 240px;
-            --sidebar-bg: #293145;
-            --sidebar-link-color: #c3c7d5;
-            --sidebar-link-hover-bg: #333c54;
-            --sidebar-link-active-bg: #1f2639;
-            --sidebar-link-active-border: #3498db;
-            --topbar-height: 60px;
-            --page-bg: #f3f4f6;
-        }
-
-        body {
-            font-family: 'Inter', Arial, sans-serif;
-            background-color: var(--page-bg);
-            font-size: 0.9rem;
-            overflow-x: hidden;
-        }
-
-        .page-wrapper {
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        #sidebar {
-            width: var(--sidebar-width);
-            min-width: var(--sidebar-width);
-            overflow-y: auto;
-            overflow-x: hidden;
-            background: var(--sidebar-bg);
-            color: #fff;
-            transition: margin-left 0.35s ease-in-out;
-            box-shadow: 0 0 25px rgba(0,0,0,0.1);
-            z-index: 1030;
-        }
-
-        .sidebar-header {
-            padding: 1rem 1.5rem;
-            text-align: center;
-            border-bottom: 1px solid #333c54;
-            height: var(--topbar-height);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .sidebar-header .navbar-brand {
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.5rem;
-            text-decoration: none;
-        }
-
-        .side-menu {
-            padding: 1rem 0;
-            list-style: none;
-            margin: 0;
-        }
-
-        .side-menu .nav-item a {
-            color: var(--sidebar-link-color);
-            display: flex;
-            align-items: center;
-            padding: 0.8rem 1.5rem;
-            text-decoration: none;
-            transition: background 0.2s, color 0.2s;
-            font-weight: 500;
-            border-left: 4px solid transparent;
-        }
-
-        .side-menu .nav-item a:hover {
-            background: var(--sidebar-link-hover-bg);
-            color: #fff;
-        }
-
-        .side-menu .nav-item.active > a {
-            background: var(--sidebar-link-active-bg);
-            color: #fff;
-            border-left-color: var(--sidebar-link-active-border);
-        }
-
-        .side-menu .nav-item i {
-            width: 25px;
-            text-align: center;
-            font-size: 1.1rem;
-            margin-right: 10px;
-        }
-
-        #content-wrapper {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header {
-            height: var(--topbar-height);
-            background: #fff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            padding: 0 1.5rem;
-            flex-shrink: 0;
-            z-index: 1020;
-        }
-        
-        .sidebar-toggler {
-            font-size: 1.2rem;
-            color: #6c757d;
-        }
-
-        .navbar-toolbar {
-            display: flex;
-            align-items: center;
-            list-style: none;
-            padding-left: 0;
-            margin-bottom: 0;
-        }
-
-        .dropdown-toggle::after {
-            display: none;
-        }
-
-        main {
-            padding: 1.5rem;
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-
-        /* Sidebar Toggled State */
-        body.sidebar-toggled #sidebar {
-            margin-left: calc(-1 * var(--sidebar-width));
-        }
-        
-        @media (max-width: 991.98px) {
-            #sidebar {
-                position: fixed;
-                height: 100%;
-                margin-left: calc(-1 * var(--sidebar-width));
-            }
-            body.sidebar-toggled #sidebar {
-                margin-left: 0;
-            }
-            .sidebar-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                z-index: 1029; /* Below sidebar (1030) */
-                display: none;
-            }
-            body.sidebar-toggled .sidebar-overlay {
-                display: block;
-            }
-        }
-    </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const toggler = document.getElementById('sidebar-toggler');
@@ -214,8 +58,8 @@
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/barcode') !== false) echo 'active'; ?>">
                 <a href="/barcode"><i class="fa fa-barcode"></i><span>Barcode Scan</span></a>
             </li>
-            <li><h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                    <span style="color: #3498db;">Inventory</span>
+            <li><h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
+                    <span>Inventory</span>
                 </h6></li>
             <li class="nav-item <?php if ($_SERVER['REQUEST_URI'] == '/inventory') echo 'active'; ?>">
                 <a href="/inventory"><i class="fa fa-boxes-stacked"></i><span>Inventory</span></a>
@@ -226,8 +70,8 @@
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/inventory/low-stock-alerts') !== false) echo 'active'; ?>">
                 <a href="/inventory/low-stock-alerts"><i class="fa fa-exclamation-triangle"></i><span>Low Stock Alerts</span></a>
             </li>
-            <li><h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                    <span style="color: #3498db;">Ordering</span>
+            <li><h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
+                    <span>Ordering</span>
                 </h6></li>
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/purchase_order') !== false) echo 'active'; ?>">
                 <a href="/purchase_order"><i class="fa fa-file-invoice"></i><span>Purchase Orders</span></a>
@@ -240,8 +84,8 @@
             </li>
 
 <?php if ($_SESSION['user_type'] !== 'User'): ?>
-            <li><h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                    <span style="color: #3498db;">System</span>
+            <li><h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
+                    <span>System</span>
                 </h6>
             </li>
 
