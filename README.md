@@ -4,72 +4,71 @@ A comprehensive inventory and production management system built with PHP using 
 
 ## Features
 
-### Core Functionality
-- **Secure User Authentication**: Username-based login and logout functionality with password hashing and session management
-- **User Management (CRUD)**: Add, view, edit, and delete users with role-based permissions
-- **Dashboard Overview**: Home page with quick access to all system modules
+### 🔐 Core Functionality
+- **🔒 Secure User Authentication**: Username-based login and logout functionality with password hashing and session management
+- **👥 User Management (CRUD)**: Add, view, edit, and delete users with role-based permissions
+- **📊 Dashboard Overview**: Home page with quick access to all system modules
 
-### Inventory Management
-- **Complete CRUD Operations**: Create, read, update, and delete inventory items
-- **Detailed Item Tracking**: Track item name, barcode, quantity, unit, price, purchase date, maximum quantity, and category
-- **Real-time Inventory Updates**: Automatic inventory adjustments based on production and purchase orders
-- **Data Visualization**: Dynamic tables with sorting, searching, and pagination using DataTables
+### 📦 Inventory Management
+- **✨ Complete CRUD Operations**: Create, read, update, and delete inventory items
+- **🏷️ Detailed Item Tracking**: Track item name, barcode, quantity, unit, price, purchase date, maximum quantity, and category
+- **⚡ Real-time Inventory Updates**: Automatic inventory adjustments based on production and purchase orders
+- **📈 Data Visualization**: Dynamic tables with sorting, searching, and pagination using DataTables
 
-### Physical Count System
-- **Physical Count Tracking**: Dedicated system for inventory physical counting operations
-- **Variance Analysis**: Automatic calculation of differences between system count and physical count
-- **Percentage Variance**: Calculate variance percentages for accuracy assessment
-- **Value Impact Analysis**: Calculate financial impact of inventory discrepancies
-- **Pending Entries Management**: Track and manage pending physical count entries before applying to inventory
-- **Batch Processing**: Save multiple physical count entries to inventory in batches
+### 📋 Physical Count System
+- **📱 Physical Count Tracking**: Dedicated system for inventory physical counting operations
+- **🔍 Variance Analysis**: Automatic calculation of differences between system count and physical count
+- **📊 Percentage Variance**: Calculate variance percentages for accuracy assessment
+- **💰 Value Impact Analysis**: Calculate financial impact of inventory discrepancies
+- **⏳ Pending Entries Management**: Track and manage pending physical count entries before applying to inventory
+- **📦 Batch Processing**: Save multiple physical count entries to inventory in batches
 
-### Barcode System
-- **Comprehensive Barcode Support**: Full barcode scanning functionality across all modules
-- **Barcode Physical Count**: Use barcode scanners for physical inventory counting
-- **Barcode Production Management**: Scan barcodes for production operations
-- **Barcode Menu Actions**: Barcode integration with menu item operations
-- **Production Updates via Barcode**: Update sold quantities and wastage using barcode scanning
-- **Multi-Entity Barcode Support**: Barcodes for inventory items, menu items, and production batches
+### 📲 Barcode System
+- **🎯 Comprehensive Barcode Support**: Full barcode scanning functionality across all modules
+- **📋 Barcode Physical Count**: Use barcode scanners for physical inventory counting
+- **🏭 Barcode Production Management**: Scan barcodes for production operations
+- **🍽️ Barcode Menu Actions**: Barcode integration with menu item operations
+- **📊 Production Updates via Barcode**: Update sold quantities and wastage using barcode scanning
+- **🔗 Multi-Entity Barcode Support**: Barcodes for inventory items, menu items, and production batches
 
-### Production Management
-- **Menu-Based Production Tracking**: Manage production based on menu items with ingredient requirements
-- **Advanced Batch Processing**: Track quantity produced, available, sold, and wastage with detailed analytics
-- **Automatic Ingredient Deduction**: FIFO-based ingredient deduction from inventory when production is recorded
-- **Cost and Profit Analysis**: Calculate unit costs, total costs, sales revenue, waste costs, and profit margins
-- **Sales and Wastage Tracking**: FIFO-based updates for sold quantities and wastage across production batches
-- **Production Capacity Planning**: Real-time calculation of maximum production based on available ingredients
-- **Barcode Integration**: Full barcode support for production tracking and updates
+### 🏭 Production Management
+- **🍽️ Menu-Based Production Tracking**: Manage production based on menu items with ingredient requirements
+- **📊 Advanced Batch Processing**: Track quantity produced, available, sold, and wastage with detailed analytics
+- **⚙️ Automatic Ingredient Deduction**: FIFO-based ingredient deduction from inventory when production is recorded
+- **💹 Cost and Profit Analysis**: Calculate unit costs, total costs, sales revenue, waste costs, and profit margins
+- **📈 Sales and Wastage Tracking**: FIFO-based updates for sold quantities and wastage across production batches
+- **🎯 Production Capacity Planning**: Real-time calculation of maximum production based on available ingredients
+- **📲 Barcode Integration**: Full barcode support for production tracking and updates
 
-### Purchase Order Management
-- **Multi-Item Purchase Orders**: Create purchase orders with multiple inventory items
-- **Order Status Tracking**: Track purchase orders with statuses (Pending, Received, Cancelled)
-- **Delivery Date Management**: Record expected delivery dates for purchase orders
-- **Automatic Inventory Updates**: Automatically update inventory when purchase orders are marked as received
-- **Price and Quantity Tracking**: Maintain records of unit prices and quantities for purchasing history
+### 🛒 Purchase Order Management
+- **📝 Multi-Item Purchase Orders**: Create purchase orders with multiple inventory items
+- **📊 Order Status Tracking**: Track purchase orders with statuses (Pending, Received, Cancelled)
+- **📅 Delivery Date Management**: Record expected delivery dates for purchase orders
+- **🔄 Automatic Inventory Updates**: Automatically update inventory when purchase orders are marked as received
+- **💵 Price and Quantity Tracking**: Maintain records of unit prices and quantities for purchasing history
 
-### Advanced Low Stock Alert System
-- **Intelligent Detection**: Automatic identification of low stock items (below 20% of maximum quantity)
-- **Rich Email Notifications**: Professional HTML email alerts to administrators with modern responsive design
-- **Smart Alert Management**: Prevents duplicate alerts with transaction-level locking
-- **Auto-Resolution System**: Automatically resolves alerts when inventory levels are restored
-- **Alert History Tracking**: Complete history of all low stock alerts with detailed resolution status
-- **Manual Alert Processing**: On-demand checking and sending of low stock alerts
-- **AhaSend Integration**: Email notifications via AhaSend API V2
+### 🚨 Advanced Low Stock Alert System
+- **🔍 Intelligent Detection**: Automatic identification of low stock items (below 20% of maximum quantity)
+- **📧 Rich Email Notifications**: Professional HTML email alerts to administrators with modern responsive design
+- **🛡️ Smart Alert Management**: Prevents duplicate alerts with transaction-level locking
+- **✅ Auto-Resolution System**: Automatically resolves alerts when inventory levels are restored
+- **📜 Alert History Tracking**: Complete history of all low stock alerts with detailed resolution status
+- **⚡ Manual Alert Processing**: On-demand checking and sending of low stock alerts
+- **📨 SMTP Integration**: Email notifications via SMTP with support for major email providers
 
-### Menu Management
-- **Menu Item Creation**: Define menu items with names, barcodes, and pricing
-- **Advanced Ingredient Mapping**: Associate inventory items as ingredients with precise required quantities
-- **Recipe Cost Analysis**: Automatic calculation of menu item costs based on ingredient prices
-- **Recipe Management**: Maintain detailed ingredient recipes for consistent production planning
-- **Barcode Support**: Full barcode integration for menu items
+### 🍽️ Menu Management
+- **➕ Menu Item Creation**: Define menu items with names, barcodes, and pricing
+- **🔗 Advanced Ingredient Mapping**: Associate inventory items as ingredients with precise required quantities
+- **💰 Recipe Cost Analysis**: Automatic calculation of menu item costs based on ingredient prices
+- **📋 Recipe Management**: Maintain detailed ingredient recipes for consistent production planning
+- **📲 Barcode Support**: Full barcode integration for menu items
 
-### System Administration
-- **Database Backup & Restore**: Export database to SQL files and import from backups
-- **Email Configuration**: AhaSend API V2 integration for system notifications
-- **Email Testing Tools**: Built-in email testing and configuration debugging
-- **Responsive UI**: Mobile-friendly interface built with Bootstrap 5
-- **MVC Architecture**: Clean separation of business logic, data, and presentation layers
-- **Email Testing Tools**: Built-in email testing and configuration debugging
+### ⚙️ System Administration
+- **💾 Database Backup & Restore**: Export database to SQL files and import from backups
+- **📧 Email Configuration**: SMTP integration with support for Gmail, Outlook, Yahoo, and custom SMTP servers
+- **🧪 Email Testing Tools**: Built-in email testing and configuration debugging
+- **📱 Responsive UI**: Mobile-friendly interface built with Bootstrap 5
+- **🏗️ MVC Architecture**: Clean separation of business logic, data, and presentation layers
 
 ## Requirements
 
@@ -100,14 +99,22 @@ A comprehensive inventory and production management system built with PHP using 
    - Update the database credentials if your MySQL setup differs from the defaults
 
 4. **Configure Email Settings (Optional):**
-   - Update email configuration in `.env` for low stock alert notifications via AhaSend API V2:
+   - Update email configuration in `.env` for low stock alert notifications via SMTP:
      ```
-     AHASEND_API_KEY=your_ahasend_api_key
-     AHASEND_API_URL=https://api.ahasend.com
-     ACCOUNT_ID=your_account_id
+     # SMTP Configuration
+     SMTP_HOST=smtp.gmail.com
+     SMTP_PORT=587
+     SMTP_USERNAME=your-email@gmail.com
+     SMTP_PASSWORD=your-app-password
+     SMTP_SECURITY=tls
      FROM_EMAIL=noreply@yourdomain.com
      FROM_NAME=LUNA Inventory System
      ```
+   - **Supported Email Providers:**
+     - **Gmail**: Use app passwords for authentication
+     - **Outlook/Hotmail**: Use regular credentials with TLS
+     - **Yahoo Mail**: Use app passwords for authentication
+     - **Custom SMTP**: Configure your own SMTP server
    - Email configuration is optional - the system will work without it, but low stock alerts won't be sent
 
 5. **Run the Application:**
@@ -161,7 +168,7 @@ A comprehensive inventory and production management system built with PHP using 
 
 ### 6. Advanced Low Stock Alerts
 - Intelligent alert detection with duplicate prevention
-- Professional HTML email notifications via AhaSend API
+- Professional HTML email notifications via SMTP
 - Auto-resolution system when stock is replenished
 - Alert history tracking with detailed status information
 - Manual alert processing and email testing tools
