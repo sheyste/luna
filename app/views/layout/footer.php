@@ -1,9 +1,12 @@
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+        <span class="text-muted">SOL DEL LUNA Inventory System &copy; 2025</span>
+    </div>
+</footer>
+
+
 </main>
-        <footer class="footer mt-auto py-3 bg-light">
-            <div class="container text-center">
-                <span class="text-muted">LUNA Inventory System &copy; 2025</span>
-            </div>
-        </footer>
+        
     </div> <!-- /#page-content-wrapper -->
 </div> <!-- /#wrapper -->
 
