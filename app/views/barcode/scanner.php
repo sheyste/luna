@@ -459,13 +459,13 @@ $(document).ready(function() {
         const hasProduction = !!productionItem;
         const hasMenu = !!menuItem;
         
-        // Only show selection page if BOTH inventory AND production exist
-        if (hasInventory && hasProduction) {
-            console.log('Found in both inventory and production, showing selection page');
+        // Show selection page if barcode exists in both Inventory and Menu
+        if (hasInventory && hasMenu) {
+            console.log('Found in both inventory and menu, showing selection page');
             const params = new URLSearchParams();
             params.append('barcode', barcode);
             params.append('inventory_id', inventoryItem.id);
-            params.append('production_id', productionItem.id);
+            params.append('menu_id', menuItem.id);
             window.location.href = `/barcode/selection?${params.toString()}`;
             return;
         }
@@ -484,8 +484,8 @@ $(document).ready(function() {
         }
         
         if (hasMenu) {
-            console.log('Menu only, going directly');
-            redirectToAction('menu', menuItem, barcode);
+            console.log('Menu only, going directly to add production');
+            window.location.href = `/barcode/add-production?barcode=${encodeURIComponent(barcode)}&menu_id=${menuItem.id}`;
             return;
         }
         
@@ -501,9 +501,6 @@ $(document).ready(function() {
                 break;
             case 'production':
                 window.location.href = `/barcode/production-actions?barcode=${encodeURIComponent(barcode)}&item_id=${item.id}`;
-                break;
-            case 'menu':
-                window.location.href = `/barcode/menu-actions?barcode=${encodeURIComponent(barcode)}&item_id=${item.id}`;
                 break;
         }
     }

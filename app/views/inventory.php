@@ -48,6 +48,22 @@
             border-bottom: 1px solid #eee;
         }
 
+        /* Specific styling for the Actions column in mobile view */
+        #inventoryTable td[data-label="Actions"] {
+            text-align: left; /* Align buttons to the left */
+            padding-left: 1rem; /* Adjust padding */
+            display: flex; /* Use flexbox for better button layout */
+            flex-direction: column; /* Stack buttons vertically */
+            gap: 0.5rem; /* Add space between buttons */
+        }
+
+        #inventoryTable td[data-label="Actions"] button {
+            width: 100%; /* Make buttons take full width */
+            text-align: center; /* Center text within buttons */
+            font-size: 0.8rem; /* Slightly larger font size */
+            padding: 0.6rem 0.5rem; /* Adjust padding for a bigger feel */
+        }
+
         #inventoryTable td:last-of-type {
             border-bottom: 0;
         }
@@ -60,18 +76,17 @@
             font-weight: bold;
             text-align: left;
         }
+
+        /* Hide the "Actions" label in mobile view */
+        #inventoryTable td[data-label="Actions"]::before {
+            content: "";
+        }
     }
 </style>
 
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0 text-gray-800">Inventory</h1>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Inventory</li>
-        </ol>
-    </nav>
 </div>
 
 <!-- Main Content Card -->
@@ -318,7 +333,6 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-		<button type="button" class="btn btn-primary" id="printIframeContent">Print</button>
       </div>
     </div>
   </div>

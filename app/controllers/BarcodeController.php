@@ -62,6 +62,7 @@ class BarcodeController extends Controller
         $productionId = $_GET['production_id'] ?? '';
         $menuId = $_GET['menu_id'] ?? '';
         
+        // Allow selection page if barcode is present and at least one ID is provided
         if (empty($barcode) || (empty($inventoryId) && empty($productionId) && empty($menuId))) {
             header('Location: /barcode');
             exit;
