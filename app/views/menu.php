@@ -15,7 +15,7 @@
         position: absolute;
         top: 1rem;
         right: 1rem;
-        background-color: rgba(0, 0, 0, 0.7);
+        background-color: rgba(199, 0, 0, 0.7);
         color: white;
         padding: 0.25rem 0.75rem;
         border-radius: 0.25rem;
@@ -52,7 +52,7 @@
     <?php if (!empty($menus)): ?>
         <?php foreach ($menus as $menu): ?>
             <div class="col-lg-3 col-md-3 mb-4">
-                <div class="card menu-card h-100 shadow-sm border-0 rounded-3" style="cursor: pointer;" data-id="<?= htmlspecialchars($menu['id']) ?>">
+                <div class="card menu-card h-100 shadow-sm border-0 rounded-3" style="cursor: pointer;" data-id="<?= htmlspecialchars($menu['id']) ?>" data-barcode="<?= htmlspecialchars($menu['barcode']) ?>">
                     <div class="price-tag">&#8369;<?= htmlspecialchars(number_format($menu['price'] ?? 0, 2)) ?></div>
                     <div class="card-body">
                         <h5 class="card-title"><?= htmlspecialchars($menu['name']) ?></h5>
@@ -69,15 +69,6 @@
                         </div>
                     </div>
                     <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
-                                            <button class="btn btn-primary btn-sm print-btn" data-id="<?= htmlspecialchars($menu['id']) ?>" data-barcode="<?= htmlspecialchars($menu['barcode']) ?>">
-                                                <i class="fa fa-print"></i> Print
-                                            </button>
-                                            <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
-                                                <i class="fa fa-edit"></i> Edit
-                                            </button>
-                                            <button class="btn btn-outline-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($menu['id']) ?>">
-                                                <i class="fa fa-trash"></i> Delete
-                                            </button>
                                         </div>
                 </div>
             </div>
@@ -262,6 +253,40 @@
           </tfoot>
         </table>
       </div>
+      <!-- Add modal footer here -->
+      <div class="modal-footer">
+           <button class="btn btn-primary btn-sm print-btn-modal" data-bs-dismiss="modal">
+               <i class="fa fa-print"></i> Print
+           </button>
+           <button class="btn btn-info btn-sm edit-btn-modal" data-bs-dismiss="modal">
+               <i class="fa fa-edit"></i> Edit
+           </button>
+           <button class="btn btn-outline-danger btn-sm delete-btn-modal" data-bs-dismiss="modal">
+               <i class="fa fa-trash"></i> Delete
+           </button>
+       </div>
+       <!-- Hidden fields to store data -->
+       <input type="hidden" id="modalMenuId">
+       <input type="hidden" id="modalMenuBarcode">
+    </div>
+  </div>
+</div>
+
+<!-- Print Barcode Modal -->
+<div class="modal fade" id="printBarcodeModal" tabindex="-1" aria-labelledby="printBarcodeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="printBarcodeModalLabel">Print Barcode</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex flex-column">
+        <iframe id="printBarcodeIframe" style="width: 100%; flex-grow: 1; border: none;"></iframe>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+		<button type="button" class="btn btn-primary" id="printIframeContent">Print</button>
+      </div>
     </div>
   </div>
 </div>
@@ -308,11 +333,84 @@ $(document).ready(function() {
 
     // Handle Card click
     $('#menu-container').on('click', '.menu-card', function(e) {
-        // Only trigger if not clicking on edit or delete buttons
-        if (!$(e.target).closest('.edit-btn, .delete-btn').length) {
-            var menuId = $(this).data('id');
-            showMenuDetails(menuId);
+        var menuId = $(this).data('id');
+        var menuBarcode = $(this).data('barcode'); // Get barcode from the card
+
+        // Store menuId and barcode in the modal's hidden fields
+        $('#modalMenuId').val(menuId);
+        $('#modalMenuBarcode').val(menuBarcode);
+
+        showMenuDetails(menuId); // This function already fetches details using menuId
+    });
+    
+    // Handle Print button click within the modal
+    $('#menuDetailModal').on('click', '.print-btn-modal', function() {
+        var menuId = $('#modalMenuId').val();
+        var barcode = $('#modalMenuBarcode').val();
+
+        if (!barcode) {
+            alert('No barcode available for this menu item.');
+            return;
         }
+
+        // Set the iframe source and show the modal
+        var iframeSrc = '/menu/print-barcode?id=' + menuId + '&barcode=' + encodeURIComponent(barcode);
+        $('#printBarcodeIframe').attr('src', iframeSrc);
+        $('#printBarcodeModal').modal('show');
+    });
+
+    // Handle Edit button click within the modal
+    $('#menuDetailModal').on('click', '.edit-btn-modal', function() {
+        var menuId = $('#modalMenuId').val();
+
+        // Fetch inventory items and menu details for editing
+        $.when(
+            fetchInventory(),
+            $.ajax({
+                url: '/menu/getDetail?id=' + menuId,
+                method: 'GET',
+                dataType: 'json'
+            })
+        ).done(function(inventoryResult, menuResult) {
+            const data = menuResult[0]; // AJAX result is an array [data, status, xhr]
+            if(data) {
+                $('#editMenuId').val(data.id);
+                $('#editMenuName').val(data.name);
+                $('#editMenuBarcode').val(data.barcode);
+                $('#editMenuPrice').val(parseFloat(data.price || 0).toFixed(2));
+
+                const container = $('#edit-ingredients-container');
+                container.empty();
+
+                if (data.ingredients && data.ingredients.length > 0) {
+                    data.ingredients.forEach(function(ing) {
+                        const template = $('#ingredient-row-template .ingredient-row').clone();
+                        const select = template.find('.ingredient-select');
+                        populateIngredientSelect(select);
+
+                        select.val(ing.inventory_id);
+                        template.find('.ingredient-quantity').val(ing.quantity);
+                        template.find('.unit-span').text(ing.unit || '');
+
+                        container.append(template);
+                    });
+                } else {
+                    addIngredientRow(container);
+                }
+
+                calculateTotalCost('#edit-ingredients-container');
+                $('#editMenuModal').modal('show');
+            }
+        }).fail(function() {
+            alert('Could not fetch menu details for editing.');
+        });
+    });
+
+    // Handle Delete button click within the modal
+    $('#menuDetailModal').on('click', '.delete-btn-modal', function() {
+        var menuId = $('#modalMenuId').val();
+        $('#deleteMenuId').val(menuId);
+        $('#deleteMenuModal').modal('show');
     });
 
     // Fetch inventory items to be used in dropdowns
@@ -396,62 +494,14 @@ $(document).ready(function() {
         $(this).closest('.ingredient-row').find('.unit-span').text(unit || '');
     });
 
-    // --- Edit Modal ---
-    $('#menu-container').on('click', '.edit-btn', function() {
-        var menuId = $(this).data('id');
-
-        $.when(
-            fetchInventory(),
-            $.ajax({
-                url: '/menu/getDetail?id=' + menuId, // Assumes an endpoint for menu details
-                method: 'GET',
-                dataType: 'json'
-            })
-        ).done(function(inventoryResult, menuResult) {
-            const data = menuResult[0]; // AJAX result is an array [data, status, xhr]
-            if(data) {
-                $('#editMenuId').val(data.id);
-                $('#editMenuName').val(data.name);
-                $('#editMenuBarcode').val(data.barcode);
-                $('#editMenuPrice').val(parseFloat(data.price || 0).toFixed(2));
-
-                const container = $('#edit-ingredients-container');
-                container.empty();
-
-                if (data.ingredients && data.ingredients.length > 0) {
-                    data.ingredients.forEach(function(ing) {
-                        const template = $('#ingredient-row-template .ingredient-row').clone();
-                        const select = template.find('.ingredient-select');
-                        populateIngredientSelect(select);
-
-                        select.val(ing.inventory_id);
-                        template.find('.ingredient-quantity').val(ing.quantity);
-                        template.find('.unit-span').text(ing.unit || '');
-
-                        container.append(template);
-                    });
-                } else {
-                    addIngredientRow(container);
-                }
-
-                calculateTotalCost('#edit-ingredients-container');
-                $('#editMenuModal').modal('show');
-            }
-        }).fail(function() {
-            alert('Could not fetch menu details.');
-        });
-    });
 
     $('#edit-add-ingredient-btn').on('click', function() {
         addIngredientRow($('#edit-ingredients-container'));
     });
 
     // --- Delete Modal ---
-    $('#menu-container').on('click', '.delete-btn', function() {
-        var menuId = $(this).data('id');
-        $('#deleteMenuId').val(menuId);
-        $('#deleteMenuModal').modal('show');
-    });
+    // The delete button is now inside the menu detail modal
+    // Removed old handler: $('#menu-container').on('click', '.delete-btn', function() { ... });
 
     // Recalculate cost on ingredient change or quantity change
     $('#add-ingredients-container, #edit-ingredients-container').on('change input', '.ingredient-select, .ingredient-quantity', function() {
@@ -478,22 +528,16 @@ $(document).ready(function() {
     // Clear search functionality
     $('#clearMenuSearch').on('click', function() {
         $('#menuSearch').val('');
-                $('#menuSearch').trigger('input');
-            });
-            
-            // Handle Print button click
-            $('#menu-container').on('click', '.print-btn', function() {
-                var menuId = $(this).data('id');
-                var barcode = $(this).data('barcode');
-                
-                if (!barcode) {
-                    alert('No barcode available for this menu item.');
-                    return;
-                }
-                
-                // Open a new window for printing
-                var printWindow = window.open('/menu/print-barcode?id=' + menuId + '&barcode=' + encodeURIComponent(barcode), '_blank');
-                printWindow.focus();
-            });
-        });
-        </script>
+        $('#menuSearch').trigger('input');
+    });
+    
+    // Handle printing from the modal iframe
+    $('#printIframeContent').on('click', function() {
+        var iframe = document.getElementById('printBarcodeIframe');
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+        }
+    });
+});
+</script>

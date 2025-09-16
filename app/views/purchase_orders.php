@@ -47,6 +47,37 @@
     }
 </style>
 
+<style media="print">
+    body * {
+        visibility: hidden;
+    }
+    #viewPOModal * {
+        visibility: visible;
+    }
+    .print-exclude {
+        display: none;
+    }
+    #viewPOModal {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    .modal-dialog {
+        max-width: 100%;
+        margin: 0;
+    }
+    .modal-content {
+        border: none;
+    }
+    .table-responsive {
+        overflow: visible !important;
+    }
+</style>
+
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0 text-gray-800">Purchase Orders</h1>
@@ -287,7 +318,8 @@
                 </div>
             </div>
             <div class="modal-footer border-top-0">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-secondary print-exclude" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary print-exclude" onclick="window.print()">Print</button>
             </div>
         </div>
     </div>
