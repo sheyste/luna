@@ -67,15 +67,16 @@
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/inventory/physical-count') !== false) echo 'active'; ?>">
                 <a href="/inventory/physical-count"><i class="fa fa-clipboard-list"></i><span>Physical Count</span></a>
             </li>
+            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/purchase_order') !== false) echo 'active'; ?>">
+                <a href="/purchase_order"><i class="fa fa-file-invoice"></i><span>Purchase Orders</span></a>
+            </li>
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/inventory/low-stock-alerts') !== false) echo 'active'; ?>">
                 <a href="/inventory/low-stock-alerts"><i class="fa fa-exclamation-triangle"></i><span>Low Stock Alerts</span></a>
             </li>
             <li><h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
-                    <span>Ordering</span>
+                    <span>Production</span>
                 </h6></li>
-            <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/purchase_order') !== false) echo 'active'; ?>">
-                <a href="/purchase_order"><i class="fa fa-file-invoice"></i><span>Purchase Orders</span></a>
-            </li>
+
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/menu') !== false) echo 'active'; ?>">
                 <a href="/menu"><i class="fa fa-utensils"></i><span>Menu</span></a>
             </li>
