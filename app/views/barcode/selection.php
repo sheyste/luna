@@ -346,8 +346,8 @@
                 <div class="action-icon">
                     <i class="fa fa-utensils"></i>
                 </div>
-                <div class="action-title">Menu Item</div>
-                <div class="action-description">View menu item details</div>
+                <div class="action-title">Production</div>
+                <div class="action-description">Manage production for this item</div>
                 <div class="action-details">
                     <strong><?php echo htmlspecialchars($menuItem['name'] ?? ''); ?></strong><br>
                     Price: ₱<?php echo number_format($menuItem['price'] ?? 0, 2); ?>

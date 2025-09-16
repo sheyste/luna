@@ -26,12 +26,6 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0 text-gray-800">Menus</h1>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Menus</li>
-        </ol>
-    </nav>
 </div>
 
 <!-- Main Content -->
@@ -256,7 +250,7 @@
       <!-- Add modal footer here -->
       <div class="modal-footer">
            <button class="btn btn-primary btn-sm print-btn-modal" data-bs-dismiss="modal">
-               <i class="fa fa-print"></i> Print
+               <i class="fa fa-print"></i> Print Barcode
            </button>
            <button class="btn btn-info btn-sm edit-btn-modal" data-bs-dismiss="modal">
                <i class="fa fa-edit"></i> Edit
@@ -285,7 +279,6 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-		<button type="button" class="btn btn-primary" id="printIframeContent">Print</button>
       </div>
     </div>
   </div>

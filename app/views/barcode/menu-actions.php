@@ -50,23 +50,12 @@
         color: #666;
     }
     
-    .info-message {
-        background: #d1ecf1;
-        color: #0c5460;
-        padding: 20px;
-        border-radius: 8px;
-        border-left: 4px solid #17a2b8;
-        margin-bottom: 30px;
-        text-align: center;
+    .menu-actions {
+        margin: 30px 0;
     }
     
-    .action-buttons {
-        display: flex;
-        gap: 15px;
-    }
-    
-    .btn {
-        flex: 1;
+    .action-btn {
+        width: 100%;
         padding: 15px;
         border: none;
         border-radius: 8px;
@@ -74,19 +63,50 @@
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
-        text-decoration: none;
+        margin-bottom: 15px;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: 10px;
     }
     
-    .btn-secondary {
-        background: #6c757d;
+    .btn-add-production {
+        background: #17a2b8;
         color: white;
     }
     
-    .btn-secondary:hover {
+    .btn-add-production:hover {
+        background: #138496;
+        transform: translateY(-2px);
+    }
+    
+    .btn-update-sold {
+        background: #ffc107;
+        color: #212529;
+    }
+    
+    .btn-update-sold:hover {
+        background: #e0a800;
+        transform: translateY(-2px);
+    }
+    
+    .btn-update-wastage {
+        background: #dc3545;
+        color: white;
+    }
+    
+    .btn-update-wastage:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+    }
+    
+    .btn-back {
+        background: #6c757d;
+        color: white;
+        margin-top: 20px;
+    }
+    
+    .btn-back:hover {
         background: #545b62;
     }
     
@@ -104,7 +124,7 @@
             padding: 20px;
         }
         
-        .btn {
+        .action-btn {
             padding: 12px;
             font-size: 0.95rem;
         }
@@ -113,27 +133,37 @@
 
 <div class="barcode-page">
     <div class="item-header">
-        <h3><i class="fa fa-utensils"></i> Menu Item</h3>
+        <h3><i class="fa fa-utensils"></i> Menu Actions</h3>
     </div>
     
     <div class="item-details">
         <div class="detail-item">
             <h5><?php echo htmlspecialchars($item['name']); ?></h5>
             <p><strong>Barcode:</strong> <?php echo htmlspecialchars($barcode); ?></p>
+            <p><strong>Produced:</strong> <?php echo $item['quantity_produced'] ?? 0; ?> units</p>
+            <p><strong>Available:</strong> <?php echo $item['quantity_available'] ?? 0; ?> units</p>
+            <p><strong>Sold:</strong> <?php echo $item['quantity_sold'] ?? 0; ?> units</p>
+            <p><strong>Wastage:</strong> <?php echo $item['wastage'] ?? 0; ?> units</p>
             <p><strong>Price:</strong> ₱<?php echo number_format($item['price'], 2); ?></p>
         </div>
         
-        <div class="info-message">
-            <i class="fa fa-info-circle"></i>
-            <p><strong>Menu Item Detected</strong></p>
-            <p>Menu item functionality will be implemented in a future update.</p>
+        <div class="menu-actions">
+            <button class="action-btn btn-add-production" onclick="window.location.href='/barcode/add-production?menu_id=<?php echo $item['id']; ?>&barcode=<?php echo urlencode($barcode); ?>'">
+                <i class="fa fa-plus"></i> Add Production
+            </button>
+            
+            <button class="action-btn btn-update-sold" onclick="window.location.href='/barcode/update-sold?menu_id=<?php echo $item['id']; ?>&barcode=<?php echo urlencode($barcode); ?>'">
+                <i class="fa fa-shopping-cart"></i> Update Sold
+            </button>
+            
+            <button class="action-btn btn-update-wastage" onclick="window.location.href='/barcode/update-wastage?menu_id=<?php echo $item['id']; ?>&barcode=<?php echo urlencode($barcode); ?>'">
+                <i class="fa fa-trash"></i> Update Wastage
+            </button>
         </div>
         
-        <div class="action-buttons">
-            <a href="/barcode" class="btn btn-secondary">
-                <i class="fa fa-arrow-left"></i> Back to Scanner
-            </a>
-        </div>
+        <button class="action-btn btn-back" onclick="window.location.href='/barcode'">
+            <i class="fa fa-arrow-left"></i> Back to Scanner
+        </button>
     </div>
 </div>
 

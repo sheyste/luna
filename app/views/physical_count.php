@@ -43,13 +43,6 @@
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h3 mb-0 text-gray-800">Physical Count Entry (Inventory Items)</h1>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="/home">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="/inventory">Inventory</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Physical Count Entry</li>
-        </ol>
-    </nav>
 </div>
 
 <!-- Add Physical Count Button -->
