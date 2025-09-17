@@ -267,6 +267,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>User Type</th>
+                        <th>Receive Email</th>
                         <th>Sign Date</th>
                         <th>Actions</th>
                     </tr>
@@ -279,6 +280,7 @@
                                 <td data-label="Name"><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></td>
                                 <td data-label="Email"><?= htmlspecialchars($user['email']) ?></td>
                                 <td data-label="User Type"><?= htmlspecialchars($user['user_type']) ?></td>
+                                <td data-label="Receive Email"><?= isset($user['receive_email']) && $user['receive_email'] == 1 ? 'Yes' : 'No' ?></td>
                                 <td data-label="Sign Date"><?= htmlspecialchars($user['sign_date']) ?></td>
                                 <td data-label="Actions" class="text-nowrap">
                                     <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($user['id']) ?>">
@@ -359,6 +361,13 @@
                         </select>
                     </div>
                     <div class="mb-3">
+                        <label for="add_receive_email" class="form-label">Receive Email</label>
+                        <select class="form-select" name="receive_email" id="add_receive_email">
+                            <option value="1">Yes</option>
+                            <option value="0" selected>No</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="add_password" class="form-label">Password (*)</label>
                         <input type="password" class="form-control" name="password" id="add_password" required>
                     </div>
@@ -408,6 +417,13 @@
                         <select class="form-select" name="user_type" id="edit_user_type" required>
                             <option value="Admin">Admin</option>
                             <option value="User">User</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_receive_email" class="form-label">Receive Email</label>
+                        <select class="form-select" name="receive_email" id="edit_receive_email">
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -510,6 +526,7 @@ $(document).ready(function() {
                     $('#edit_last_name').val(User.htmlspecialchars(response.last_name));
                     $('#edit_email').val(User.htmlspecialchars(response.email));
                     $('#edit_user_type').val(User.htmlspecialchars(response.user_type));
+                    $('#edit_receive_email').val(User.htmlspecialchars(response.receive_email));
                     $('#edit_id').val(User.htmlspecialchars(id));
                     $('#modalEditUser').modal('show');
                 },
