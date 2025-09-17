@@ -1,8 +1,46 @@
 <?php include_once __DIR__ . '/layout/header.php'; ?>
 
 <style>
-    /* Responsive table for mobile */
+    /* Enhanced Mobile Responsive Styles */
     @media (max-width: 767px) {
+        /* Page Header Mobile */
+        .d-flex.justify-content-between.align-items-center.mb-4 {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 1rem;
+        }
+        
+        .d-flex.justify-content-between.align-items-center.mb-4 h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0;
+        }
+
+        /* Card Header Mobile */
+        .card-header .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 0.75rem;
+        }
+        
+        .card-header h6 {
+            margin-bottom: 0 !important;
+        }
+        
+        .card-header > div {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .card-header .btn {
+            flex: 1;
+            min-width: 120px;
+            font-size: 0.875rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+        /* Responsive Table */
         #userTable thead {
             display: none;
         }
@@ -13,29 +51,191 @@
         }
 
         #userTable tr {
-            margin-bottom: 1rem;
-            border: 1px solid #ddd;
+            margin-bottom: 1.25rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: #fff;
+            overflow: hidden;
         }
 
         #userTable td {
             text-align: right;
-            padding-left: 50%;
+            padding: 0.75rem 1rem;
             position: relative;
             border: none;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #f1f3f4;
+            min-height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         #userTable td:last-of-type {
             border-bottom: 0;
+            background-color: #f8f9fa;
         }
 
         #userTable td::before {
             content: attr(data-label);
-            position: absolute;
-            left: 1rem;
-            width: 45%;
-            font-weight: bold;
+            font-weight: 600;
+            color: #495057;
             text-align: left;
+            flex: 0 0 35%;
+            margin-right: 1rem;
+        }
+        
+        #userTable td:last-of-type::before {
+            content: attr(data-label);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Action buttons in mobile table */
+        #userTable td:last-of-type {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 1rem;
+        }
+        
+        #userTable td .btn {
+            margin: 0.25rem 0;
+            width: 100%;
+            font-size: 0.875rem;
+            padding: 0.5rem;
+        }
+        
+        #userTable td .btn i {
+            margin-right: 0.5rem;
+        }
+
+        /* SMTP Testing Card Mobile */
+        .card-body .row {
+            flex-direction: column;
+        }
+        
+        .card-body .col-md-6 {
+            margin-bottom: 1rem;
+        }
+        
+        .card-body .col-md-6:first-child {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .card-body .col-md-6 .btn {
+            width: 100%;
+            margin: 0;
+        }
+
+        /* Modal Mobile Improvements */
+        .modal-dialog {
+            margin: 1rem;
+            max-width: calc(100% - 2rem);
+        }
+        
+        .modal-body {
+            padding: 1.5rem 1rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem;
+            flex-direction: column-reverse;
+            gap: 0.5rem;
+        }
+        
+        .modal-footer .btn {
+            width: 100%;
+            margin: 0;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+        }
+
+        /* Form improvements for mobile */
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            font-size: 16px; /* Prevents zoom on iOS */
+            padding: 0.75rem;
+        }
+
+        /* Alert improvements */
+        .alert {
+            font-size: 0.875rem;
+            padding: 0.75rem;
+        }
+        
+        /* DataTable mobile adjustments */
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .dataTables_wrapper .dataTables_filter input {
+            width: 100%;
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+        
+        .dataTables_wrapper .dataTables_length select {
+            margin: 0 0.5rem;
+        }
+    }
+
+    /* Tablet adjustments */
+    @media (min-width: 768px) and (max-width: 991px) {
+        .card-header .btn {
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+        }
+        
+        #userTable td .btn {
+            font-size: 0.875rem;
+            padding: 0.375rem 0.75rem;
+            margin: 0.125rem;
+        }
+    }
+
+    /* Small mobile devices */
+    @media (max-width: 480px) {
+        .container-fluid {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+        
+        .card {
+            margin-bottom: 1rem;
+        }
+        
+        .card-header {
+            padding: 1rem 0.75rem;
+        }
+        
+        .card-body {
+            padding: 1rem 0.75rem;
+        }
+        
+        #userTable td {
+            padding: 0.5rem 0.75rem;
+            min-height: 2.5rem;
+        }
+        
+        #userTable td::before {
+            flex: 0 0 40%;
+            font-size: 0.875rem;
+        }
+        
+        .modal-dialog {
+            margin: 0.5rem;
+            max-width: calc(100% - 1rem);
         }
     }
 </style>
