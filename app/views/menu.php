@@ -481,10 +481,10 @@ $(document).ready(function() {
     });
 
     $('#add-ingredients-container, #edit-ingredients-container').on('change keyup', '.ingredient-select, .ingredient-quantity', function() {
-        const selectedOption = $(this).find('option:selected');
-        const containerSelector = $(this).closest('#add-ingredients-container').length ? '#add-ingredients-container' : '#edit-ingredients-container';
+        const row = $(this).closest('.ingredient-row');
+        const selectedOption = row.find('.ingredient-select option:selected');
         const unit = selectedOption.data('unit');
-        $(this).closest('.ingredient-row').find('.unit-span').text(unit || '');
+        row.find('.unit-span').text(unit || '');
     });
 
 
