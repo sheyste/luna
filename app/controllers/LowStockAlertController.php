@@ -125,10 +125,10 @@ class LowStockAlertController extends Controller
             
             $sentCount = 0;
             if (!empty($pendingAlerts)) {
-                // Get admin users
-                $admins = $userModel->getUsersByType('Admin');
+                // Get users who should receive emails
+                $recipients = $userModel->getUsersReceivingEmails();
                 
-                if (!empty($admins)) {
+                if (!empty($recipients)) {
                     // Group alerts by item for better email formatting
                     $items = [];
                     foreach ($pendingAlerts as $alert) {
@@ -463,23 +463,23 @@ class LowStockAlertController extends Controller
                             <!-- Email Footer -->
                             <div class="email-footer">
                                 <p class="footer-text">This is an automated message from the LUNA Inventory System.</p>
-                                <p class="footer-text">You are receiving this email because you are registered as an administrator.</p>
+                                <p class="footer-text">You are receiving this email because you have opted to receive inventory notifications.</p>
                             </div>
                         </div>
                     </body>
                     </html>';
                     
-                    // Send email to each admin via SMTP
+                    // Send email to each recipient via SMTP
                     $emailHelper = new EmailHelper();
                     
-                    foreach ($admins as $admin) {
-                        $result = $emailHelper->send($admin['email'], $subject, $body);
+                    foreach ($recipients as $recipient) {
+                        $result = $emailHelper->send($recipient['email'], $subject, $body);
                         if ($result['success']) {
                             $sentCount++;
-                            error_log("Low stock alert email sent successfully via SMTP to: " . $admin['email'] .
+                            error_log("Low stock alert email sent successfully via SMTP to: " . $recipient['email'] .
                                      (isset($result['method']) ? " (Method: " . $result['method'] . ")" : ""));
                         } else {
-                            error_log("Failed to send low stock alert email via SMTP to: " . $admin['email'] . ". Error: " . $result['message']);
+                            error_log("Failed to send low stock alert email via SMTP to: " . $recipient['email'] . ". Error: " . $result['message']);
                         }
                     }
                     

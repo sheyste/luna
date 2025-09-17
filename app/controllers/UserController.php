@@ -56,6 +56,7 @@ class UserController extends Controller
             'last_name' => filter_var(trim($_POST['last_name']), FILTER_SANITIZE_STRING),
             'email' => filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL),
             'user_type' => filter_var(trim($_POST['user_type']), FILTER_SANITIZE_STRING),
+            'receive_email' => isset($_POST['receive_email']) ? (int)$_POST['receive_email'] : 0,
             'password' => password_hash(trim($_POST['password']), PASSWORD_DEFAULT) // Hash password on add
         );
         if (!empty($data['username']) && !empty($data['first_name']) && !empty($data['last_name']) && !empty($data['email']) && !empty($data['user_type']) && !empty($_POST['password'])) {
@@ -73,7 +74,8 @@ class UserController extends Controller
             'first_name' => filter_var(trim($_POST['first_name']), FILTER_SANITIZE_STRING),
             'last_name' => filter_var(trim($_POST['last_name']), FILTER_SANITIZE_STRING),
             'email' => filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL),
-            'user_type' => filter_var(trim($_POST['user_type']), FILTER_SANITIZE_STRING)
+            'user_type' => filter_var(trim($_POST['user_type']), FILTER_SANITIZE_STRING),
+            'receive_email' => isset($_POST['receive_email']) ? (int)$_POST['receive_email'] : 0
         );
         // Only update password if provided
         if (!empty($_POST['password'])) {

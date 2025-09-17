@@ -1,5 +1,5 @@
 -- Luna Database Backup
--- Generated on: 2025-09-15 21:51:17
+-- Generated on: 2025-09-17 19:33:56
 
 -- Table structure for table `inventory`
 DROP TABLE IF EXISTS `inventory`;
@@ -22,12 +22,12 @@ CREATE TABLE `inventory` (
 INSERT INTO `inventory` VALUES ('17', 'Coffee Beans', 'Other', '1755947829873', '1475.00', '95.00', '100.00', 'Kg', '2025-08-22', '2025-08-23 19:17:09');
 INSERT INTO `inventory` VALUES ('18', 'Almond Milk', 'Other', '1755947856126', '158.00', '100.00', '100.00', 'L', '2025-08-05', '2025-08-23 19:17:36');
 INSERT INTO `inventory` VALUES ('19', 'Condensed Milk', 'Other', '1755948048271', '102.00', '100.00', '100.00', 'L', '2025-08-28', '2025-08-23 19:20:48');
-INSERT INTO `inventory` VALUES ('20', 'Coke Swakto', 'Other', '1755949298187', '10.00', '10.00', '100.00', 'pcs', '2025-09-01', '2025-08-23 19:41:38');
-INSERT INTO `inventory` VALUES ('26', 'All purpose flour', 'Canned', '1756371542892', '50.00', '9.00', '100.00', 'Kg', '2025-08-28', '2025-08-28 01:59:48');
-INSERT INTO `inventory` VALUES ('28', 'chocolate chips bag', 'Other', '1756372302018', '80.00', '31.00', '100.00', 'pcs', '2025-09-01', '2025-08-28 02:12:24');
-INSERT INTO `inventory` VALUES ('29', 'Bun', 'Other', '1756373032301', '10.00', '80.00', '100.00', 'pcs', '2025-08-22', '2025-08-28 02:24:37');
-INSERT INTO `inventory` VALUES ('30', 'Hotdog', 'Meat', '1756373087061', '15.00', '95.00', '100.00', 'pcs', '2025-08-29', '2025-08-28 02:25:14');
-INSERT INTO `inventory` VALUES ('32', 'Same Barocde', 'Vegetables', '2232', '21.00', '100.00', '21.00', 'pcs', '2025-09-06', '2025-09-06 13:08:26');
+INSERT INTO `inventory` VALUES ('20', 'Coke Swakto', 'Other', '1755949298187', '10.00', '100.00', '100.00', 'pcs', '2025-09-01', '2025-08-23 19:41:38');
+INSERT INTO `inventory` VALUES ('26', 'All purpose flour', 'Canned', '1756371542892', '50.00', '2.00', '100.00', 'pcs', '2025-08-28', '2025-08-28 01:59:48');
+INSERT INTO `inventory` VALUES ('28', 'chocolate chips bag', 'Other', '1756372302018', '80.00', '21.00', '100.00', 'Kg', '2025-09-01', '2025-08-28 02:12:24');
+INSERT INTO `inventory` VALUES ('29', 'Bun', 'Other', '1756373032301', '10.00', '50.00', '100.00', 'pcs', '2025-08-22', '2025-08-28 02:24:37');
+INSERT INTO `inventory` VALUES ('30', 'Hotdog', 'Meat', '1756373087061', '15.00', '74.00', '100.00', 'pcs', '2025-08-29', '2025-08-28 02:25:14');
+INSERT INTO `inventory` VALUES ('32', 'Same Barocde', 'Vegetables', '2232', '21.00', '29.00', '21.00', 'pcs', '2025-09-06', '2025-09-06 13:08:26');
 
 -- Table structure for table `low_stock_alerts`
 DROP TABLE IF EXISTS `low_stock_alerts`;
@@ -46,7 +46,7 @@ CREATE TABLE `low_stock_alerts` (
   KEY `item_id` (`item_id`),
   KEY `status` (`status`),
   CONSTRAINT `fk_low_stock_inventory` FOREIGN KEY (`item_id`) REFERENCES `inventory` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=148 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=149 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table `low_stock_alerts`
 INSERT INTO `low_stock_alerts` VALUES ('79', '18', 'Almond Milk', '14.25', '100.00', 'L', '2025-08-31 01:57:43', 'sent', '1', '2025-08-31 01:57:47');
@@ -115,9 +115,10 @@ INSERT INTO `low_stock_alerts` VALUES ('141', '20', 'Coke Swakto', '13.00', '100
 INSERT INTO `low_stock_alerts` VALUES ('142', '26', 'All purpose flour', '9.00', '100.00', 'Kg', '2025-09-08 02:03:37', 'sent', '0', '2025-09-08 02:03:42');
 INSERT INTO `low_stock_alerts` VALUES ('143', '26', 'All purpose flour', '9.00', '100.00', 'Kg', '2025-09-10 07:28:21', 'sent', '0', '2025-09-10 07:28:30');
 INSERT INTO `low_stock_alerts` VALUES ('144', '26', 'All purpose flour', '9.00', '100.00', 'Kg', '2025-09-12 00:14:05', 'sent', '0', '2025-09-12 00:14:10');
-INSERT INTO `low_stock_alerts` VALUES ('145', '20', 'Coke Swakto', '10.00', '100.00', 'pcs', '2025-09-12 00:32:41', 'sent', '0', '2025-09-12 00:32:46');
-INSERT INTO `low_stock_alerts` VALUES ('146', '20', 'Coke Swakto', '10.00', '100.00', 'pcs', '2025-09-16 02:30:56', 'sent', '0', '2025-09-16 02:31:00');
+INSERT INTO `low_stock_alerts` VALUES ('145', '20', 'Coke Swakto', '10.00', '100.00', 'pcs', '2025-09-12 00:32:41', 'sent', '1', '2025-09-12 00:32:46');
+INSERT INTO `low_stock_alerts` VALUES ('146', '20', 'Coke Swakto', '10.00', '100.00', 'pcs', '2025-09-16 02:30:56', 'sent', '1', '2025-09-16 02:31:00');
 INSERT INTO `low_stock_alerts` VALUES ('147', '26', 'All purpose flour', '9.00', '100.00', 'Kg', '2025-09-16 02:30:56', 'sent', '0', '2025-09-16 02:31:00');
+INSERT INTO `low_stock_alerts` VALUES ('148', '26', 'All purpose flour', '2.00', '100.00', 'Kg', '2025-09-17 19:46:04', 'sent', '0', '2025-09-17 19:46:10');
 
 -- Table structure for table `menu_ingredients`
 DROP TABLE IF EXISTS `menu_ingredients`;
@@ -131,7 +132,7 @@ CREATE TABLE `menu_ingredients` (
   KEY `inventory_id` (`inventory_id`),
   CONSTRAINT `menu_ingredients_ibfk_1` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE,
   CONSTRAINT `menu_ingredients_ibfk_2` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table `menu_ingredients`
 INSERT INTO `menu_ingredients` VALUES ('15', '7', '18', '0.25');
@@ -140,13 +141,10 @@ INSERT INTO `menu_ingredients` VALUES ('17', '7', '19', '0.20');
 INSERT INTO `menu_ingredients` VALUES ('18', '8', '20', '1.00');
 INSERT INTO `menu_ingredients` VALUES ('35', '15', '29', '1.00');
 INSERT INTO `menu_ingredients` VALUES ('36', '15', '30', '1.00');
-INSERT INTO `menu_ingredients` VALUES ('40', '18', '26', '1.00');
-INSERT INTO `menu_ingredients` VALUES ('41', '18', '18', '1.00');
-INSERT INTO `menu_ingredients` VALUES ('42', '18', '29', '1.00');
-INSERT INTO `menu_ingredients` VALUES ('43', '17', '19', '1.00');
-INSERT INTO `menu_ingredients` VALUES ('45', '19', '32', '1.00');
 INSERT INTO `menu_ingredients` VALUES ('46', '14', '26', '0.14');
 INSERT INTO `menu_ingredients` VALUES ('47', '14', '28', '0.20');
+INSERT INTO `menu_ingredients` VALUES ('48', '17', '19', '1.00');
+INSERT INTO `menu_ingredients` VALUES ('49', '20', '32', '1.00');
 
 -- Table structure for table `menus`
 DROP TABLE IF EXISTS `menus`;
@@ -157,7 +155,7 @@ CREATE TABLE `menus` (
   `barcode` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table `menus`
 INSERT INTO `menus` VALUES ('7', 'Spanish Latte', '210.00', '1755948055385', '2025-08-23 19:22:20');
@@ -165,8 +163,7 @@ INSERT INTO `menus` VALUES ('8', 'Coke Swakto', '20.00', '1755949301450', '2025-
 INSERT INTO `menus` VALUES ('14', 'Black Forest', '105.00', '1756371615076', '2025-08-28 02:00:31');
 INSERT INTO `menus` VALUES ('15', 'Burger', '50.00', '1756373129990', '2025-08-28 02:26:27');
 INSERT INTO `menus` VALUES ('17', 'condense milk only', '150.00', '1756574082318', '2025-08-31 01:14:55');
-INSERT INTO `menus` VALUES ('18', 'Test 1', '500.00', '1756623461759', '2025-08-31 14:57:50');
-INSERT INTO `menus` VALUES ('19', 'Same Menu Barcode', '33.00', '2232', '2025-09-06 13:08:47');
+INSERT INTO `menus` VALUES ('20', 'Same BARC', '55.00', '2232', '2025-09-17 00:37:46');
 
 -- Table structure for table `physical_count_entries`
 DROP TABLE IF EXISTS `physical_count_entries`;
@@ -187,7 +184,7 @@ CREATE TABLE `physical_count_entries` (
   KEY `inventory_id` (`inventory_id`),
   KEY `status` (`status`),
   CONSTRAINT `fk_physical_count_inventory` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table `physical_count_entries`
 INSERT INTO `physical_count_entries` VALUES ('1', '29', 'Bun', '13.00', '50.00', '37.00', '284.62', '370.00', '10.00', 'saved', '2025-08-31 18:56:35', '2025-08-31 19:29:12');
@@ -204,6 +201,7 @@ INSERT INTO `physical_count_entries` VALUES ('13', '26', 'All purpose flour', '1
 INSERT INTO `physical_count_entries` VALUES ('14', '30', 'Hotdog', '90.00', '95.00', '5.00', '5.56', '75.00', '15.00', 'saved', '2025-09-03 13:40:00', '2025-09-03 19:41:16');
 INSERT INTO `physical_count_entries` VALUES ('15', '29', 'Bun', '80.00', '80.00', '0.00', '0.00', '0.00', '10.00', 'saved', '2025-09-03 19:42:44', '2025-09-06 15:24:34');
 INSERT INTO `physical_count_entries` VALUES ('16', '26', 'All purpose flour', '90.00', '88.00', '-2.00', '-2.22', '-100.00', '50.00', 'saved', '2025-09-06 12:16:10', '2025-09-06 12:16:21');
+INSERT INTO `physical_count_entries` VALUES ('17', '29', 'Bun', '59.00', '50.00', '-9.00', '-15.25', '-90.00', '10.00', 'saved', '2025-09-17 00:33:36', '2025-09-17 00:53:41');
 
 -- Table structure for table `production`
 DROP TABLE IF EXISTS `production`;
@@ -219,7 +217,7 @@ CREATE TABLE `production` (
   PRIMARY KEY (`id`),
   KEY `fk_production_menu` (`menu_id`),
   CONSTRAINT `fk_production_menu` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table `production`
 INSERT INTO `production` VALUES ('30', '7', '6', '0', '6', '1755948055385', NULL, '2025-08-25 22:18:21');
@@ -251,17 +249,18 @@ INSERT INTO `production` VALUES ('61', '8', '90', '0', '90', '1755949301450', '0
 INSERT INTO `production` VALUES ('62', '8', '90', '0', '90', '1755949301450', '0', '2025-08-31 12:53:41');
 INSERT INTO `production` VALUES ('63', '8', '98', '0', '98', '1755949301450', '0', '2025-08-31 14:21:36');
 INSERT INTO `production` VALUES ('64', '8', '98', '98', '0', '1755949301450', '0', '2025-08-31 14:26:24');
-INSERT INTO `production` VALUES ('70', '18', '87', '2', '85', '1756623461759', '0', '2025-08-31 16:33:38');
 INSERT INTO `production` VALUES ('71', '8', '20', '20', '0', '1755949301450', '0', '2025-09-03 13:54:57');
 INSERT INTO `production` VALUES ('72', '8', '200', '200', '0', '1755949301450', '0', '2025-09-03 13:55:21');
 INSERT INTO `production` VALUES ('73', '7', '360', '0', '360', '1755948055385', '0', '2025-09-03 15:01:05');
 INSERT INTO `production` VALUES ('74', '7', '120', '0', '120', '1755948055385', '0', '2025-09-03 15:06:29');
 INSERT INTO `production` VALUES ('75', '7', '20', '0', '20', '1755948055385', '0', '2025-09-03 15:07:00');
-INSERT INTO `production` VALUES ('76', '18', '60', '60', '0', '1756623461759', '0', '2025-09-06 12:17:30');
 INSERT INTO `production` VALUES ('81', '8', '80', '80', '0', '1755949301450', '0', '2025-09-06 16:06:06');
 INSERT INTO `production` VALUES ('82', '8', '89', '89', '0', '1755949301450', '0', '2025-09-06 16:18:08');
 INSERT INTO `production` VALUES ('83', '8', '87', '87', '0', '1755949301450', '0', '2025-09-06 16:18:58');
 INSERT INTO `production` VALUES ('84', '8', '90', '90', '0', '1755949301450', '0', '2025-09-12 00:32:41');
+INSERT INTO `production` VALUES ('85', '15', '21', '0', '21', '1756373129990', '0', '2025-09-16 03:55:52');
+INSERT INTO `production` VALUES ('86', '14', '50', '50', '0', '1756371615076', '0', '2025-09-17 00:14:17');
+INSERT INTO `production` VALUES ('88', '20', '50', '14', '34', '2232', '2', '2025-09-17 00:44:34');
 
 -- Table structure for table `purchase_order_items`
 DROP TABLE IF EXISTS `purchase_order_items`;
@@ -329,7 +328,7 @@ INSERT INTO `purchase_orders` VALUES ('14', 'PO-1756390064474', 'Test', '2025-08
 INSERT INTO `purchase_orders` VALUES ('15', 'PO-1756390800017', 'test2', '2025-08-28', '2025-08-29', 'Received', '2025-08-28 22:20:15', '2025-08-28 22:20:34');
 INSERT INTO `purchase_orders` VALUES ('16', 'PO-1756575335174', 'Coca Cola', '2025-08-30', '2025-09-01', 'Received', '2025-08-31 01:35:50', '2025-08-31 01:35:58');
 INSERT INTO `purchase_orders` VALUES ('17', 'PO-1756575711660', 'wdads', '2025-08-30', NULL, 'Received', '2025-08-31 01:42:00', '2025-08-31 01:42:07');
-INSERT INTO `purchase_orders` VALUES ('18', 'PO-1756735080518', 'wdads', '2025-09-01', '2025-09-16', 'Pending', '2025-09-01 21:58:09', '2025-09-16 02:57:32');
+INSERT INTO `purchase_orders` VALUES ('18', 'PO-1756735080518', 'wdads', '2025-09-01', '2025-09-25', 'Pending', '2025-09-01 21:58:09', '2025-09-16 04:13:24');
 INSERT INTO `purchase_orders` VALUES ('19', 'PO-1757962603790', 'Asdwa', '2025-09-15', '2025-09-17', 'Ordered', '2025-09-16 02:57:06', '2025-09-16 02:57:26');
 
 -- Table structure for table `user`
@@ -341,12 +340,13 @@ CREATE TABLE `user` (
   `last_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `password` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `user_type` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `user_type` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `sign_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `receive_email` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Whether user wants to receive emails (0=No, 1=Yes)',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 -- Dumping data for table `user`
-INSERT INTO `user` VALUES ('10', 'admin', 'Sheyste', 'Benerable', 'sbenerable.student@asiancollege.edu.ph', '$2y$10$5hH3u9wG9HQN2n9UJl5fturO7r8C6J9dD5C17VpAopT1cFjTF6/Su', 'Admin', '2025-07-22 21:38:42');
-INSERT INTO `user` VALUES ('11', 'user', 'Account', 'User', 'sheystebenerable@gmail.com', '$2y$10$SHjJQub0F4rcnH0YZzEzLuUl8Y6Y/vr.UMKHDCFHt9aLunOGv5HOS', 'User', '2025-08-02 11:48:48');
+INSERT INTO `user` VALUES ('10', 'admin', 'Sheyste', 'Benerable', 'sbenerable.student@asiancollege.edu.ph', '$2y$10$5hH3u9wG9HQN2n9UJl5fturO7r8C6J9dD5C17VpAopT1cFjTF6/Su', 'Admin', '2025-07-22 21:38:42', '1');
+INSERT INTO `user` VALUES ('11', 'user', 'Account', 'User', 'sheystebenerable@gmail.com', '$2y$10$SHjJQub0F4rcnH0YZzEzLuUl8Y6Y/vr.UMKHDCFHt9aLunOGv5HOS', 'User', '2025-08-02 11:48:48', '0');
 

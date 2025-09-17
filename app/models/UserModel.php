@@ -76,11 +76,11 @@ class UserModel extends Model
         $result = false;
 
         if ($conn) {
-            $sql = "INSERT INTO {$this->table} (username, first_name, last_name, email, user_type, password, sign_date)
-                    VALUES (?,?,?,?,?,?,?)";
+            $sql = "INSERT INTO {$this->table} (username, first_name, last_name, email, user_type, receive_email, password, sign_date)
+                    VALUES (?,?,?,?,?,?,?,?)";
 
             $result = $conn->prepare($sql)->execute([
-              $data['username'], $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['password'], date('Y-m-d')
+              $data['username'], $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['receive_email'], $data['password'], date('Y-m-d')
             ]);
         }
         return $result;
@@ -95,17 +95,17 @@ class UserModel extends Model
             // If password is provided, update it; otherwise, leave it unchanged
             if (!empty($data['password'])) {
                 $sql = "UPDATE {$this->table}
-                        SET username=?, first_name=?, last_name=?, email=?, user_type=?, password=?
+                        SET username=?, first_name=?, last_name=?, email=?, user_type=?, receive_email=?, password=?
                         WHERE id=?";
                 $result = $conn->prepare($sql)->execute([
-                    $data['username'], $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['password'], $data['id']
+                    $data['username'], $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['receive_email'], $data['password'], $data['id']
                 ]);
             } else {
                 $sql = "UPDATE {$this->table}
-                        SET username=?, first_name=?, last_name=?, email=?, user_type=?
+                        SET username=?, first_name=?, last_name=?, email=?, user_type=?, receive_email=?
                         WHERE id=?";
                 $result = $conn->prepare($sql)->execute([
-                    $data['username'], $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['id']
+                    $data['username'], $data['first_name'], $data['last_name'], $data['email'], $data['user_type'], $data['receive_email'], $data['id']
                 ]);
             }
         }
@@ -137,6 +137,21 @@ class UserModel extends Model
             $sql = "SELECT * FROM {$this->table} WHERE user_type = :user_type";
             $stmt = $conn->prepare($sql);
             $stmt->execute(['user_type' => $userType]);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        return $result;
+    }
+    
+    public function getUsersReceivingEmails()
+    {
+        $conn   = $this->connectDB();
+        $result = array();
+
+        if ($conn)
+        {
+            $sql = "SELECT * FROM {$this->table} WHERE receive_email = 1";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
         return $result;
