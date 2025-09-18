@@ -13,113 +13,52 @@
 
 <!-- Info Cards Row -->
 <div class="row">
-
-    <!-- Total Stocks in Inventory Card -->
-    <div class="col-xl-3 col-md-6 mb-2">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Items in Inventory</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $totalItems ?? 0 ?></div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fa fa-boxes-stacked fa-2x text-gray-300"></i>
-                    </div>
-                </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3><?= $totalItems ?? 0 ?></h3>
+                <p>Items in Inventory</p>
             </div>
+            <div class="icon">
+                <i class="fas fa-boxes-stacked"></i>
+            </div>
+            <a href="/inventory" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-
-    <!-- Stock Alerts Card -->
-    <div class="col-xl-3 col-md-6 mb-2">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="row">
-                            <div class="col">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Low Stock</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $lowStockItems ?? 0 ?></div>
-                            </div>
-                            <div class="col">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Overstock</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $overStockItems ?? 0 ?></div>
-                            </div>
-                        </div>
-                        <?php if (($lowStockItems ?? 0) >= 1 || ($overStockItems ?? 0) >= 1): ?>
-                        <div class="row">
-                            <div class="col">
-                                <div class="text-xs text-secondary">
-                                    <small>Needs attention</small>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fa fa-exclamation-triangle fa-2x text-gray-300"></i>
-                    </div>
-                </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3><?= $lowStockItems ?? 0 ?>/<?= $overStockItems ?? 0 ?></h3>
+                <p>Low / Over Stock</p>
             </div>
+            <div class="icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <a href="/inventory/low-stock-alerts" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-
-    <!-- Total Inventory Value Card -->
-    <div class="col-xl-3 col-md-6 mb-2">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Inventory Value</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">&#8369;<?= number_format($totalInventoryValue ?? 0, 2) ?></div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fa fa-peso-sign fa-2x text-gray-300"></i>
-                    </div>
-                </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>&#8369;<?= number_format($totalInventoryValue ?? 0, 2) ?></h3>
+                <p>Inventory Value</p>
             </div>
+            <div class="icon">
+                <i class="fas fa-peso-sign"></i>
+            </div>
+            <a href="/inventory" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-
-
-    <!-- Purchase Orders Card -->
-    <div class="col-xl-3 col-md-6 mb-2">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="row">
-                            <div class="col">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Pending PO's</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $pendingPurchaseOrders ?? 0 ?></div>
-                            </div>
-                            <div class="col">
-                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                    Ordered PO's</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $orderedPurchaseOrders ?? 0 ?></div>
-                            </div>
-                        </div>
-                        <?php if (!empty($arrivingToday) && $arrivingToday > 0): ?>
-                        <div class="row">
-                            <div class="col">
-                                <div class="text-xs text-secondary">
-                                    <small><?= $arrivingToday ?> arriving today</small>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fa fa-file-invoice fa-2x text-gray-300"></i>
-                    </div>
-                </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3><?= $pendingPurchaseOrders ?? 0 ?>/<?= $orderedPurchaseOrders ?? 0 ?></h3>
+                <p>Pending / Ordered PO's</p>
             </div>
+            <div class="icon">
+                <i class="fas fa-file-invoice"></i>
+            </div>
+            <a href="/purchase_order" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
 </div>

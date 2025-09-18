@@ -8,11 +8,11 @@ body {
 
 :root {
     --sidebar-width: 260px; /* Slightly wider */
-    --sidebar-bg: #1a202c; /* Darker background */
+    --sidebar-bg: #1a202c; /* Dark background */
     --sidebar-link-color: #a0aec0; /* Lighter gray text */
     --sidebar-link-hover-bg: #2d3748; /* Subtle hover background */
     --sidebar-link-active-bg: #3a4452; /* More prominent active background */
-    --sidebar-link-active-border: #4299e1; /* Filament blue accent */
+    --sidebar-link-active-color: #fff; /* White text for active */
     --topbar-height: 64px; /* Slightly taller topbar */
     --page-bg: #f7fafc; /* Lighter page background */
 }
@@ -80,7 +80,7 @@ body {
 
 .side-menu .nav-item a:hover {
     background: var(--sidebar-link-hover-bg);
-    color: #fff;
+    color: var(--sidebar-link-color);
 }
 
 .side-menu .nav-item.active > a {
@@ -186,4 +186,83 @@ body.sidebar-toggled #sidebar {
     body.sidebar-toggled .sidebar-overlay {
         display: block;
     }
+}
+
+/* AdminLTE-like styles */
+.small-box {
+  border-radius: 0.25rem;
+  box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+  display: block;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.small-box > .inner {
+  padding: 10px;
+}
+
+.small-box > .small-box-footer {
+  background: rgba(0,0,0,0.1);
+  color: rgba(255,255,255,0.8);
+  display: block;
+  padding: 3px 0;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  z-index: 10;
+}
+
+.small-box > .small-box-footer:hover {
+  background: rgba(0,0,0,0.15);
+  color: #fff;
+}
+
+.small-box > .icon {
+  color: rgba(0,0,0,0.15);
+  z-index: 0;
+}
+
+.small-box > .icon > i {
+  font-size: 70px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.small-box.bg-info > .inner, .small-box.bg-info > .small-box-footer {
+  background: #17a2b8 !important;
+  color: #fff !important;
+}
+
+.small-box.bg-warning > .inner, .small-box.bg-warning > .small-box-footer {
+  background: #ffc107 !important;
+  color: #1f2d3d !important;
+}
+
+.small-box.bg-success > .inner, .small-box.bg-success > .small-box-footer {
+  background: #28a745 !important;
+  color: #fff !important;
+}
+
+.small-box.bg-danger > .inner, .small-box.bg-danger > .small-box-footer {
+  background: #dc3545 !important;
+  color: #fff !important;
+}
+
+.card {
+  border-radius: 0.25rem;
+  box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+}
+
+.card-body {
+  padding: 1.25rem;
 }
