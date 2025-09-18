@@ -13,161 +13,73 @@
 
 <!-- Info Cards Row -->
 <div class="row">
-
-    <!-- Total Stocks in Inventory Card -->
-    <div class="col-xl-3 col-md-6 mb-2">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Items in Inventory</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $totalItems ?? 0 ?></div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fa fa-boxes-stacked fa-2x text-gray-300"></i>
-                    </div>
-                </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3><?= $totalItems ?? 0 ?></h3>
+                <p>Items in Inventory</p>
             </div>
+            <div class="icon">
+                <i class="fas fa-boxes-stacked"></i>
+            </div>
+            <a href="/inventory" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-
-    <!-- Stock Alerts Card -->
-    <div class="col-xl-3 col-md-6 mb-2">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="row">
-                            <div class="col">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Low Stock</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $lowStockItems ?? 0 ?></div>
-                            </div>
-                            <div class="col">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Overstock</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $overStockItems ?? 0 ?></div>
-                            </div>
-                        </div>
-                        <?php if (($lowStockItems ?? 0) >= 1 || ($overStockItems ?? 0) >= 1): ?>
-                        <div class="row">
-                            <div class="col">
-                                <div class="text-xs text-secondary">
-                                    <small>Needs attention</small>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fa fa-exclamation-triangle fa-2x text-gray-300"></i>
-                    </div>
-                </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3><?= $lowStockItems ?? 0 ?>/<?= $overStockItems ?? 0 ?></h3>
+                <p>Low / Over Stock</p>
             </div>
+            <div class="icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <a href="/inventory/low-stock-alerts" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-
-    <!-- Total Inventory Value Card -->
-    <div class="col-xl-3 col-md-6 mb-2">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Inventory Value</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">&#8369;<?= number_format($totalInventoryValue ?? 0, 2) ?></div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fa fa-peso-sign fa-2x text-gray-300"></i>
-                    </div>
-                </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>&#8369;<?= number_format($totalInventoryValue ?? 0, 2) ?></h3>
+                <p>Inventory Value</p>
             </div>
+            <div class="icon">
+                <i class="fas fa-peso-sign"></i>
+            </div>
+            <a href="/inventory" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-
-
-    <!-- Purchase Orders Card -->
-    <div class="col-xl-3 col-md-6 mb-2">
-        <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="row">
-                            <div class="col">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Pending PO's</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $pendingPurchaseOrders ?? 0 ?></div>
-                            </div>
-                            <div class="col">
-                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                    Ordered PO's</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $orderedPurchaseOrders ?? 0 ?></div>
-                            </div>
-                        </div>
-                        <?php if (!empty($arrivingToday) && $arrivingToday > 0): ?>
-                        <div class="row">
-                            <div class="col">
-                                <div class="text-xs text-secondary">
-                                    <small><?= $arrivingToday ?> arriving today</small>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fa fa-file-invoice fa-2x text-gray-300"></i>
-                    </div>
-                </div>
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3><?= $pendingPurchaseOrders ?? 0 ?>/<?= $orderedPurchaseOrders ?? 0 ?></h3>
+                <p>Pending / Ordered PO's</p>
             </div>
+            <div class="icon">
+                <i class="fas fa-file-invoice"></i>
+            </div>
+            <a href="/purchase_order" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
 </div>
 
 
 <div class="row">
-  <!-- Production Chart -->
-  <div class="col-md-6 mt-4">
-    <div class="card">
-      <div class="card-header">Production and Sales</div>
-      <div class="card-body">
-        <canvas id="productionChart"></canvas>
-      </div>
-    </div>
-  </div>
 
-  <!-- Daily Cost-to-Profit -->
-  <div class="col-md-6 mt-4">
-    <div class="card">
-      <div class="card-header">Daily Cost vs Profit</div>
-      <div class="card-body">
-        <canvas id="costProfitChart"></canvas>
-      </div>
-    </div>
-  </div>
-
-  <!-- Inventory Pie Chart and Low Stock Alerts -->
-  <div class="col-md-6 mt-4">
-    <div class="card">
-      <div class="card-header">Inventory Items Distribution</div>
-      <div class="card-body">
-        <canvas id="inventoryPieChart" ></canvas>
-      </div>
-    </div>
-  </div>
-  
   <!-- Latest Low Stock Alerts -->
-  <div class="col-md-6 mt-4">
+  <div class="col-md-4 mt-4">
     <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <span>Latest Low Stock Alerts</span>
-        <a href="/inventory/low-stock-alerts" class="btn btn-sm btn-primary">View All</a>
+      <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-exclamation-triangle me-2"></i>Low Stock Alerts
+        </h5>
+        <a href="/inventory/low-stock-alerts" class="btn btn-sm btn-light">View All</a>
       </div>
       <div class="card-body">
         <?php if (!empty($latestLowStockAlerts)): ?>
           <div class="list-group">
             <?php foreach ($latestLowStockAlerts as $alert): ?>
-              <a href="/inventory/low-stock-alerts" class="list-group-item list-group-item-action">
+              <div class="list-group-item">
                 <div class="d-flex justify-content-between">
                   <strong><?= htmlspecialchars($alert['item_name']) ?></strong>
                   <span><?= $alert['current_quantity'] ?> <?= htmlspecialchars($alert['unit']) ?></span>
@@ -182,8 +94,7 @@
                     <?php endif; ?>
                   </small>
                 </div>
-
-              </a>
+              </div>
             <?php endforeach; ?>
           </div>
         <?php else: ?>
@@ -192,8 +103,163 @@
       </div>
     </div>
   </div>
+
+  <!-- Ingredient Availability Alerts -->
+  <div class="col-md-4 mt-4">
+    <div class="card">
+      <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-exclamation-triangle me-2"></i>Ingredient Alerts
+        </h5>
+        <a href="/production" class="btn btn-sm btn-light">View All</a>
+      </div>
+      <div class="card-body">
+        <?php if (!empty($ingredientAlerts)): ?>
+          <div class="list-group list-group-flush">
+            <?php foreach ($ingredientAlerts as $alert): ?>
+              <div class="list-group-item px-0">
+                <div class="d-flex justify-content-between align-items-center">
+                  <strong class="text-truncate" style="max-width: 150px;"><?= htmlspecialchars($alert['menu_name']) ?></strong>
+                  <span class="badge bg-danger">
+                    <?= $alert['max_producible'] ?? 0 ?> left
+                  </span>
+                </div>
+                <small class="text-muted">Can produce max <?= $alert['max_producible'] ?? 0 ?> units</small>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        <?php else: ?>
+          <div class="text-center py-3">
+            <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
+            <p class="text-muted mb-0">All ingredients sufficient</p>
+          </div>
+        <?php endif; ?>
+        <div class="mt-2">
+          <small class="text-muted">
+            <i class="fas fa-info-circle me-1"></i>
+            Shows menu items that can produce fewer than 20 units before running out of ingredients
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inventory Pie Chart and Low Stock Alerts -->
+  <div class="col-md-4 mt-4">
+    <div class="card">
+      <div class="card-header bg-secondary text-white">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-chart-pie me-2"></i>Inventory Items Distribution
+        </h5>
+      </div>
+      <div class="card-body">
+        <canvas id="inventoryPieChart" ></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Production Chart -->
+  <div class="col-md-6 mt-4">
+    <div class="card">
+      <div class="card-header bg-success text-white">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-chart-line me-2"></i>Production and Sales
+        </h5>
+      </div>
+      <div class="card-body">
+        <canvas id="productionChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily Cost-to-Profit -->
+  <div class="col-md-6 mt-4">
+    <div class="card">
+      <div class="card-header bg-info text-white">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-coins me-2"></i>Daily Cost vs Profit
+        </h5>
+      </div>
+      <div class="card-body">
+        <canvas id="costProfitChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+
 </div>
 
+<!-- Production Efficiency Section -->
+<div class="row mt-4">
+  <!-- Today's Production Totals -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-industry me-2"></i>Recent Production
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row text-center">
+          <div class="col-4">
+            <h4 class="text-primary"><?= $totalProducedRecent ?? 0 ?></h4>
+            <small class="text-muted">Produced (7d)</small>
+          </div>
+          <div class="col-4">
+            <h4 class="text-success"><?= $totalSoldRecent ?? 0 ?></h4>
+            <small class="text-muted">Sold (7d)</small>
+          </div>
+          <div class="col-4">
+            <h4 class="text-warning"><?= $totalWastageRecent ?? 0 ?></h4>
+            <small class="text-muted">Wastage (7d)</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wastage Percentage -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header bg-warning text-white">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-chart-pie me-2"></i>Wastage Rate
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row text-center mb-2">
+          <div class="col-4">
+            <h5 class="<?= ($wastagePercentageToday ?? 0) > 15 ? 'text-danger' : 'text-success' ?>">
+              <?= $wastagePercentageToday ?? 0 ?>%
+            </h5>
+            <small class="text-muted">Today</small>
+          </div>
+          <div class="col-4">
+            <h5 class="<?= ($wastagePercentageWeek ?? 0) > 15 ? 'text-danger' : 'text-warning' ?>">
+              <?= $wastagePercentageWeek ?? 0 ?>%
+            </h5>
+            <small class="text-muted">7 Days</small>
+          </div>
+          <div class="col-4">
+            <h5 class="<?= ($wastagePercentageMonth ?? 0) > 15 ? 'text-danger' : 'text-info' ?>">
+              <?= $wastagePercentageMonth ?? 0 ?>%
+            </h5>
+            <small class="text-muted">30 Days</small>
+          </div>
+        </div>
+        <div class="text-center">
+          <small class="text-muted">
+            <?php if (($wastagePercentageWeek ?? 0) > 15): ?>
+              <i class="fas fa-exclamation-triangle text-danger"></i> High wastage rate this week
+            <?php else: ?>
+              <i class="fas fa-check-circle text-success"></i> Within acceptable range
+            <?php endif; ?>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Content Row -->
 <div class="row mt-3">

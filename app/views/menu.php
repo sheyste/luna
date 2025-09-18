@@ -20,6 +20,41 @@
         padding: 0.25rem 0.75rem;
         border-radius: 0.25rem;
         font-weight: bold;
+        z-index: 10;
+        max-width: calc(100% - 2rem);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card-title {
+        margin-right: 5rem;
+        word-wrap: break-word;
+        hyphens: auto;
+        line-height: 1.3;
+    }
+
+    /* Responsive adjustments for medium and small screens */
+    @media (max-width: 900px) {
+        .price-tag {
+            position: relative;
+            top: auto;
+            right: auto;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+            max-width: none;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: visible;
+        }
+
+        .card-title {
+            margin-right: 0;
+        }
+
+        .card-body {
+            position: relative;
+        }
     }
 </style>
 

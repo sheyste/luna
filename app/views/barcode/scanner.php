@@ -190,6 +190,10 @@
         display: flex;
         gap: 15px;
     }
+
+    .flashlight-btn {
+        display: none; /* Hidden by default, shown if flashlight is available */
+    }
     
     .scanner-btn {
         width: 60px;
@@ -313,6 +317,9 @@
         <button class="scanner-btn" id="stopScanner" title="Stop Scanner">
             <i class="fa fa-stop"></i>
         </button>
+        <button class="scanner-btn flashlight-btn" id="flashlightBtn" title="Toggle Flashlight">
+            <i class="bi bi-lightbulb-fill"></i>
+        </button>
     </div>
 </div>
 
@@ -333,7 +340,13 @@ $(document).ready(function() {
     console.log('Production items loaded:', productionItems.length);
     
     let scannerActive = false;
-    
+    let flashlightSupported = false;
+    let flashlightEnabled = false;
+    let currentVideoTrack = null;
+
+    // Check flashlight capability
+    checkFlashlightCapability();
+
     // Start scanner on page load
     setTimeout(() => {
         startQuaggaScanner();
@@ -350,6 +363,10 @@ $(document).ready(function() {
         if (scannerActive) {
             stopQuaggaScanner();
         }
+    });
+
+    $('#flashlightBtn').click(function() {
+        toggleFlashlight();
     });
     
     function startQuaggaScanner() {
@@ -409,6 +426,11 @@ $(document).ready(function() {
             $('#scanner-status').text('Ready to scan');
             $('#startScanner').addClass('active');
             $('#stopScanner').removeClass('active');
+
+            // Check flashlight capability after scanner starts
+            setTimeout(() => {
+                checkFlashlightCapabilityFromQuagga();
+            }, 1000);
         });
         
         Quagga.onDetected(function(result) {
@@ -512,12 +534,12 @@ $(document).ready(function() {
             warning: '#ffa726',
             info: '#3742fa'
         };
-        
+
         $('#scanner-status')
             .text(message)
             .css('background', colors[type] || '#333')
             .show();
-            
+
         setTimeout(() => {
             if (scannerActive) {
                 $('#scanner-status')
@@ -525,6 +547,89 @@ $(document).ready(function() {
                     .css('background', 'rgba(0,0,0,0.8)');
             }
         }, 3000);
+    }
+
+    function checkFlashlightCapability() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            console.log('MediaDevices API not supported');
+            return;
+        }
+
+        // Try to get camera access to check flashlight capability
+        navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "environment" }
+        }).then(function(stream) {
+            const videoTrack = stream.getVideoTracks()[0];
+            if (videoTrack && videoTrack.getCapabilities) {
+                const capabilities = videoTrack.getCapabilities();
+                if (capabilities.torch) {
+                    flashlightSupported = true;
+                    currentVideoTrack = videoTrack;
+                    $('.flashlight-btn').show();
+                    console.log('Flashlight supported');
+                } else {
+                    console.log('Flashlight not supported');
+                }
+            }
+            // Stop the temporary stream
+            stream.getTracks().forEach(track => track.stop());
+        }).catch(function(err) {
+            console.log('Error checking flashlight capability:', err);
+        });
+    }
+
+    function checkFlashlightCapabilityFromQuagga() {
+        try {
+            // Get the video element created by Quagga
+            const videoElement = document.querySelector('#scanner-element video');
+            if (videoElement && videoElement.srcObject) {
+                const stream = videoElement.srcObject;
+                const videoTrack = stream.getVideoTracks()[0];
+
+                if (videoTrack && videoTrack.getCapabilities) {
+                    const capabilities = videoTrack.getCapabilities();
+                    if (capabilities.torch) {
+                        flashlightSupported = true;
+                        currentVideoTrack = videoTrack;
+                        $('.flashlight-btn').show();
+                        console.log('Flashlight supported on Quagga stream');
+                    } else {
+                        console.log('Flashlight not supported on Quagga stream');
+                    }
+                } else {
+                    console.log('Video track capabilities not available');
+                }
+            } else {
+                console.log('Video element or stream not found');
+            }
+        } catch (err) {
+            console.log('Error checking flashlight capability from Quagga:', err);
+        }
+    }
+
+    function toggleFlashlight() {
+        if (!flashlightSupported || !currentVideoTrack) {
+            console.log('Flashlight not available');
+            return;
+        }
+
+        const newTorchState = !flashlightEnabled;
+
+        currentVideoTrack.applyConstraints({
+            advanced: [{ torch: newTorchState }]
+        }).then(function() {
+            flashlightEnabled = newTorchState;
+            if (flashlightEnabled) {
+                $('#flashlightBtn').addClass('active');
+                console.log('Flashlight turned on');
+            } else {
+                $('#flashlightBtn').removeClass('active');
+                console.log('Flashlight turned off');
+            }
+        }).catch(function(err) {
+            console.error('Error toggling flashlight:', err);
+            showNotification('Flashlight control failed', 'error');
+        });
     }
     
     // Stop scanner when page is hidden/unloaded

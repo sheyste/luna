@@ -8,6 +8,36 @@
         border: 1px solid #ffeeba;
     }
 
+    /* Clickable row styling */
+    .clickable-row {
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        position: relative; /* Needed for z-index to work */
+    }
+
+    .clickable-row:hover {
+        background-color: #adb5bd !important; /* Darker background for more noticeable hover */
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.4); /* More pronounced shadow for depth */
+        transform: translateY(-1px) scale(1.00); /* Move up slightly and scale for "pop" effect */
+        z-index: 1; /* Bring to front on hover */
+    }
+
+    .clickable-row:hover td {
+        background-color: transparent;
+    }
+
+    /* Prevent button clicks from triggering row click */
+    .clickable-row td button {
+        pointer-events: auto;
+    }
+
+    /* Actions column styling for all screen sizes */
+    #poTable td[data-label="Actions"] {
+        display: flex;
+        gap: 0.5rem; /* Add space between buttons */
+        align-items: center;
+    }
+
     /* Responsive table for mobile */
     @media (max-width: 767px) {
         #poTable thead {
@@ -32,6 +62,21 @@
             border-bottom: 1px solid #eee;
         }
 
+        /* Specific styling for the Actions column in mobile view */
+        #poTable td[data-label="Actions"] {
+            text-align: left; /* Align buttons to the left */
+            padding-left: 1rem; /* Adjust padding */
+            flex-direction: column; /* Stack buttons vertically */
+            gap: 0.5rem; /* Add space between buttons */
+        }
+
+        #poTable td[data-label="Actions"] button {
+            width: 100%; /* Make buttons take full width */
+            text-align: center; /* Center text within buttons */
+            font-size: 0.8rem; /* Slightly larger font size */
+            padding: 0.6rem 0.5rem; /* Adjust padding for a bigger feel */
+        }
+
         #poTable td:last-of-type {
             border-bottom: 0;
         }
@@ -43,6 +88,11 @@
             width: 45%;
             font-weight: bold;
             text-align: left;
+        }
+
+        /* Hide the "Actions" label in mobile view */
+        #poTable td[data-label="Actions"]::before {
+            content: "";
         }
     }
 </style>
@@ -93,7 +143,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" id="poTable" width="100%">
+            <table class="table" id="poTable" width="100%">
                 <thead class="table-dark">
                     <tr>
                         <th>PO Number</th>
@@ -157,21 +207,18 @@
                     }
                     ?>
                     <?php foreach ($grouped_orders as $order): ?>
-                        <tr class="<?= getStatusRowClass($order['status']) ?>">
+                        <tr class="<?= getStatusRowClass($order['status']) ?> clickable-row" data-id="<?= $order['id'] ?>">
                             <td data-label="PO Number"><?= htmlspecialchars($order['po_number']) ?></td>
                             <td data-label="Supplier"><?= htmlspecialchars($order['supplier']) ?></td>
                             <td data-label="Items"><span class="badge bg-secondary"><?= htmlspecialchars($order['item_count']) ?></span></td>
                             <td data-label="Total Amount">&#8369;<?= htmlspecialchars(number_format($order['total_amount'], 2)) ?></td>
                             <td data-label="Order Date"><?= htmlspecialchars(date('F j, Y', strtotime($order['order_date']))) ?></td>
-                            <td data-label="Expected Delivery"><?= $order['expected_delivery'] && $order['expected_delivery'] != '0000-00-00 00:00:00' 
-                                    ? htmlspecialchars(date('F j, Y', strtotime($order['expected_delivery']))) 
+                            <td data-label="Expected Delivery"><?= $order['expected_delivery'] && $order['expected_delivery'] != '0000-00-00 00:00:00'
+                                    ? htmlspecialchars(date('F j, Y', strtotime($order['expected_delivery'])))
                                     : 'N/A' ?></td>
 
                             <td data-label="Status"><span class="badge <?= getStatusBadgeClass($order['status']) ?>"><?= htmlspecialchars($order['status']) ?></span></td>
-                            <td data-label="Actions" class="text-nowrap">
-                                <button class="btn btn-primary btn-sm view-btn" data-id="<?= $order['id'] ?>">
-                                    <i class="fa fa-eye"></i> View
-                                </button>
+                            <td data-label="Actions">
                                 <button class="btn btn-warning btn-sm edit-btn" data-id="<?= $order['id'] ?>">
                                     <i class="fa fa-edit"></i> Update
                                 </button>
@@ -548,49 +595,6 @@ $(document).ready(function() {
         }
     }
 
-    // View PO
-    $('#poTable').on('click', '.view-btn', function() {
-        var id = $(this).data('id');
-        fetchPOData(id, function(data) {
-            $('#viewPO').text(data.po_number);
-            $('#viewSupplier').text(data.supplier);
-            $('#viewOrderDate').text(formatDate(data.order_date));
-            $('#viewExpected').text(formatDate(data.expected_delivery));
-
-            const $statusBadge = $('#viewStatus');
-            $statusBadge.text(data.status);
-            $statusBadge.removeClass('bg-success bg-info bg-danger bg-warning text-dark')
-                        .addClass(getStatusBadgeClass(data.status));
-
-            const itemsContainer = $('#view-items-container');
-            itemsContainer.empty();
-            let grandTotal = 0;
-
-            if (data.items && data.items.length > 0) {
-                data.items.forEach(function(item) {
-                    const quantity = parseFloat(item.quantity);
-                    const unitPrice = parseFloat(item.unit_price);
-                    const lineTotal = quantity * unitPrice;
-                    grandTotal += lineTotal;
-
-                    const row = $('<tr>');
-                    row.append($('<td>').text(item.item_name));
-                    row.append($('<td>').text(quantity));
-                    row.append($('<td>').text(item.unit || 'N/A'));
-                    row.append($('<td>').text(unitPrice.toFixed(2)));
-                    row.append($('<td>').text(item.received_quantity || 0));
-                    row.append($('<td>').text(lineTotal.toFixed(2)));
-                    
-                    itemsContainer.append(row);
-                });
-            }
-
-            $('#viewGrandTotal').text(grandTotal.toFixed(2));
-
-            viewPOModal.show();
-        });
-    });
-
     // Edit PO
     $('#poTable').on('click', '.edit-btn', function() {
         var id = $(this).data('id');
@@ -635,6 +639,53 @@ $(document).ready(function() {
     $('#editStatus').on('change', function() {
         const showReceived = $(this).val() === 'Received';
         $('#edit-po-items-container .received-qty-container').toggle(showReceived);
+    });
+
+    // Handle clickable row click (for viewing)
+    $('#poTable').on('click', '.clickable-row', function(e) {
+        if ($(e.target).closest('button').length) {
+            return;
+        }
+
+        var id = $(this).data('id');
+        fetchPOData(id, function(data) {
+            $('#viewPO').text(data.po_number);
+            $('#viewSupplier').text(data.supplier);
+            $('#viewOrderDate').text(formatDate(data.order_date));
+            $('#viewExpected').text(formatDate(data.expected_delivery));
+
+            const $statusBadge = $('#viewStatus');
+            $statusBadge.text(data.status);
+            $statusBadge.removeClass('bg-success bg-info bg-danger bg-warning text-dark')
+                        .addClass(getStatusBadgeClass(data.status));
+
+            const itemsContainer = $('#view-items-container');
+            itemsContainer.empty();
+            let grandTotal = 0;
+
+            if (data.items && data.items.length > 0) {
+                data.items.forEach(function(item) {
+                    const quantity = parseFloat(item.quantity);
+                    const unitPrice = parseFloat(item.unit_price);
+                    const lineTotal = quantity * unitPrice;
+                    grandTotal += lineTotal;
+
+                    const row = $('<tr>');
+                    row.append($('<td>').text(item.item_name));
+                    row.append($('<td>').text(quantity));
+                    row.append($('<td>').text(item.unit || 'N/A'));
+                    row.append($('<td>').text(unitPrice.toFixed(2)));
+                    row.append($('<td>').text(item.received_quantity || 0));
+                    row.append($('<td>').text(lineTotal.toFixed(2)));
+
+                    itemsContainer.append(row);
+                });
+            }
+
+            $('#viewGrandTotal').text(grandTotal.toFixed(2));
+
+            viewPOModal.show();
+        });
     });
 });
 </script>
