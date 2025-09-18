@@ -71,7 +71,7 @@
     <div class="card">
       <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
         <h5 class="card-title mb-0">
-          <i class="fas fa-exclamation-triangle me-2"></i>Latest Low Stock Alerts
+          <i class="fas fa-exclamation-triangle me-2"></i>Low Stock Alerts
         </h5>
         <a href="/inventory/low-stock-alerts" class="btn btn-sm btn-light">View All</a>
       </div>
