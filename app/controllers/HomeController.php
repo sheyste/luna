@@ -96,6 +96,82 @@ public function index()
         $latestLowStockAlerts[] = $row;
     }
 
+    // Production efficiency data - multiple time periods
+    // Today
+    $result = $this->conn->query("
+        SELECT
+            SUM(quantity_produced) as total_produced,
+            SUM(wastage) as total_wastage
+        FROM production
+        WHERE DATE(created_at) = CURDATE()
+    ");
+    $todayProduction = $result->fetch_assoc();
+    $totalProducedToday = $todayProduction['total_produced'] ?? 0;
+    $totalWastageToday = $todayProduction['total_wastage'] ?? 0;
+    $wastagePercentageToday = $totalProducedToday > 0 ? round(($totalWastageToday / $totalProducedToday) * 100, 2) : 0;
+
+    // This week (last 7 days)
+    $result = $this->conn->query("
+        SELECT
+            SUM(quantity_produced) as total_produced,
+            SUM(wastage) as total_wastage
+        FROM production
+        WHERE DATE(created_at) >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+    ");
+    $weekProduction = $result->fetch_assoc();
+    $totalProducedWeek = $weekProduction['total_produced'] ?? 0;
+    $totalWastageWeek = $weekProduction['total_wastage'] ?? 0;
+    $wastagePercentageWeek = $totalProducedWeek > 0 ? round(($totalWastageWeek / $totalProducedWeek) * 100, 2) : 0;
+
+    // This month (last 30 days)
+    $result = $this->conn->query("
+        SELECT
+            SUM(quantity_produced) as total_produced,
+            SUM(wastage) as total_wastage
+        FROM production
+        WHERE DATE(created_at) >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+    ");
+    $monthProduction = $result->fetch_assoc();
+    $totalProducedMonth = $monthProduction['total_produced'] ?? 0;
+    $totalWastageMonth = $monthProduction['total_wastage'] ?? 0;
+    $wastagePercentageMonth = $totalProducedMonth > 0 ? round(($totalWastageMonth / $totalProducedMonth) * 100, 2) : 0;
+
+    // Get total sold for the week (for the main production card)
+    $result = $this->conn->query("
+        SELECT SUM(quantity_sold) as total_sold
+        FROM production
+        WHERE DATE(created_at) >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+    ");
+    $soldData = $result->fetch_assoc();
+    $totalSoldRecent = $soldData['total_sold'] ?? 0;
+
+
+
+    // Recent production totals (for the main card)
+    $totalProducedRecent = $totalProducedWeek;
+    $totalWastageRecent = $totalWastageWeek;
+    $wastagePercentage = $wastagePercentageWeek;
+
+    // Ingredient availability alerts - check which menu items have insufficient ingredients
+    $result = $this->conn->query("
+        SELECT
+            m.name as menu_name,
+            m.id as menu_id,
+            FLOOR(MIN(i.quantity / mi.quantity)) as max_producible
+        FROM menus m
+        JOIN menu_ingredients mi ON m.id = mi.menu_id
+        JOIN inventory i ON mi.inventory_id = i.id
+        WHERE mi.quantity > 0
+        GROUP BY m.id, m.name
+        HAVING max_producible < 20
+        ORDER BY max_producible ASC
+        LIMIT 5
+    ");
+    $ingredientAlerts = [];
+    while ($row = $result->fetch_assoc()) {
+        $ingredientAlerts[] = $row;
+    }
+
     $this->view('home', [
         'productionData'    => $productionData,
         'costProfitData'    => $costProfitData,
@@ -107,7 +183,15 @@ public function index()
         'orderedPurchaseOrders' => $orderedPurchaseOrders,
         'arrivingToday' => $arrivingToday,
         'inventoryData' => $inventoryData,
-        'latestLowStockAlerts' => $latestLowStockAlerts
+        'latestLowStockAlerts' => $latestLowStockAlerts,
+        'totalProducedRecent' => $totalProducedRecent,
+        'totalSoldRecent' => $totalSoldRecent,
+        'totalWastageRecent' => $totalWastageRecent,
+        'wastagePercentage' => $wastagePercentage,
+        'wastagePercentageToday' => $wastagePercentageToday,
+        'wastagePercentageWeek' => $wastagePercentageWeek,
+        'wastagePercentageMonth' => $wastagePercentageMonth,
+        'ingredientAlerts' => $ingredientAlerts
     ]);
 }
 
