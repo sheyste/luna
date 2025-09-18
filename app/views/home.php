@@ -66,20 +66,6 @@
 
 <div class="row">
 
-  <!-- Inventory Pie Chart and Low Stock Alerts -->
-  <div class="col-md-4 mt-4">
-    <div class="card">
-      <div class="card-header bg-secondary text-white">
-        <h5 class="card-title mb-0">
-          <i class="fas fa-chart-pie me-2"></i>Inventory Items Distribution
-        </h5>
-      </div>
-      <div class="card-body">
-        <canvas id="inventoryPieChart" ></canvas>
-      </div>
-    </div>
-  </div>
-  
   <!-- Latest Low Stock Alerts -->
   <div class="col-md-4 mt-4">
     <div class="card">
@@ -154,6 +140,20 @@
             Shows menu items that can produce fewer than 20 units before running out of ingredients
           </small>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inventory Pie Chart and Low Stock Alerts -->
+  <div class="col-md-4 mt-4">
+    <div class="card">
+      <div class="card-header bg-secondary text-white">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-chart-pie me-2"></i>Inventory Items Distribution
+        </h5>
+      </div>
+      <div class="card-body">
+        <canvas id="inventoryPieChart" ></canvas>
       </div>
     </div>
   </div>
