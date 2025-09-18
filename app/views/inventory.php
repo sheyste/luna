@@ -24,6 +24,13 @@
         pointer-events: auto;
     }
 
+    /* Actions column styling for all screen sizes */
+    #inventoryTable td[data-label="Actions"] {
+        display: flex;
+        gap: 0.5rem; /* Add space between buttons */
+        align-items: center;
+    }
+
     /* Responsive table for mobile */
     @media (max-width: 767px) {
         #inventoryTable thead {
@@ -52,7 +59,6 @@
         #inventoryTable td[data-label="Actions"] {
             text-align: left; /* Align buttons to the left */
             padding-left: 1rem; /* Adjust padding */
-            display: flex; /* Use flexbox for better button layout */
             flex-direction: column; /* Stack buttons vertically */
             gap: 0.5rem; /* Add space between buttons */
         }

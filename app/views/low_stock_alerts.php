@@ -12,7 +12,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" id="alertsTable" width="100%" cellspacing="0">
+            <table class="table" id="alertsTable" width="100%" cellspacing="0">
                 <thead class="table-dark">
                     <tr>
                         <th>Item Name</th>
