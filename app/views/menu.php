@@ -431,7 +431,7 @@
           <div class="col-md-8">
             <div class="mb-3">
               <label for="menuName" class="form-label">MENU NAME</label>
-              <input type="text" class="form-control" id="menuName" name="name" required placeholder="Enter menu name">
+              <input type="text" class="form-control" id="menuName" name="name" required placeholder="Enter menu name" autocomplete="off">
             </div>
           </div>
           <div class="col-md-4">
@@ -444,7 +444,7 @@
         <div class="mb-3">
           <label for="menuBarcode" class="form-label">BARCODE</label>
           <div class="input-group">
-            <input type="number" class="form-control" id="menuBarcode" name="barcode" placeholder="Enter barcode">
+            <input type="number" class="form-control" id="menuBarcode" name="barcode" placeholder="Enter barcode" autocomplete="off">
             <button class="btn btn-outline-secondary" type="button" id="generateBarcodeBtn">
               <i class="bi bi-dice-5 me-1"></i>Generate
             </button>
@@ -452,18 +452,18 @@
           <div class="form-text">You can manually enter a barcode or generate one.</div>
         </div>
         <hr>
-        <h5>Ingredients <span class="float-end">Total Cost: ₱<span id="add-total-cost" class="fw-bold">0.00</span></span></h5>
+        <h5>Ingredients</h5>
         <div id="add-ingredients-container">
             <!-- Ingredient rows will be added here by JS -->
         </div>
         <button type="button" class="btn btn-primary btn-sm" id="add-ingredient-btn">
             <i class="fa fa-plus"></i> Add Ingredient
         </button>
+        <div class="d-flex justify-content-end mt-3">
+            <span class="fw-bold">Total Cost: ₱<span id="add-total-cost">0.00</span></span>
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          <i class="bi bi-x-circle me-2"></i>Cancel
-        </button>
         <button type="submit" class="btn btn-success">
           <i class="bi bi-plus-circle me-2"></i>Add Menu
         </button>
@@ -501,13 +501,16 @@
           <input type="text" class="form-control" id="editMenuBarcode" name="barcode" readonly>
         </div>
         <hr>
-        <h5>Ingredients <span class="float-end">Total Cost: ₱<span id="edit-total-cost" class="fw-bold">0.00</span></span></h5>
+        <h5>Ingredients</h5>
         <div id="edit-ingredients-container">
             <!-- Ingredient rows will be added here by JS -->
         </div>
         <button type="button" class="btn btn-primary btn-sm" id="edit-add-ingredient-btn">
             <i class="fa fa-plus"></i> Add Ingredient
         </button>
+        <div class="d-flex justify-content-end mt-3">
+            <span class="fw-bold">Total Cost: ₱<span id="edit-total-cost">0.00</span></span>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Save Changes</button>
