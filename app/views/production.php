@@ -287,6 +287,237 @@
         padding: 0.5rem 0.5rem;
         z-index: 1;
     }
+
+    /* Modern Modal Styles */
+    .modern-modal .modal-dialog {
+        max-width: 800px;
+        margin: 1.75rem auto;
+    }
+
+    .modern-modal .modal-content {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    }
+
+    .modern-modal .modal-header {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        border: none;
+        position: relative;
+    }
+
+    .modern-modal .modal-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    /* Green theme for Add Modal */
+    .modern-modal.add-modal .modal-header {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    }
+
+    .modern-modal.add-modal .btn-primary {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .modern-modal.add-modal .btn-primary:hover {
+        background: linear-gradient(135deg, #1e7e34 0%, #28a745 100%);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .modern-modal.add-modal .form-control:focus,
+    .modern-modal.add-modal .form-select:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+
+    .modern-modal .modal-title {
+        font-weight: 600;
+        font-size: 1.25rem;
+        position: relative;
+        z-index: 1;
+        margin: 0;
+    }
+
+    .modern-modal .btn-close {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        position: relative;
+        z-index: 1;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+    }
+
+    .modern-modal .btn-close:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+
+    .modern-modal .btn-close::after {
+        content: "";
+    }
+
+    .modern-modal .btn-close i {
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .modern-modal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+
+    .modern-modal .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .modern-modal .form-control,
+    .modern-modal .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .modern-modal .form-control:focus,
+    .modern-modal .form-select:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        background: white;
+        transform: translateY(-1px);
+    }
+
+    .modern-modal .form-control:hover,
+    .modern-modal .form-select:hover {
+        border-color: #ced4da;
+        background: white;
+    }
+
+    .modern-modal .mb-3 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .modern-modal .modal-footer {
+        padding: 1.5rem 2rem;
+        border-top: 1px solid #e9ecef;
+        background: #f8f9fa;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+
+    .modern-modal .btn {
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .modern-modal .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .modern-modal .btn:hover::before {
+        left: 100%;
+    }
+
+    .modern-modal .btn-primary {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3);
+    }
+
+    .modern-modal .btn-primary:hover {
+        background: linear-gradient(135deg, #224abe 0%, #4e73df 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(78, 115, 223, 0.4);
+        color: white;
+    }
+
+    .modern-modal .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .modern-modal .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 576px) {
+        .modern-modal .modal-dialog {
+            margin: 0.5rem;
+            max-width: none;
+        }
+
+        .modern-modal .modal-header {
+            padding: 1rem 1.5rem;
+        }
+
+        .modern-modal .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modern-modal .modal-footer {
+            padding: 1rem 1.5rem;
+            flex-direction: column;
+        }
+
+        .modern-modal .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .modern-modal .form-control,
+        .modern-modal .form-select {
+            padding: 0.625rem 0.875rem;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Animation for modal appearance */
+    .modern-modal.fade .modal-dialog {
+        transform: scale(0.9) translateY(-20px);
+        transition: transform 0.3s ease-out;
+    }
+
+    .modern-modal.show .modal-dialog {
+        transform: scale(1) translateY(0);
+    }
 </style>
 
 <?php
@@ -501,12 +732,12 @@ if (!empty($items)) {
 
 
 <!-- Add Production Modal -->
-<div class="modal fade" id="addProductionModal" tabindex="-1" aria-labelledby="addProductionModalLabel" aria-hidden="true">
+<div class="modal fade modern-modal add-modal" id="addProductionModal" tabindex="-1" aria-labelledby="addProductionModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form class="modal-content" method="post" action="/production/add" id="addProductionForm">
       <div class="modal-header">
         <h5 class="modal-title" id="addProductionModalLabel">Add Production Item</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
       </div>
       <div class="modal-body">
 
