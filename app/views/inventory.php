@@ -572,7 +572,7 @@
           <div class="col-md-6">
             <div class="mb-3">
               <label for="itemName" class="form-label">NAME</label>
-              <input type="text" class="form-control" id="itemName" name="name" required placeholder="Enter item name">
+              <input type="text" class="form-control" id="itemName" name="name" required placeholder="Enter item name" autocomplete="off">
             </div>
           </div>
           <div class="col-md-6">
@@ -600,7 +600,7 @@
             <div class="mb-3">
               <label for="itemBarcode" class="form-label">BARCODE</label>
               <div class="input-group">
-                <input type="number" class="form-control" id="itemBarcode" name="barcode" placeholder="Enter barcode">
+                <input type="number" class="form-control" id="itemBarcode" name="barcode" placeholder="Enter barcode" autocomplete="off">
                 <button class="btn btn-outline-secondary" type="button" id="generateBarcodeBtn">
                   <i class="bi bi-dice-5 me-1"></i>Generate
                 </button>
