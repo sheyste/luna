@@ -208,10 +208,6 @@
         backdrop-filter: blur(10px);
     }
     
-    .scanner-btn:hover {
-        background: rgba(255,255,255,1);
-        transform: scale(1.1);
-    }
     
     .scanner-btn.active {
         background: #00ff88;

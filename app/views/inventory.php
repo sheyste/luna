@@ -168,6 +168,15 @@
         transform: scale(1.1);
     }
 
+    .modern-modal .btn-close::after {
+        content: "";
+    }
+
+    .modern-modal .btn-close i {
+        color: white;
+        font-size: 1.2rem;
+    }
+
     .modern-modal .modal-body {
         padding: 2rem;
         background: white;
@@ -556,7 +565,7 @@
         <h5 class="modal-title" id="addInventoryModalLabel">
           <i class="bi bi-plus-circle me-2"></i>Add Inventory Item
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
       </div>
       <div class="modal-body">
         <div class="row">
@@ -664,7 +673,7 @@
         <h5 class="modal-title" id="editInventoryModalLabel">
           <i class="bi bi-pencil-square me-2"></i>Edit Inventory Item
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="editItemId" name="id">
