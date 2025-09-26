@@ -168,6 +168,15 @@
         transform: scale(1.1);
     }
 
+    .modern-modal .btn-close::after {
+        content: "";
+    }
+
+    .modern-modal .btn-close i {
+        color: white;
+        font-size: 1.2rem;
+    }
+
     .modern-modal .modal-body {
         padding: 2rem;
         background: white;
@@ -337,6 +346,135 @@
         color: #6c757d;
         margin-top: 0.25rem;
     }
+
+    /* DataTables Custom Styling */
+    .dataTables_wrapper .dataTables_length select,
+    .dataTables_wrapper .dataTables_filter input {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        color: #495057;
+    }
+
+    .dataTables_wrapper .dataTables_length select:focus,
+    .dataTables_wrapper .dataTables_filter input:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        background: white;
+        outline: none;
+    }
+
+    .dataTables_wrapper .dataTables_length select:hover,
+    .dataTables_wrapper .dataTables_filter input:hover {
+        border-color: #ced4da;
+        background: white;
+    }
+
+    .dataTables_wrapper .dataTables_length label,
+    .dataTables_wrapper .dataTables_filter label {
+        font-weight: 600;
+        color: #495057;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        font-size: 0.875rem;
+        color: #6c757d;
+        padding-top: 1rem;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        padding: 0.375rem 0.75rem;
+        margin: 0 0.125rem;
+        background: white;
+        color: #495057;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background: #f8f9fa;
+        border-color: #ced4da;
+        color: #495057;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: #4e73df;
+        border-color: #4e73df;
+        color: white;
+        box-shadow: 0 2px 8px rgba(78, 115, 223, 0.3);
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        background: #f8f9fa;
+        border-color: #e9ecef;
+        color: #6c757d;
+        cursor: not-allowed;
+    }
+
+    /* Custom Excel Export Button Styling */
+    .dt-buttons .btn-success {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .dt-buttons .btn-success:hover {
+        background: linear-gradient(135deg, #1e7e34 0%, #28a745 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        color: white;
+    }
+
+    .dt-buttons .btn-success:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
+
+    /* DataTables Controls Layout */
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 1rem;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        text-align: right;
+    }
+
+    @media (max-width: 768px) {
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            text-align: left;
+            margin-bottom: 0.5rem;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            width: 100%;
+            margin-top: 0.25rem;
+        }
+
+        .dt-buttons {
+            margin-bottom: 1rem;
+        }
+
+        .dt-buttons .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
 </style>
 
 <!-- Page Header -->
@@ -348,9 +486,14 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 fw-bold text-primary">Inventory List</h6>
-        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addInventoryModal">
-            <i class="bi bi-plus-circle me-1"></i> Add Item
-        </button>
+        <div class="d-flex gap-2">
+            <button class="btn btn-success btn-sm export-excel-btn" id="exportExcelBtn">
+                <i class="bi bi-file-earmark-excel me-1"></i> Export to Excel
+            </button>
+            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addInventoryModal">
+                <i class="bi bi-plus-circle me-1"></i> Add Item
+            </button>
+        </div>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -422,14 +565,14 @@
         <h5 class="modal-title" id="addInventoryModalLabel">
           <i class="bi bi-plus-circle me-2"></i>Add Inventory Item
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
       </div>
       <div class="modal-body">
         <div class="row">
           <div class="col-md-6">
             <div class="mb-3">
               <label for="itemName" class="form-label">NAME</label>
-              <input type="text" class="form-control" id="itemName" name="name" required placeholder="Enter item name">
+              <input type="text" class="form-control" id="itemName" name="name" required placeholder="Enter item name" autocomplete="off">
             </div>
           </div>
           <div class="col-md-6">
@@ -457,7 +600,7 @@
             <div class="mb-3">
               <label for="itemBarcode" class="form-label">BARCODE</label>
               <div class="input-group">
-                <input type="number" class="form-control" id="itemBarcode" name="barcode" placeholder="Enter barcode">
+                <input type="number" class="form-control" id="itemBarcode" name="barcode" placeholder="Enter barcode" autocomplete="off">
                 <button class="btn btn-outline-secondary" type="button" id="generateBarcodeBtn">
                   <i class="bi bi-dice-5 me-1"></i>Generate
                 </button>
@@ -530,7 +673,7 @@
         <h5 class="modal-title" id="editInventoryModalLabel">
           <i class="bi bi-pencil-square me-2"></i>Edit Inventory Item
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="editItemId" name="id">
@@ -667,10 +810,32 @@
 
 <script>
   $(document).ready(function() {
-    $('#inventoryTable').DataTable({
+    var table = $('#inventoryTable').DataTable({
       "language": {
         "emptyTable": "No inventory items found"
-      }
+      },
+      dom: '<"row"<"col-sm-4"l><"col-sm-8"f>>rtip',
+      lengthMenu: [
+        [50, 100, 250, 500, -1],
+        [50, 100, 250, 500, "All"]
+      ]
+    });
+
+    // Handle Export to Excel button click
+    $('#exportExcelBtn').on('click', function() {
+      // Create a new button instance for export
+      new $.fn.dataTable.Buttons(table, {
+        buttons: [
+          {
+            extend: 'excelHtml5',
+            text: 'Export to Excel',
+            title: 'Inventory_Report_' + new Date().toISOString().split('T')[0],
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4, 5, 6, 7, 8] // Exclude Actions column (index 9)
+            }
+          }
+        ]
+      }).container().find('button').click();
     });
 
     // Handle clickable row click (for editing)

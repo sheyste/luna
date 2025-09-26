@@ -30,6 +30,8 @@ A comprehensive inventory and production management system built with PHP using 
 - **Barcode Menu Actions**: Barcode integration with menu item operations
 - **Production Updates via Barcode**: Update sold quantities and wastage using barcode scanning
 - **Multi-Entity Barcode Support**: Barcodes for inventory items, menu items, and production batches
+- **Flashlight Toggle**: Built-in flashlight button for improved barcode scanning in low-light conditions
+- **Barcode Selection Interface**: Choose between inventory, production, or menu actions after scanning a barcode
 
 ### 🏭 Production Management
 - **Menu-Based Production Tracking**: Manage production based on menu items with ingredient requirements
@@ -83,7 +85,7 @@ A comprehensive inventory and production management system built with PHP using 
 
 2. **Create the Database:**
    - Create a new database in MySQL named `luna`
-   - Import the provided SQL backup file (`luna_backup_2025-08-31_14-44-52.sql`) to create tables and initial data
+   - Import the provided SQL backup file (`luna_backup_2025-09-17_19-33-56.sql`) to create tables and initial data
    - Or create the database schema manually if no backup file is available
 
 3. **Configure Database Connection:**
@@ -205,5 +207,3 @@ A comprehensive inventory and production management system built with PHP using 
 - [x] Adjust Card title in production where title goes behind Price if screen width is small
 - [x] Converd low stock alert email sender form API URL to SMTP server
 - [ ] Update Production card, make it only show Can produce max number of units, price, produced, sold and wastage
-
-

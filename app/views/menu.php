@@ -56,6 +56,312 @@
             position: relative;
         }
     }
+
+    /* Modern Edit Inventory Modal Styles */
+    .modern-modal .modal-dialog {
+        max-width: 800px;
+        margin: 1.75rem auto;
+    }
+
+    .modern-modal .modal-content {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    }
+
+    .modern-modal .modal-header {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        border: none;
+        position: relative;
+    }
+
+    .modern-modal .modal-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    /* Green theme for Add Inventory Modal */
+    .modern-modal.add-modal .modal-header {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    }
+
+    .modern-modal.add-modal .btn-primary {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .modern-modal.add-modal .btn-primary:hover {
+        background: linear-gradient(135deg, #1e7e34 0%, #28a745 100%);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .modern-modal.add-modal .form-control:focus,
+    .modern-modal.add-modal .form-select:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+
+    .modern-modal .modal-title {
+        font-weight: 600;
+        font-size: 1.25rem;
+        position: relative;
+        z-index: 1;
+        margin: 0;
+    }
+
+    .modern-modal .btn-close {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        position: relative;
+        z-index: 1;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+    }
+
+    .modern-modal .btn-close:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+
+    .modern-modal .btn-close::after {
+        content: "";
+    }
+
+    .modern-modal .btn-close i {
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .modern-modal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+
+    .modern-modal .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .modern-modal .form-control,
+    .modern-modal .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .modern-modal .form-control:focus,
+    .modern-modal .form-select:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        background: white;
+        transform: translateY(-1px);
+    }
+
+    .modern-modal .form-control:hover,
+    .modern-modal .form-select:hover {
+        border-color: #ced4da;
+        background: white;
+    }
+
+    .modern-modal .mb-3 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .modern-modal .modal-footer {
+        padding: 1.5rem 2rem;
+        border-top: 1px solid #e9ecef;
+        background: #f8f9fa;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+
+    .modern-modal .btn {
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .modern-modal .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .modern-modal .btn:hover::before {
+        left: 100%;
+    }
+
+    .modern-modal .btn-primary {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3);
+    }
+
+    .modern-modal .btn-primary:hover {
+        background: linear-gradient(135deg, #224abe 0%, #4e73df 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(78, 115, 223, 0.4);
+        color: white;
+    }
+
+    .modern-modal .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .modern-modal .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 576px) {
+        .modern-modal .modal-dialog {
+            margin: 0.5rem;
+            max-width: none;
+        }
+
+        .modern-modal .modal-header {
+            padding: 1rem 1.5rem;
+        }
+
+        .modern-modal .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modern-modal .modal-footer {
+            padding: 1rem 1.5rem;
+            flex-direction: column;
+        }
+
+        .modern-modal .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .modern-modal .form-control,
+        .modern-modal .form-select {
+            padding: 0.625rem 0.875rem;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Animation for modal appearance */
+    .modern-modal.fade .modal-dialog {
+        transform: scale(0.9) translateY(-20px);
+        transition: transform 0.3s ease-out;
+    }
+
+    .modern-modal.show .modal-dialog {
+        transform: scale(1) translateY(0);
+    }
+
+    /* Input group styling for barcode */
+    .modern-modal .input-group {
+        position: relative;
+    }
+
+    .modern-modal .input-group .btn {
+        border-radius: 0 8px 8px 0;
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .modern-modal .input-group .form-control {
+        border-radius: 8px 0 0 8px;
+        border-right: none;
+    }
+
+    .modern-modal .input-group .form-control:focus {
+        border-right: 2px solid #4e73df;
+    }
+
+    /* Form text styling */
+    .modern-modal .form-text {
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+
+    /* Mobile responsiveness for ingredients section */
+    @media (max-width: 576px) {
+        .ingredient-row {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .ingredient-row > div {
+            width: 100% !important;
+            margin-bottom: 0.5rem;
+        }
+
+        .ingredient-row .input-group {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .ingredient-row .input-group .form-control {
+            flex: 1;
+            border-radius: 8px 0 0 8px;
+        }
+
+        .ingredient-row .input-group .input-group-text {
+            border-radius: 0 8px 8px 0;
+            border-left: none;
+        }
+
+        .ingredient-row .form-select {
+            width: 100%;
+        }
+
+        .ingredient-row .remove-ingredient-btn {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .ingredient-row .cost-span {
+            font-size: 1rem;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            display: block;
+            text-align: center;
+        }
+    }
 </style>
 
 <!-- Page Header -->
@@ -111,59 +417,68 @@
 
 
 <!-- Add Menu Modal -->
-<div class="modal fade" id="addMenuModal" tabindex="-1" aria-labelledby="addMenuModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+<div class="modal fade modern-modal add-modal" id="addMenuModal" tabindex="-1" aria-labelledby="addMenuModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
     <form class="modal-content" method="post" action="/menu/add">
       <div class="modal-header">
-        <h5 class="modal-title" id="addMenuModalLabel">Add Menu</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="addMenuModalLabel">
+          <i class="bi bi-plus-circle me-2"></i>Add Menu
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
       </div>
       <div class="modal-body">
         <div class="row">
-            <div class="col-md-8">
-                <div class="mb-3">
-                  <label for="menuName" class="form-label">Menu Name</label>
-                  <input type="text" class="form-control" id="menuName" name="name" required>
-                </div>
+          <div class="col-md-8">
+            <div class="mb-3">
+              <label for="menuName" class="form-label">MENU NAME</label>
+              <input type="text" class="form-control" id="menuName" name="name" required placeholder="Enter menu name" autocomplete="off">
             </div>
-            <div class="col-md-4">
-                <div class="mb-3">
-                  <label for="menuPrice" class="form-label">Selling Price</label>
-                  <input type="number" class="form-control" id="menuPrice" name="price" required min="0" step="0.01">
-                </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="menuPrice" class="form-label">SELLING PRICE</label>
+              <input type="number" class="form-control" id="menuPrice" name="price" required min="0" step="0.01" placeholder="0.00">
             </div>
+          </div>
         </div>
         <div class="mb-3">
-            <label for="menuBarcode" class="form-label">Barcode</label>
-            <div class="input-group">
-                <input type="number" class="form-control" id="menuBarcode" name="barcode" required>
-                <button class="btn btn-outline-secondary" type="button" id="generateBarcodeBtn">Generate</button>
-            </div>
-            <div class="form-text">You can manually enter a barcode or generate one.</div>
+          <label for="menuBarcode" class="form-label">BARCODE</label>
+          <div class="input-group">
+            <input type="number" class="form-control" id="menuBarcode" name="barcode" placeholder="Enter barcode" autocomplete="off">
+            <button class="btn btn-outline-secondary" type="button" id="generateBarcodeBtn">
+              <i class="bi bi-dice-5 me-1"></i>Generate
+            </button>
+          </div>
+          <div class="form-text">You can manually enter a barcode or generate one.</div>
         </div>
         <hr>
-        <h5>Ingredients <span class="float-end">Total Cost: <span id="add-total-cost" class="fw-bold">0.00</span></span></h5>
+        <h5>Ingredients</h5>
         <div id="add-ingredients-container">
             <!-- Ingredient rows will be added here by JS -->
         </div>
         <button type="button" class="btn btn-primary btn-sm" id="add-ingredient-btn">
             <i class="fa fa-plus"></i> Add Ingredient
         </button>
+        <div class="d-flex justify-content-end mt-3">
+            <span class="fw-bold">Total Cost: ₱<span id="add-total-cost">0.00</span></span>
+        </div>
       </div>
-      <div class="modal-footer"> 
-        <button type="submit" class="btn btn-success">Save Menu</button>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success">
+          <i class="bi bi-plus-circle me-2"></i>Add Menu
+        </button>
       </div>
     </form>
   </div>
 </div>
 
 <!-- Edit Menu Modal -->
-<div class="modal fade" id="editMenuModal" tabindex="-1" aria-labelledby="editMenuModalLabel" aria-hidden="true">
+<div class="modal fade modern-modal add-modal" id="editMenuModal" tabindex="-1" aria-labelledby="editMenuModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <form class="modal-content" method="post" action="/menu/edit">
       <div class="modal-header">
         <h5 class="modal-title" id="editMenuModalLabel">Edit Menu</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="editMenuId" name="id">
@@ -186,13 +501,16 @@
           <input type="text" class="form-control" id="editMenuBarcode" name="barcode" readonly>
         </div>
         <hr>
-        <h5>Ingredients <span class="float-end">Total Cost: &#8369;<span id="edit-total-cost" class="fw-bold">0.00</span></span></h5>
+        <h5>Ingredients</h5>
         <div id="edit-ingredients-container">
             <!-- Ingredient rows will be added here by JS -->
         </div>
         <button type="button" class="btn btn-primary btn-sm" id="edit-add-ingredient-btn">
             <i class="fa fa-plus"></i> Add Ingredient
         </button>
+        <div class="d-flex justify-content-end mt-3">
+            <span class="fw-bold">Total Cost: ₱<span id="edit-total-cost">0.00</span></span>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -250,12 +568,12 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="menuDetailModal" tabindex="-1">
+<div class="modal fade modern-modal add-modal" id="menuDetailModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Menu Details</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
       </div>
       <div class="modal-body">
         <div class="d-flex justify-content-between">
@@ -459,7 +777,7 @@ $(document).ready(function() {
     function populateIngredientSelect(selectElement) {
         selectElement.empty().append('<option value="" selected disabled>Select Ingredient</option>');
         inventoryItems.forEach(function(item) {
-            selectElement.append(`<option value="${item.id}" data-unit="${item.unit}" data-price="${item.price || 0}">${item.name} (${item.unit})</option>`);
+            selectElement.append(`<option value="${item.id}" data-unit="${item.unit}" data-price="${item.price || 0}">${item.name}</option>`);
         });
     }
 
@@ -468,6 +786,10 @@ $(document).ready(function() {
         const select = template.find('.ingredient-select');
         populateIngredientSelect(select);
         container.append(template);
+    }
+
+    function formatCurrency(amount) {
+        return '₱' + parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     function calculateTotalCost(containerSelector) {
@@ -481,12 +803,12 @@ $(document).ready(function() {
             const quantity = parseFloat(quantityInput.val()) || 0;
             const rowCost = price * quantity;
 
-            costSpan.text(rowCost.toFixed(2));
+            costSpan.text(formatCurrency(rowCost));
             totalCost += rowCost;
         });
 
         const totalCostSelector = containerSelector.includes('add') ? '#add-total-cost' : '#edit-total-cost';
-        $(totalCostSelector).text(totalCost.toFixed(2));
+        $(totalCostSelector).text(parseFloat(totalCost).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
     }
 
     // --- Add Modal ---

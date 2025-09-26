@@ -287,6 +287,237 @@
         padding: 0.5rem 0.5rem;
         z-index: 1;
     }
+
+    /* Modern Modal Styles */
+    .modern-modal .modal-dialog {
+        max-width: 800px;
+        margin: 1.75rem auto;
+    }
+
+    .modern-modal .modal-content {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    }
+
+    .modern-modal .modal-header {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        border: none;
+        position: relative;
+    }
+
+    .modern-modal .modal-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    /* Green theme for Add Modal */
+    .modern-modal.add-modal .modal-header {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    }
+
+    .modern-modal.add-modal .btn-primary {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .modern-modal.add-modal .btn-primary:hover {
+        background: linear-gradient(135deg, #1e7e34 0%, #28a745 100%);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .modern-modal.add-modal .form-control:focus,
+    .modern-modal.add-modal .form-select:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+
+    .modern-modal .modal-title {
+        font-weight: 600;
+        font-size: 1.25rem;
+        position: relative;
+        z-index: 1;
+        margin: 0;
+    }
+
+    .modern-modal .btn-close {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        position: relative;
+        z-index: 1;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+    }
+
+    .modern-modal .btn-close:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+
+    .modern-modal .btn-close::after {
+        content: "";
+    }
+
+    .modern-modal .btn-close i {
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .modern-modal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+
+    .modern-modal .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .modern-modal .form-control,
+    .modern-modal .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .modern-modal .form-control:focus,
+    .modern-modal .form-select:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        background: white;
+        transform: translateY(-1px);
+    }
+
+    .modern-modal .form-control:hover,
+    .modern-modal .form-select:hover {
+        border-color: #ced4da;
+        background: white;
+    }
+
+    .modern-modal .mb-3 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .modern-modal .modal-footer {
+        padding: 1.5rem 2rem;
+        border-top: 1px solid #e9ecef;
+        background: #f8f9fa;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+
+    .modern-modal .btn {
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .modern-modal .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .modern-modal .btn:hover::before {
+        left: 100%;
+    }
+
+    .modern-modal .btn-primary {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3);
+    }
+
+    .modern-modal .btn-primary:hover {
+        background: linear-gradient(135deg, #224abe 0%, #4e73df 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(78, 115, 223, 0.4);
+        color: white;
+    }
+
+    .modern-modal .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .modern-modal .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 576px) {
+        .modern-modal .modal-dialog {
+            margin: 0.5rem;
+            max-width: none;
+        }
+
+        .modern-modal .modal-header {
+            padding: 1rem 1.5rem;
+        }
+
+        .modern-modal .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modern-modal .modal-footer {
+            padding: 1rem 1.5rem;
+            flex-direction: column;
+        }
+
+        .modern-modal .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .modern-modal .form-control,
+        .modern-modal .form-select {
+            padding: 0.625rem 0.875rem;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Animation for modal appearance */
+    .modern-modal.fade .modal-dialog {
+        transform: scale(0.9) translateY(-20px);
+        transition: transform 0.3s ease-out;
+    }
+
+    .modern-modal.show .modal-dialog {
+        transform: scale(1) translateY(0);
+    }
 </style>
 
 <?php
@@ -397,116 +628,82 @@ if (!empty($items)) {
 
 
 <!-- Update Sold Modal -->
-<div class="modal fade" id="updateSoldModal" tabindex="-1" aria-labelledby="updateSoldModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
+<div class="modal fade modern-modal" id="updateSoldModal" tabindex="-1" aria-labelledby="updateSoldModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
     <form class="modal-content" method="post" action="/production/updateSold">
-      
+
       <!-- Header -->
-      <div class="react-style-card-header">
-        <i class="bi bi-bag-check-fill react-style-icon"></i>
+      <div class="modal-header">
         <h4 class="modal-title fw-bold" id="updateSoldModalLabel">
-          Update Sold Quantities
+          <i class="bi bi-bag-check-fill me-2"></i>Update Sold Quantities
         </h4>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
       </div>
 
       <!-- Body -->
       <div class="modal-body">
-
-          
-          <!-- Search Bar -->
-          <div class="row mb-3">
-              <div class="col-md-6 mx-auto">
-                  <input type="text" class="form-control" id="soldSearch" placeholder="Search menu items...">
-              </div>
-          </div>
-          
-          <div class="row g-4">
-          <?php if (!empty($combinedItems)): ?>
-            <?php foreach ($combinedItems as $item): ?>
-              <?php if ($item['quantity_produced'] > 0): ?>
-                <div class="col-md-6 col-lg-4">
-                  <div class="react-style-card">
-                    <div class="react-style-card-body">
-                      <!-- Menu Name -->
-                      <h5 class="react-style-menu-name"><?= htmlspecialchars($item['menu_name']) ?></h5>
-                      
-                      <!-- Available Quantity Display -->
-                      <div class="react-style-quantity-display">
-                        Available: <span class="react-style-quantity-value"><?= htmlspecialchars($item['quantity_available']) ?></span>
-                      </div>
-                      
-                      <!-- Input Controls -->
-                      <div class="react-style-input-group">
-                        <button type="button"
-                                class="react-style-btn react-style-btn-decrement decrement"
-                                data-target="sold-<?= $item['menu_id'] ?>"
-                                aria-label="Decrease quantity">
-                          <i class="bi bi-dash-lg"></i>
-                        </button>
-
-                        <input type="number"
-                               class="react-style-input"
-                               name="sold[<?= $item['menu_id'] ?>]"
-                               id="sold-<?= $item['menu_id'] ?>"
-                               value="0"
-                               min="0"
-                               max="<?= $item['quantity_available'] ?>"
-                               aria-label="Quantity sold for <?= htmlspecialchars($item['menu_name']) ?>">
-
-                        <button type="button"
-                                class="react-style-btn react-style-btn-increment increment"
-                                data-target="sold-<?= $item['menu_id'] ?>"
-                                aria-label="Increase quantity">
-                          <i class="bi bi-plus-lg"></i>
-                        </button>
-                      </div>
-                      
-                      <!-- Summary Card -->
-                      <div class="react-style-summary-card">
-                        <div class="react-style-summary-title">Sales Value</div>
-                        <div class="react-style-summary-value">&#8369;<span id="sales-value-<?= $item['menu_id'] ?>">0.00</span></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              <?php endif; ?>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <div class="col-12">
-              <div class="react-style-alert react-style-alert-warning">
-                <i class="bi bi-exclamation-circle react-style-icon"></i>
-                <div>
-                  <strong>No production items found.</strong> Please add production items before updating sold quantities.
-                </div>
-              </div>
-            </div>
-          <?php endif; ?>
+        <div id="sold-ingredients-container">
+            <!-- Sold item rows will be added here by JS -->
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" id="add-sold-item-btn">
+            <i class="fa fa-plus"></i> Add Item
+        </button>
+        <div class="d-flex justify-content-end mt-3">
+            <span class="fw-bold">Total Sales: ₱<span id="sold-total-sales">0.00</span></span>
         </div>
       </div>
 
       <!-- Footer -->
-      <div class="react-style-modal-footer">
-        <button type="button" class="react-style-btn-lg react-style-btn-secondary" data-bs-dismiss="modal">
-          <i class="bi bi-x-circle"></i> Cancel
-        </button>
-        <button type="submit" class="react-style-btn-lg react-style-btn-primary">
-          <i class="bi bi-save-fill"></i> Save Changes
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" id="sold-submit-btn" disabled>
+          <i class="bi bi-save-fill me-1"></i>Save Changes
         </button>
       </div>
     </form>
   </div>
 </div>
 
+<!-- Sold Item Row Template -->
+<div id="sold-item-row-template" style="display: none;">
+    <div class="row ingredient-row mb-3 align-items-center g-2">
+        <div class="col-12 col-md-4">
+            <select class="form-select sold-menu-select" name="sold_menu" required>
+                <option value="" selected disabled>Select Menu Item</option>
+                <?php if (!empty($combinedItems)): ?>
+                  <?php foreach ($combinedItems as $item): ?>
+                    <?php if ($item['quantity_produced'] > 0): ?>
+                      <option value="<?= $item['menu_id'] ?>" data-available="<?= $item['quantity_available'] ?>" data-price="<?= $item['price'] ?? 0 ?>">
+                        <?= htmlspecialchars($item['menu_name']) ?>
+                      </option>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+        </div>
+        <div class="col-12 col-md-3">
+            <input type="number" class="form-control sold-quantity" name="sold_quantity" placeholder="Qty" min="0" step="1" required>
+        </div>
+        <div class="col-6 col-md-2 text-center text-md-start">
+            <small class="available-qty-span fw-bold text-muted">Available: 0</small>
+        </div>
+        <div class="col-4 col-md-2 text-center text-md-start">
+            <span class="sold-value-span fw-bold">₱0.00</span>
+        </div>
+        <div class="col-2 col-md-1 text-end">
+            <button type="button" class="btn btn-danger btn-sm remove-sold-row"><i class="fa fa-trash"></i></button>
+        </div>
+    </div>
+</div>
+
 
 
 <!-- Add Production Modal -->
-<div class="modal fade" id="addProductionModal" tabindex="-1" aria-labelledby="addProductionModalLabel" aria-hidden="true">
+<div class="modal fade modern-modal add-modal" id="addProductionModal" tabindex="-1" aria-labelledby="addProductionModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form class="modal-content" method="post" action="/production/add" id="addProductionForm">
       <div class="modal-header">
         <h5 class="modal-title" id="addProductionModalLabel">Add Production Item</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
       </div>
       <div class="modal-body">
 
@@ -570,104 +767,71 @@ if (!empty($items)) {
 </div>
 
 <!-- Update Wastage Modal -->
-<div class="modal fade" id="updateWastageModal" tabindex="-1" aria-labelledby="updateWastageModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
+<div class="modal fade modern-modal" id="updateWastageModal" tabindex="-1" aria-labelledby="updateWastageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
     <form class="modal-content" method="post" action="/production/updateWastage">
-      
+
       <!-- Header -->
-      <div class="react-style-card-header" style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);">
-        <i class="bi bi-exclamation-triangle-fill react-style-icon"></i>
+      <div class="modal-header" style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);">
         <h4 class="modal-title fw-bold" id="updateWastageModalLabel">
-          Update Wastage Quantities
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>Update Wastage Quantities
         </h4>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
       </div>
 
       <!-- Body -->
       <div class="modal-body">
-          
-          <!-- Search Bar -->
-          <div class="row mb-3">
-              <div class="col-md-6 mx-auto">
-                  <input type="text" class="form-control" id="wastageSearch" placeholder="Search menu items...">
-              </div>
-          </div>
-          
-          <div class="row g-4">
-          <?php if (!empty($combinedItems)): ?>
-            <?php foreach ($combinedItems as $item): ?>
-              <?php if ($item['quantity_produced'] > 0): ?>
-                <div class="col-md-6 col-lg-4">
-                  <div class="react-style-card">
-                    <div class="react-style-card-body">
-                      <!-- Menu Name -->
-                      <h5 class="react-style-menu-name"><?= htmlspecialchars($item['menu_name']) ?></h5>
-                      
-                      <!-- Available Quantity Display -->
-                      <div class="react-style-quantity-display">
-                        Available: <span class="react-style-quantity-value"><?= htmlspecialchars($item['quantity_available']) ?></span>
-                      </div>
-                      
-                      <!-- Input Controls -->
-                      <div class="react-style-input-group">
-                        <button type="button"
-                                class="react-style-btn react-style-btn-decrement decrement"
-                                data-target="wastage-<?= $item['menu_id'] ?>"
-                                aria-label="Decrease wastage">
-                          <i class="bi bi-dash-lg"></i>
-                        </button>
-
-                        <input type="number"
-                               class="react-style-input"
-                               name="wastage[<?= $item['menu_id'] ?>]"
-                               id="wastage-<?= $item['menu_id'] ?>"
-                               value="0"
-                               min="0"
-                               max="<?= $item['quantity_available'] ?>"
-                               aria-label="Quantity wasted for <?= htmlspecialchars($item['menu_name']) ?>">
-
-                        <button type="button"
-                                class="react-style-btn react-style-btn-increment increment"
-                                data-target="wastage-<?= $item['menu_id'] ?>"
-                                aria-label="Increase wastage">
-                          <i class="bi bi-plus-lg"></i>
-                        </button>
-                      </div>
-                      
-                      <!-- Summary Card -->
-                      <div class="react-style-summary-card">
-                        <div class="react-style-summary-title">Waste Cost</div>
-                        <div class="react-style-summary-value">&#8369;<span id="waste-cost-<?= $item['menu_id'] ?>">0.00</span></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              <?php endif; ?>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <div class="col-12">
-              <div class="react-style-alert react-style-alert-warning">
-                <i class="bi bi-exclamation-circle react-style-icon"></i>
-                <div>
-                  <strong>No production items found.</strong> Please add production items before updating wastage quantities.
-                </div>
-              </div>
-            </div>
-          <?php endif; ?>
+        <div id="wastage-ingredients-container">
+            <!-- Wastage item rows will be added here by JS -->
+        </div>
+        <button type="button" class="btn btn-warning btn-sm" id="add-wastage-item-btn">
+            <i class="fa fa-plus"></i> Add Item
+        </button>
+        <div class="d-flex justify-content-end mt-3">
+            <span class="fw-bold">Total Waste Cost: ₱<span id="wastage-total-cost">0.00</span></span>
         </div>
       </div>
 
       <!-- Footer -->
-      <div class="react-style-modal-footer">
-        <button type="button" class="react-style-btn-lg react-style-btn-secondary" data-bs-dismiss="modal">
-          <i class="bi bi-x-circle"></i> Cancel
-        </button>
-        <button type="submit" class="react-style-btn-lg react-style-btn-warning">
-          <i class="bi bi-save-fill"></i> Save Changes
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-warning" id="wastage-submit-btn" disabled>
+          <i class="bi bi-save-fill me-1"></i>Save Changes
         </button>
       </div>
     </form>
   </div>
+</div>
+
+<!-- Wastage Item Row Template -->
+<div id="wastage-item-row-template" style="display: none;">
+    <div class="row ingredient-row mb-3 align-items-center g-2">
+        <div class="col-12 col-md-4">
+            <select class="form-select wastage-menu-select" name="wastage_menu" required>
+                <option value="" selected disabled>Select Menu Item</option>
+                <?php if (!empty($combinedItems)): ?>
+                  <?php foreach ($combinedItems as $item): ?>
+                    <?php if ($item['quantity_produced'] > 0): ?>
+                      <option value="<?= $item['menu_id'] ?>" data-available="<?= $item['quantity_available'] ?>" data-unit-cost="<?= $item['unit_cost'] ?? 0 ?>">
+                        <?= htmlspecialchars($item['menu_name']) ?>
+                      </option>
+                    <?php endif; ?>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+        </div>
+        <div class="col-12 col-md-3">
+            <input type="number" class="form-control wastage-quantity" name="wastage_quantity" placeholder="Qty" min="0" step="1" required>
+        </div>
+        <div class="col-6 col-md-2 text-center text-md-start">
+            <small class="available-qty-span fw-bold text-muted">Available: 0</small>
+        </div>
+        <div class="col-4 col-md-2 text-center text-md-start">
+            <span class="wastage-cost-span fw-bold">₱0.00</span>
+        </div>
+        <div class="col-2 col-md-1 text-end">
+            <button type="button" class="btn btn-danger btn-sm remove-wastage-row"><i class="fa fa-trash"></i></button>
+        </div>
+    </div>
 </div>
 
 <!-- Production Summary Modal -->
@@ -1020,12 +1184,22 @@ $(document).ready(function() {
         $('#waste-cost-' + menuId).text(wasteCost);
     });
     
-    // Initialize calculations on modal show
+    // Initialize calculations on modal show and add default row
     $('#updateSoldModal').on('show.bs.modal', function() {
+        // Add one default row
+        var template = $('#sold-item-row-template .ingredient-row').clone();
+        $('#sold-ingredients-container').append(template);
+        updateSoldSubmitButton();
+
         $('input[name^="sold["]').trigger('change');
     });
-    
+
     $('#updateWastageModal').on('show.bs.modal', function() {
+        // Add one default row
+        var template = $('#wastage-item-row-template .ingredient-row').clone();
+        $('#wastage-ingredients-container').append(template);
+        updateWastageSubmitButton();
+
         $('input[name^="wastage["]').trigger('change');
     });
     
@@ -1086,11 +1260,271 @@ $('#wastageSearch').on('input', function() {
     });
 });
 
-// Clear search when modals are closed
-$('#updateSoldModal, #updateWastageModal').on('hidden.bs.modal', function () {
-    $(this).find('input[type="text"]').val('');
-    $(this).find('.col-md-6').show();
-});
+    // --- Dropdown-style Update Sold Modal Functionality ---
+    // Add sold item row
+    $('#add-sold-item-btn').on('click', function() {
+        var template = $('#sold-item-row-template .ingredient-row').clone();
+        $('#sold-ingredients-container').append(template);
+        updateSoldSubmitButton();
+    });
+
+    // Add wastage item row
+    $('#add-wastage-item-btn').on('click', function() {
+        var template = $('#wastage-item-row-template .ingredient-row').clone();
+        $('#wastage-ingredients-container').append(template);
+        updateWastageSubmitButton();
+    });
+
+    // Handle form submission for sold modal
+    $('#updateSoldModal form').on('submit', function(e) {
+        e.preventDefault();
+
+        var formData = new FormData();
+        var soldData = {};
+
+        $('#sold-ingredients-container .ingredient-row').each(function() {
+            var menuId = $(this).find('.sold-menu-select').val();
+            var quantity = parseInt($(this).find('.sold-quantity').val()) || 0;
+
+            if (menuId && quantity > 0) {
+                soldData[menuId] = quantity;
+            }
+        });
+
+        // Add sold data to form
+        Object.keys(soldData).forEach(function(menuId) {
+            formData.append('sold[' + menuId + ']', soldData[menuId]);
+        });
+
+        // Submit via AJAX
+        $.ajax({
+            url: '/production/updateSold',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $('#updateSoldModal').modal('hide');
+                location.reload(); // Reload to show updated data
+            },
+            error: function(xhr, status, error) {
+                alert('Error updating sold quantities: ' + error);
+            }
+        });
+    });
+
+    // Handle form submission for wastage modal
+    $('#updateWastageModal form').on('submit', function(e) {
+        e.preventDefault();
+
+        var formData = new FormData();
+        var wastageData = {};
+
+        $('#wastage-ingredients-container .ingredient-row').each(function() {
+            var menuId = $(this).find('.wastage-menu-select').val();
+            var quantity = parseInt($(this).find('.wastage-quantity').val()) || 0;
+
+            if (menuId && quantity > 0) {
+                wastageData[menuId] = quantity;
+            }
+        });
+
+        // Add wastage data to form
+        Object.keys(wastageData).forEach(function(menuId) {
+            formData.append('wastage[' + menuId + ']', wastageData[menuId]);
+        });
+
+        // Submit via AJAX
+        $.ajax({
+            url: '/production/updateWastage',
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $('#updateWastageModal').modal('hide');
+                location.reload(); // Reload to show updated data
+            },
+            error: function(xhr, status, error) {
+                alert('Error updating wastage quantities: ' + error);
+            }
+        });
+    });
+
+    // Remove sold row
+    $(document).on('click', '.remove-sold-row', function() {
+        $(this).closest('.ingredient-row').remove();
+        calculateSoldTotal();
+        updateSoldSubmitButton();
+    });
+
+    // Remove wastage row
+    $(document).on('click', '.remove-wastage-row', function() {
+        $(this).closest('.ingredient-row').remove();
+        calculateWastageTotal();
+        updateWastageSubmitButton();
+    });
+
+    // Handle sold menu selection change
+    $(document).on('change', '.sold-menu-select', function() {
+        var $row = $(this).closest('.ingredient-row');
+        var selectedOption = $(this).find('option:selected');
+        var available = selectedOption.data('available') || 0;
+        var price = selectedOption.data('price') || 0;
+
+        // Update available quantity display
+        $row.find('.available-qty-span').text('Available: ' + available);
+
+        // Set max quantity to available
+        $row.find('.sold-quantity').attr('max', available);
+
+        // Store price for calculation
+        $row.data('price', price);
+
+        // Calculate current value
+        var quantity = parseInt($row.find('.sold-quantity').val()) || 0;
+        var value = (quantity * price).toFixed(2);
+        $row.find('.sold-value-span').text('₱' + value);
+
+        calculateSoldTotal();
+        updateSoldSubmitButton();
+    });
+
+    // Handle wastage menu selection change
+    $(document).on('change', '.wastage-menu-select', function() {
+        var $row = $(this).closest('.ingredient-row');
+        var selectedOption = $(this).find('option:selected');
+        var available = selectedOption.data('available') || 0;
+        var unitCost = selectedOption.data('unit-cost') || 0;
+
+        // Update available quantity display
+        $row.find('.available-qty-span').text('Available: ' + available);
+
+        // Set max quantity to available
+        $row.find('.wastage-quantity').attr('max', available);
+
+        // Store unit cost for calculation
+        $row.data('unit-cost', unitCost);
+
+        // Calculate current cost
+        var quantity = parseInt($row.find('.wastage-quantity').val()) || 0;
+        var cost = (quantity * unitCost).toFixed(2);
+        $row.find('.wastage-cost-span').text('₱' + cost);
+
+        calculateWastageTotal();
+        updateWastageSubmitButton();
+    });
+
+    // Handle sold quantity change
+    $(document).on('change keyup', '.sold-quantity', function() {
+        var $row = $(this).closest('.ingredient-row');
+        var quantity = parseInt($(this).val()) || 0;
+        var max = parseInt($(this).attr('max')) || 0;
+        var price = $row.data('price') || 0;
+
+        // Ensure quantity doesn't exceed available
+        if (quantity > max) {
+            quantity = max;
+            $(this).val(quantity);
+        }
+
+        var value = (quantity * price).toFixed(2);
+        $row.find('.sold-value-span').text('₱' + value);
+
+        calculateSoldTotal();
+        updateSoldSubmitButton();
+    });
+
+    // Handle wastage quantity change
+    $(document).on('change keyup', '.wastage-quantity', function() {
+        var $row = $(this).closest('.ingredient-row');
+        var quantity = parseInt($(this).val()) || 0;
+        var max = parseInt($(this).attr('max')) || 0;
+        var unitCost = $row.data('unit-cost') || 0;
+
+        // Ensure quantity doesn't exceed available
+        if (quantity > max) {
+            quantity = max;
+            $(this).val(quantity);
+        }
+
+        var cost = (quantity * unitCost).toFixed(2);
+        $row.find('.wastage-cost-span').text('₱' + cost);
+
+        calculateWastageTotal();
+        updateWastageSubmitButton();
+    });
+
+    // Calculate total sales
+    function calculateSoldTotal() {
+        var total = 0;
+        $('#sold-ingredients-container .ingredient-row').each(function() {
+            var valueText = $(this).find('.sold-value-span').text().replace('₱', '');
+            total += parseFloat(valueText) || 0;
+        });
+        $('#sold-total-sales').text(total.toFixed(2));
+    }
+
+    // Calculate total waste cost
+    function calculateWastageTotal() {
+        var total = 0;
+        $('#wastage-ingredients-container .ingredient-row').each(function() {
+            var costText = $(this).find('.wastage-cost-span').text().replace('₱', '');
+            total += parseFloat(costText) || 0;
+        });
+        $('#wastage-total-cost').text(total.toFixed(2));
+    }
+
+    // Update submit button state for sold modal
+    function updateSoldSubmitButton() {
+        var hasRows = $('#sold-ingredients-container .ingredient-row').length > 0;
+        var hasValidSelections = false;
+
+        if (hasRows) {
+            $('#sold-ingredients-container .ingredient-row').each(function() {
+                var menuSelected = $(this).find('.sold-menu-select').val() !== '';
+                var quantity = parseInt($(this).find('.sold-quantity').val()) || 0;
+                if (menuSelected && quantity > 0) {
+                    hasValidSelections = true;
+                    return false; // Break loop
+                }
+            });
+        }
+
+        $('#sold-submit-btn').prop('disabled', !hasValidSelections);
+    }
+
+    // Update submit button state for wastage modal
+    function updateWastageSubmitButton() {
+        var hasRows = $('#wastage-ingredients-container .ingredient-row').length > 0;
+        var hasValidSelections = false;
+
+        if (hasRows) {
+            $('#wastage-ingredients-container .ingredient-row').each(function() {
+                var menuSelected = $(this).find('.wastage-menu-select').val() !== '';
+                var quantity = parseInt($(this).find('.wastage-quantity').val()) || 0;
+                if (menuSelected && quantity > 0) {
+                    hasValidSelections = true;
+                    return false; // Break loop
+                }
+            });
+        }
+
+        $('#wastage-submit-btn').prop('disabled', !hasValidSelections);
+    }
+
+    // Reset modals when closed
+    $('#updateSoldModal').on('hidden.bs.modal', function() {
+        $('#sold-ingredients-container').empty();
+        $('#sold-total-sales').text('0.00');
+        $('#sold-submit-btn').prop('disabled', true);
+    });
+
+    $('#updateWastageModal').on('hidden.bs.modal', function() {
+        $('#wastage-ingredients-container').empty();
+        $('#wastage-total-cost').text('0.00');
+        $('#wastage-submit-btn').prop('disabled', true);
+    });
 });
 
 </script>
