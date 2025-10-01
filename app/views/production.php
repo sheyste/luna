@@ -592,6 +592,9 @@ if (!empty($items)) {
         </div>
         <!-- Buttons on the bottom in mobile, right in desktop -->
         <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-success btn-sm" id="exportExcelBtn">
+                <i class="fa fa-file-excel-o me-1"></i> Export to Excel
+            </button>
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addProductionModal">
                 <i class="fa fa-plus me-1"></i> Add Production
             </button>
@@ -1667,6 +1670,11 @@ $('#wastageSearch').on('input', function() {
 
     // Apply default today filter on page load
     filterProductionCards('today');
+
+    // Handle Export to Excel button click
+    $('#exportExcelBtn').on('click', function() {
+        window.location.href = '/production/exportExcel';
+    });
 });
 
 </script>

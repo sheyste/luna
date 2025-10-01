@@ -342,4 +342,60 @@ public function getMenuIngredients() {
         'max_production' => max(0, $canProduce)
     ]);
 }
+
+public function exportExcel() {
+    // Get raw production data from database
+    $stmt = $this->conn->query("
+        SELECT p.*, m.name AS menu_name, m.price
+        FROM production p
+        JOIN menus m ON p.menu_id = m.id
+        ORDER BY p.created_at DESC
+    ");
+
+    $items = $stmt->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+
+    // Set headers for CSV download
+    $filename = 'Production_Raw_Data_' . date('Y-m-d_H-i-s') . '.csv';
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+
+    // Create output stream
+    $output = fopen('php://output', 'w');
+
+    // Write CSV headers (raw database columns)
+    fputcsv($output, [
+        'ID',
+        'Menu ID',
+        'Menu Name',
+        'Barcode',
+        'Quantity Produced',
+        'Quantity Available',
+        'Quantity Sold',
+        'Wastage',
+        'Created At',
+        'Updated At'
+    ]);
+
+    // Write data rows (raw data)
+    foreach ($items as $item) {
+        fputcsv($output, [
+            $item['id'] ?? '',
+            $item['menu_id'] ?? '',
+            $item['menu_name'] ?? '',
+            $item['barcode'] ?? '',
+            $item['quantity_produced'] ?? 0,
+            $item['quantity_available'] ?? 0,
+            $item['quantity_sold'] ?? 0,
+            $item['wastage'] ?? 0,
+            isset($item['created_at']) ? date('Y-m-d H:i:s', strtotime($item['created_at'])) : '',
+            isset($item['updated_at']) ? date('Y-m-d H:i:s', strtotime($item['updated_at'])) : ''
+        ]);
+    }
+
+    fclose($output);
+    exit;
+}
 }
