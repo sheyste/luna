@@ -137,21 +137,21 @@ class PhysicalCountController extends Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $input = json_decode(file_get_contents('php://input'), true);
-            
+
             if (isset($input['entries']) && is_array($input['entries'])) {
                 foreach ($input['entries'] as $entryId) {
                     // Get the physical count entry from database
                     $entry = $this->physicalCountModel->getEntryById($entryId);
-                    
+
                     if ($entry) {
                         // Update the inventory with the physical count
                         $this->inventoryModel->updateQuantity($entry['inventory_id'], $entry['physical_count']);
-                        
+
                         // Mark entry as processed
                         $this->physicalCountModel->updateEntryStatus($entryId, 'saved');
                     }
                 }
-                
+
                 echo json_encode(['success' => true, 'message' => 'Physical counts saved to inventory successfully']);
             } else {
                 http_response_code(400);
@@ -161,5 +161,50 @@ class PhysicalCountController extends Controller
             http_response_code(405);
             echo json_encode(['success' => false, 'message' => 'Method not allowed']);
         }
+    }
+
+    public function exportExcel()
+    {
+        // Get pending physical count entries
+        $pendingEntries = $this->physicalCountModel->getPendingEntries();
+
+        // Set headers for CSV download
+        $filename = 'Physical_Count_Entries_' . date('Y-m-d_H-i-s') . '.csv';
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+
+        // Create output stream
+        $output = fopen('php://output', 'w');
+
+        // Write CSV headers
+        fputcsv($output, [
+            'Product Name',
+            'System Count',
+            'Physical Count',
+            'Difference',
+            'Variance %',
+            'Value Impact',
+            'Unit Price',
+            'Date Added'
+        ]);
+
+        // Write data rows
+        foreach ($pendingEntries as $entry) {
+            fputcsv($output, [
+                $entry['item_name'] ?? '',
+                $entry['system_count'] ?? 0,
+                $entry['physical_count'] ?? 0,
+                $entry['difference'] ?? 0,
+                number_format($entry['variance_percent'] ?? 0, 2) . '%',
+                number_format($entry['value_impact'] ?? 0, 2),
+                number_format($entry['unit_price'] ?? 0, 2),
+                isset($entry['created_at']) ? date('Y-m-d H:i:s', strtotime($entry['created_at'])) : ''
+            ]);
+        }
+
+        fclose($output);
+        exit;
     }
 }

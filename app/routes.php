@@ -20,6 +20,7 @@ $routes = array(
     '/inventory/getPendingEntries' => array('PhysicalCountController', 'getPendingEntries'),
     '/inventory/deleteCountEntry' => array('PhysicalCountController', 'deleteCountEntry'),
     '/inventory/savePhysicalCount' => array('PhysicalCountController', 'savePhysicalCount'),
+    '/inventory/physical-count-export' => array('PhysicalCountController', 'exportExcel'),
     '/inventory/check-low-stock-db' => array('InventoryController', 'checkLowStockDb'),
     '/inventory/check-and-send-alerts' => array('InventoryController', 'checkAndSendAlerts'),
     '/inventory/low-stock-alerts' => array('LowStockAlertController', 'index'),
@@ -37,6 +38,7 @@ $routes = array(
     '/production/getMenuIngredients' => array('ProductionController', 'getMenuIngredients'),
     '/production/updateSold' => array('ProductionController', 'updateSold'),
     '/production/updateWastage' => array('ProductionController', 'updateWastage'),
+    '/production/exportExcel' => array('ProductionController', 'exportExcel'),
 
     '/users'        => array('UserController', 'index'),
     '/users/show'   => array('UserController', 'getDetail'),
@@ -84,4 +86,3 @@ if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'User') {
     unset($routes['/users']);
     unset($routes['/backup']);
 }
-

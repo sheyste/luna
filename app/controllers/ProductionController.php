@@ -342,4 +342,60 @@ public function getMenuIngredients() {
         'max_production' => max(0, $canProduce)
     ]);
 }
+
+public function exportExcel() {
+    // Get production data with calculated details
+    $items = $this->productionModel->getAllWithDetails();
+
+    // Set headers for CSV download
+    $filename = 'Production_Data_' . date('Y-m-d_H-i-s') . '.csv';
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+
+    // Create output stream
+    $output = fopen('php://output', 'w');
+
+    // Write CSV headers including calculated fields
+    fputcsv($output, [
+        'ID',
+        'Menu ID',
+        'Menu Name',
+        'Barcode',
+        'Price',
+        'Quantity Produced',
+        'Cost',
+        'Quantity Available',
+        'Quantity Sold',
+        'Sales',
+        'Wastage',
+        'Waste Cost',
+        'Profit',
+        'Created At'
+    ]);
+
+    // Write data rows with calculated data
+    foreach ($items as $item) {
+        fputcsv($output, [
+            $item['id'] ?? '',
+            $item['menu_id'] ?? '',
+            $item['menu_name'] ?? '',
+            $item['barcode'] ?? '',
+            number_format($item['price'] ?? 0, 2),
+            $item['quantity_produced'] ?? 0,
+            number_format($item['total_cost'] ?? 0, 2),
+            $item['quantity_available'] ?? 0,
+            $item['quantity_sold'] ?? 0,
+            number_format($item['total_sales'] ?? 0, 2),
+            $item['wastage'] ?? 0,
+            number_format($item['waste_cost'] ?? 0, 2),
+            number_format($item['profit'] ?? 0, 2),
+            isset($item['created_at']) ? date('Y-m-d H:i:s', strtotime($item['created_at'])) : ''
+        ]);
+    }
+
+    fclose($output);
+    exit;
+}
 }

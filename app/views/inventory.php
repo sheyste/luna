@@ -544,9 +544,11 @@
                                                                   <button class="btn btn-primary btn-sm print-btn" data-id="<?= htmlspecialchars($item['id']) ?>" data-barcode="<?= htmlspecialchars($item['barcode'] ?? '') ?>">
                                                                       <i class="bi bi-printer me-1"></i> Print
                                                                   </button>
+                                                                  <?php if ($_SESSION['user_type'] === 'Admin'): ?>
                                                                   <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($item['id']) ?>">
                                                                       <i class="bi bi-trash me-1"></i> Delete
                                                                   </button>
+                                                                  <?php endif; ?>
                                                               </td>
                           </tr>
                       <?php endforeach; ?>
@@ -760,9 +762,11 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           <i class="bi bi-x-circle me-2"></i>Cancel
         </button>
+        <?php if ($_SESSION['user_type'] !== 'User'): ?>
         <button type="submit" class="btn btn-primary">
           <i class="bi bi-check-circle me-2"></i>Save Changes
         </button>
+        <?php endif; ?>
       </div>
     </form>
   </div>

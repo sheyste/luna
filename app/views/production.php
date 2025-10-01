@@ -559,16 +559,42 @@ if (!empty($items)) {
 <!-- Main Content Card -->
 <div class=" mb-4">
     <div class="card-header py-3 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-between">
-        <!-- Search Bar on top in mobile, left in desktop -->
-        <div class="input-group mb-3 mb-md-0" style="max-width: 350px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border-radius: 8px; transition: all 0.2s ease;">
-            <span class="input-group-text" style="border: none; background: transparent;"><i class="fa fa-search"></i></span>
-            <input type="text" id="productionSearch" class="form-control" placeholder="Search..." style="border: none; box-shadow: none;">
-            <button class="btn btn-outline-secondary" type="button" id="clearSearch" style="border-radius: 0 8px 8px 0; border: none;">
-                <i class="fa fa-times"></i>
-            </button>
+        <!-- Filter Dropdown and Search Bar -->
+        <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 mb-3 mb-md-0">
+            <!-- Date Filter Dropdown -->
+            <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dateFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-calendar me-2"></i>Filter by Date: <span id="currentFilter">Today</span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dateFilterDropdown">
+                    <li><a class="dropdown-item" href="#" data-filter="all">All</a></li>
+                    <li><a class="dropdown-item" href="#" data-filter="today">Today</a></li>
+                    <li><a class="dropdown-item" href="#" data-filter="week">This Week</a></li>
+                    <li><a class="dropdown-item" href="#" data-filter="month">This Month</a></li>
+                    <li><a class="dropdown-item" href="#" data-filter="year">This Year</a></li>
+                </ul>
+            </div>
+            <!-- Custom Date Range Inputs -->
+            <div id="customDateRange" class="d-flex align-items-center gap-2">
+                <input type="date" id="startDate" class="form-control form-control-sm">
+                <span>to</span>
+                <input type="date" id="endDate" class="form-control form-control-sm">
+                <button id="applyCustomFilter" class="btn btn-primary btn-sm">Apply</button>
+            </div>
+            <!-- Search Bar on top in mobile, left in desktop -->
+            <div class="input-group" style="max-width: 350px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border-radius: 8px; transition: all 0.2s ease;">
+                <span class="input-group-text" style="border: none; background: transparent;"><i class="fa fa-search"></i></span>
+                <input type="text" id="productionSearch" class="form-control" placeholder="Search..." style="border: none; box-shadow: none;">
+                <button class="btn btn-outline-secondary" type="button" id="clearSearch" style="border-radius: 0 8px 8px 0; border: none;">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
         </div>
         <!-- Buttons on the bottom in mobile, right in desktop -->
         <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-success btn-sm" id="exportExcelBtn">
+                <i class="fa fa-file-excel-o me-1"></i> Export to Excel
+            </button>
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addProductionModal">
                 <i class="fa fa-plus me-1"></i> Add Production
             </button>
@@ -585,7 +611,7 @@ if (!empty($items)) {
         <div class="row" id="production-container">
             <?php if (!empty($combinedItems)): ?>
                 <?php foreach ($combinedItems as $item): ?>
-                    <div class="col-lg-3 col-md-3 mb-4">
+                    <div class="col-lg-3 col-md-3 mb-4" data-created-at="<?= htmlspecialchars($item['created_at']) ?>" data-menu-id="<?= htmlspecialchars($item['menu_id']) ?>">
                         <div class="card menu-card h-100 shadow-sm border-0 rounded-3">
                             <div class="card-body">
                                 <div class="price-tag">Available: <?= htmlspecialchars($item['quantity_available']) ?></div>
@@ -594,25 +620,27 @@ if (!empty($items)) {
                                 <div class="mt-3">
                                     <p class="mb-1"><strong>Price:</strong> &#8369;<?= htmlspecialchars(number_format($item['price'] ?? 0, 2)) ?></p>
                                     <div class="d-flex justify-content-between mb-1">
-                                        <span><strong>Produced:</strong> <?= htmlspecialchars($item['quantity_produced']) ?></span>
-                                        <span><strong>Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_cost'] ?? 0, 2)) ?></span>
+                                        <span class="produced-qty"><strong>Produced:</strong> <?= htmlspecialchars($item['quantity_produced']) ?></span>
+                                        <span class="total-cost"><strong>Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_cost'] ?? 0, 2)) ?></span>
                                     </div>
                                     <div class="d-flex justify-content-between mb-1">
-                                        <span><strong>Sold:</strong> <?= htmlspecialchars($item['quantity_sold']) ?></span>
-                                        <span><strong>Sales:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_sales'] ?? 0, 2)) ?></span>
+                                        <span class="sold-qty"><strong>Sold:</strong> <?= htmlspecialchars($item['quantity_sold']) ?></span>
+                                        <span class="total-sales"><strong>Sales:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_sales'] ?? 0, 2)) ?></span>
                                     </div>
                                     <div class="d-flex justify-content-between mb-1">
-                                        <span><strong>Wastage:</strong> <?= htmlspecialchars($item['total_wastage']) ?></span>
-                                        <span><strong>Waste Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_waste_cost'] ?? 0, 2)) ?></span>
+                                        <span class="wastage-qty"><strong>Wastage:</strong> <?= htmlspecialchars($item['total_wastage']) ?></span>
+                                        <span class="waste-cost"><strong>Waste Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_waste_cost'] ?? 0, 2)) ?></span>
                                     </div>
-                                    
-                                    <p class="mb-1"><strong>Profit:</strong> &#8369;<?= htmlspecialchars(number_format($item['profit'] ?? 0, 2)) ?></p>
+
+                                    <p class="mb-1 profit"><strong>Profit:</strong> &#8369;<?= htmlspecialchars(number_format($item['profit'] ?? 0, 2)) ?></p>
                                 </div>
                             </div>
                             <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
+                                <?php if ($_SESSION['user_type'] !== 'User' && $_SESSION['user_type'] !== 'Manager'): ?>
                                 <button class="btn btn-outline-danger btn-sm delete-btn" data-ids="<?= htmlspecialchars(implode(',', $item['original_ids'])) ?>" data-menu-name="<?= htmlspecialchars($item['menu_name']) ?>">
                                     <i class="fa fa-trash"></i> Delete
                                 </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -866,6 +894,7 @@ if (!empty($items)) {
 <?php include_once __DIR__ . '/layout/footer.php' ?>
 
 <script>
+var allItems = <?php echo json_encode($items); ?>;
 $(document).ready(function() {
     // No table to initialize - using cards instead
     var menuData = []; // To hold menu data for auto-populating fields
@@ -1211,11 +1240,11 @@ $('#confirmProductionBtn').on('click', function() {
 // Search functionality for production items
 $('#productionSearch').on('input', function() {
     var searchTerm = $(this).val().toLowerCase();
-    
-    $('#production-container .col-lg-4').each(function() {
+
+    $('#production-container .col-lg-3').each(function() {
         var menuName = $(this).find('.card-title').text().toLowerCase();
         var barcode = $(this).find('.card-text').text().toLowerCase();
-        
+
         if (menuName.includes(searchTerm) || barcode.includes(searchTerm)) {
             $(this).show();
         } else {
@@ -1524,6 +1553,129 @@ $('#wastageSearch').on('input', function() {
         $('#wastage-ingredients-container').empty();
         $('#wastage-total-cost').text('0.00');
         $('#wastage-submit-btn').prop('disabled', true);
+    });
+
+    // Date filter functionality
+    $('a.dropdown-item[data-filter]').on('click', function(e) {
+        e.preventDefault();
+        var filter = $(this).data('filter');
+        $('#currentFilter').text($(this).text());
+        filterProductionCards(filter);
+    });
+
+    // Apply custom filter
+    $('#applyCustomFilter').on('click', function() {
+        var startDateStr = $('#startDate').val();
+        var endDateStr = $('#endDate').val();
+        if (startDateStr && endDateStr) {
+            var startDate = new Date(startDateStr);
+            var endDate = new Date(endDateStr);
+            endDate.setHours(23, 59, 59, 999);
+            filterProductionCards('custom', startDate, endDate);
+        } else {
+            alert('Please select both start and end dates.');
+        }
+    });
+
+    function filterProductionCards(filter, customStartDate = null, customEndDate = null) {
+        var now = new Date();
+        var startDate = customStartDate;
+        var endDate = customEndDate;
+
+        if (!startDate || !endDate) {
+            switch(filter) {
+                case 'today':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+                    break;
+                case 'week':
+                    var dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+                    var monday = new Date(now);
+                    monday.setDate(now.getDate() - dayOfWeek + 1); // Monday of this week
+                    monday.setHours(0, 0, 0, 0);
+                    var sunday = new Date(monday);
+                    sunday.setDate(monday.getDate() + 6); // Sunday of this week
+                    sunday.setHours(23, 59, 59, 999);
+                    startDate = monday;
+                    endDate = sunday;
+                    break;
+                case 'month':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                    endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+                    break;
+                case 'year':
+                    startDate = new Date(now.getFullYear(), 0, 1);
+                    endDate = new Date(now.getFullYear(), 11, 31, 23, 59, 59);
+                    break;
+                case 'all':
+                default:
+                    startDate = null;
+                    endDate = null;
+                    break;
+            }
+        }
+
+        // Group items by menu_id and calculate totals
+        var grouped = {};
+        allItems.forEach(function(item) {
+            var menuId = item.menu_id;
+            var itemDate = new Date(item.created_at);
+
+            if (!startDate || !endDate || (itemDate >= startDate && itemDate <= endDate)) {
+                if (!grouped[menuId]) {
+                    grouped[menuId] = {
+                        quantity_produced: 0,
+                        total_cost: 0,
+                        quantity_sold: 0,
+                        total_sales: 0,
+                        total_wastage: 0,
+                        total_waste_cost: 0
+                    };
+                }
+                grouped[menuId].quantity_produced += parseFloat(item.quantity_produced) || 0;
+                grouped[menuId].total_cost += parseFloat(item.total_cost) || 0;
+                grouped[menuId].quantity_sold += parseFloat(item.quantity_sold) || 0;
+                grouped[menuId].total_sales += parseFloat(item.total_sales) || 0;
+                grouped[menuId].total_wastage += parseFloat(item.wastage) || 0;
+                grouped[menuId].total_waste_cost += parseFloat(item.waste_cost) || 0;
+            }
+        });
+
+        // Update each card
+        $('#production-container .col-lg-3').each(function() {
+            var menuId = $(this).data('menu-id');
+            var data = grouped[menuId] || {
+                quantity_produced: 0,
+                total_cost: 0,
+                quantity_sold: 0,
+                total_sales: 0,
+                total_wastage: 0,
+                total_waste_cost: 0
+            };
+
+            var available = data.quantity_produced - data.quantity_sold - data.total_wastage;
+            var profit = data.total_sales - data.total_cost;
+
+            // Update price tag
+            $(this).find('.price-tag').text('Available: ' + available);
+
+            // Update spans
+            $(this).find('.produced-qty').html('<strong>Produced:</strong> ' + data.quantity_produced);
+            $(this).find('.total-cost').html('<strong>Cost:</strong> &#8369;' + data.total_cost.toFixed(2));
+            $(this).find('.sold-qty').html('<strong>Sold:</strong> ' + data.quantity_sold);
+            $(this).find('.total-sales').html('<strong>Sales:</strong> &#8369;' + data.total_sales.toFixed(2));
+            $(this).find('.wastage-qty').html('<strong>Wastage:</strong> ' + data.total_wastage);
+            $(this).find('.waste-cost').html('<strong>Waste Cost:</strong> &#8369;' + data.total_waste_cost.toFixed(2));
+            $(this).find('.profit').html('<strong>Profit:</strong> &#8369;' + profit.toFixed(2));
+        });
+    }
+
+    // Apply default today filter on page load
+    filterProductionCards('today');
+
+    // Handle Export to Excel button click
+    $('#exportExcelBtn').on('click', function() {
+        window.location.href = '/production/exportExcel';
     });
 });
 
