@@ -605,12 +605,14 @@
            <button class="btn btn-primary btn-sm print-btn-modal" data-bs-dismiss="modal">
                <i class="fa fa-print"></i> Print Barcode
            </button>
+           <?php if ($_SESSION['user_type'] !== 'User'): ?>
            <button class="btn btn-info btn-sm edit-btn-modal" data-bs-dismiss="modal">
                <i class="fa fa-edit"></i> Edit
            </button>
            <button class="btn btn-outline-danger btn-sm delete-btn-modal" data-bs-dismiss="modal">
                <i class="fa fa-trash"></i> Delete
            </button>
+           <?php endif; ?>
        </div>
        <!-- Hidden fields to store data -->
        <input type="hidden" id="modalMenuId">

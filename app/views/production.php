@@ -636,9 +636,11 @@ if (!empty($items)) {
                                 </div>
                             </div>
                             <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
+                                <?php if ($_SESSION['user_type'] !== 'User' && $_SESSION['user_type'] !== 'Manager'): ?>
                                 <button class="btn btn-outline-danger btn-sm delete-btn" data-ids="<?= htmlspecialchars(implode(',', $item['original_ids'])) ?>" data-menu-name="<?= htmlspecialchars($item['menu_name']) ?>">
                                     <i class="fa fa-trash"></i> Delete
                                 </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

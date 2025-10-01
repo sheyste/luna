@@ -72,9 +72,11 @@
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/purchase_order') !== false) echo 'active'; ?>">
                 <a href="/purchase_order"><i class="fa fa-file-invoice"></i><span>Purchase Orders</span></a>
             </li>
+<?php if ($_SESSION['user_type'] !== 'User'): ?>
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/inventory/low-stock-alerts') !== false) echo 'active'; ?>">
                 <a href="/inventory/low-stock-alerts"><i class="fa fa-exclamation-triangle"></i><span>Low Stock Alerts</span></a>
             </li>
+<?php endif; ?>
             <li><h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
                     <span>Production</span>
                 </h6></li>
@@ -86,7 +88,7 @@
                 <a href="/production"><i class="fa fa-industry"></i><span>Production</span></a>
             </li>
 
-<?php if ($_SESSION['user_type'] !== 'User'): ?>
+<?php if ($_SESSION['user_type'] !== 'User' && $_SESSION['user_type'] !== 'Manager'): ?>
             <li><h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
                     <span>System</span>
                 </h6>

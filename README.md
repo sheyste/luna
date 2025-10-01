@@ -135,6 +135,44 @@ A comprehensive inventory and production management system built with PHP using 
 - **Username:** `admin`
 - **Password:** `admin`
 
+## User Roles and Permissions
+
+The system supports three user types with different levels of access and permissions:
+
+### 👑 Admin
+**Full System Access**
+- **User Management**: Create, edit, delete, and manage all user accounts
+- **Inventory Management**: Full CRUD operations including item deletion
+- **Production Management**: Full control including production deletion
+- **Menu Management**: Create, edit, and delete menu items
+- **Purchase Orders**: Complete management of purchase orders
+- **Physical Count**: Full access to inventory counting operations
+- **Low Stock Alerts**: View alerts, configure email settings, and test SMTP
+- **Backup & Restore**: Database backup and restore operations
+- **Barcode System**: Full access to all barcode operations
+- **Email Testing**: Send test emails and debug SMTP configuration
+
+### 👨‍💼 Manager
+**Operational Management Access**
+- **Inventory Management**: View, add, and edit inventory items (cannot delete)
+- **Production Management**: View and manage production batches (cannot delete production records)
+- **Menu Management**: View menu items (cannot edit or delete)
+- **Purchase Orders**: Full management of purchase orders
+- **Physical Count**: Full access to inventory counting operations
+- **Low Stock Alerts**: View low stock alerts (cannot access alert management)
+- **Barcode System**: Full access to barcode operations
+- **Backup & Restore**: Access to backup and restore functions
+
+### 👤 User
+**Basic Operational Access**
+- **Inventory Management**: View inventory items only (read-only)
+- **Production Management**: View production records (cannot add, edit, or delete)
+- **Menu Management**: View menu items only (read-only)
+- **Purchase Orders**: View purchase orders only (read-only)
+- **Physical Count**: Limited access to physical counting
+- **Barcode System**: Limited barcode scanning for assigned tasks
+- **No Access**: User management, backup/restore, low stock alerts, email testing
+
 ## System Modules
 
 ### 1. Dashboard
@@ -145,7 +183,7 @@ A comprehensive inventory and production management system built with PHP using 
 - View all inventory items in a searchable table with barcode support
 - Add new inventory items with category and barcode fields
 - Edit existing inventory details
-- Delete inventory items
+- Delete inventory items (Admin only)
 - Real-time low stock indicators
 
 ### 3. Physical Count System
@@ -161,6 +199,7 @@ A comprehensive inventory and production management system built with PHP using 
 - FIFO-based ingredient deduction and sales tracking
 - Production capacity planning based on available ingredients
 - Real-time updates for sold quantities and wastage
+- Production deletion (Admin only)
 
 ### 5. Purchase Orders
 - Create and manage purchase orders
@@ -173,13 +212,14 @@ A comprehensive inventory and production management system built with PHP using 
 - Professional HTML email notifications via SMTP
 - Auto-resolution system when stock is replenished
 - Alert history tracking with detailed status information
-- Manual alert processing and email testing tools
+- Manual alert processing and email testing tools (Admin only)
 
 ### 7. Menu Management
 - Comprehensive menu item management with barcode support
 - Advanced ingredient mapping with cost analysis
 - Recipe management for consistent production planning
 - Automatic cost calculation based on ingredient prices
+- Menu editing and deletion (Admin only)
 
 ### 8. Barcode System
 - Universal barcode scanning across all modules
@@ -188,12 +228,13 @@ A comprehensive inventory and production management system built with PHP using 
 - Menu item operations with barcode integration
 - Support for inventory, menu, and production item barcodes
 
-### 9. User Management
+### 9. User Management (Admin & Manager Only)
 - Username-based authentication system
 - Add, edit, and delete users with role-based permissions
 - Secure password hashing and session management
+- Email testing and SMTP configuration debugging (Admin only)
 
-### 10. Backup & Restore
+### 10. Backup & Restore (Admin & Manager Only)
 - Download database backups
 - Upload and restore from backup files
 - Complete data protection solution

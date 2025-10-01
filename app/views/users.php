@@ -357,6 +357,7 @@
                         <label for="add_user_type" class="form-label">User Type (*)</label>
                         <select class="form-select" name="user_type" id="add_user_type" required>
                             <option value="Admin">Admin</option>
+                            <option value="Manager">Manager</option>
                             <option value="User">User</option>
                         </select>
                     </div>
@@ -416,6 +417,7 @@
                         <label for="edit_user_type" class="form-label">User Type (*)</label>
                         <select class="form-select" name="user_type" id="edit_user_type" required>
                             <option value="Admin">Admin</option>
+                            <option value="Manager">Manager</option>
                             <option value="User">User</option>
                         </select>
                     </div>
