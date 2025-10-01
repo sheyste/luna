@@ -202,7 +202,6 @@ A comprehensive inventory and production management system built with PHP using 
 - [x] Adjust Print and Delete padding in Inventory
 - [ ] Encrypt Backup and Restore Output
 - [x] Change Header Meta title to Luna Inventory Management System
-- [ ] Add search form in Item Selection in Add Physical Count Modal
 - [x] Add flashligh button for barcode scanner
 - [x] Adjust Card title in production where title goes behind Price if screen width is small
 - [x] Converd low stock alert email sender form API URL to SMTP server
