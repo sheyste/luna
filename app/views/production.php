@@ -561,25 +561,30 @@ if (!empty($items)) {
     <div class="card-header py-3 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-between">
         <!-- Filter Dropdown and Search Bar -->
         <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 mb-3 mb-md-0">
-            <!-- Date Filter Dropdown -->
-            <div class="dropdown">
-                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dateFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-calendar me-2"></i>Filter by Date: <span id="currentFilter">Today</span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dateFilterDropdown">
-                    <li><a class="dropdown-item" href="#" data-filter="all">All</a></li>
-                    <li><a class="dropdown-item" href="#" data-filter="today">Today</a></li>
-                    <li><a class="dropdown-item" href="#" data-filter="week">This Week</a></li>
-                    <li><a class="dropdown-item" href="#" data-filter="month">This Month</a></li>
-                    <li><a class="dropdown-item" href="#" data-filter="year">This Year</a></li>
-                </ul>
-            </div>
-            <!-- Custom Date Range Inputs -->
-            <div id="customDateRange" class="d-flex align-items-center gap-2">
-                <input type="date" id="startDate" class="form-control form-control-sm">
-                <span>to</span>
-                <input type="date" id="endDate" class="form-control form-control-sm">
-                <button id="applyCustomFilter" class="btn btn-primary btn-sm">Apply</button>
+            <!-- Date Filter and Custom Date Range -->
+            <div class="d-flex flex-column gap-2">
+                <!-- Date Filter Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dateFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-calendar me-2"></i>Filter by Date: <span id="currentFilter">Today</span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dateFilterDropdown">
+                        <li><a class="dropdown-item" href="#" data-filter="all">All</a></li>
+                        <li><a class="dropdown-item" href="#" data-filter="today">Today</a></li>
+                        <li><a class="dropdown-item" href="#" data-filter="week">This Week</a></li>
+                        <li><a class="dropdown-item" href="#" data-filter="month">This Month</a></li>
+                        <li><a class="dropdown-item" href="#" data-filter="year">This Year</a></li>
+                    </ul>
+                </div>
+                <!-- Custom Date Range Inputs -->
+                <div id="customDateRange" class="d-flex flex-column flex-sm-row gap-2">
+                    <input type="date" id="startDate" class="form-control form-control-sm">
+                    <div class="d-flex justify-content-center">
+                        <span>to</span>
+                    </div>
+                    <input type="date" id="endDate" class="form-control form-control-sm">
+                    <button id="applyCustomFilter" class="btn btn-primary btn-sm w-100 w-sm-auto">Apply</button>
+                </div>
             </div>
             <!-- Search Bar on top in mobile, left in desktop -->
             <div class="input-group" style="max-width: 350px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border-radius: 8px; transition: all 0.2s ease;">
