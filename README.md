@@ -239,11 +239,3 @@ The system supports three user types with different levels of access and permiss
 - Upload and restore from backup files
 - Complete data protection solution
 
-### Todo
-- [x] Adjust Print and Delete padding in Inventory
-- [ ] Encrypt Backup and Restore Output
-- [x] Change Header Meta title to Luna Inventory Management System
-- [x] Add flashligh button for barcode scanner
-- [x] Adjust Card title in production where title goes behind Price if screen width is small
-- [x] Converd low stock alert email sender form API URL to SMTP server
-- [ ] Update Production card, make it only show Can produce max number of units, price, produced, sold and wastage
