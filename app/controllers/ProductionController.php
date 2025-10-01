@@ -344,19 +344,11 @@ public function getMenuIngredients() {
 }
 
 public function exportExcel() {
-    // Get raw production data from database
-    $stmt = $this->conn->query("
-        SELECT p.*, m.name AS menu_name, m.price
-        FROM production p
-        JOIN menus m ON p.menu_id = m.id
-        ORDER BY p.created_at DESC
-    ");
-
-    $items = $stmt->fetch_all(MYSQLI_ASSOC);
-    $stmt->close();
+    // Get production data with calculated details
+    $items = $this->productionModel->getAllWithDetails();
 
     // Set headers for CSV download
-    $filename = 'Production_Raw_Data_' . date('Y-m-d_H-i-s') . '.csv';
+    $filename = 'Production_Data_' . date('Y-m-d_H-i-s') . '.csv';
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
@@ -365,33 +357,41 @@ public function exportExcel() {
     // Create output stream
     $output = fopen('php://output', 'w');
 
-    // Write CSV headers (raw database columns)
+    // Write CSV headers including calculated fields
     fputcsv($output, [
         'ID',
         'Menu ID',
         'Menu Name',
         'Barcode',
+        'Price',
         'Quantity Produced',
+        'Cost',
         'Quantity Available',
         'Quantity Sold',
+        'Sales',
         'Wastage',
-        'Created At',
-        'Updated At'
+        'Waste Cost',
+        'Profit',
+        'Created At'
     ]);
 
-    // Write data rows (raw data)
+    // Write data rows with calculated data
     foreach ($items as $item) {
         fputcsv($output, [
             $item['id'] ?? '',
             $item['menu_id'] ?? '',
             $item['menu_name'] ?? '',
             $item['barcode'] ?? '',
+            number_format($item['price'] ?? 0, 2),
             $item['quantity_produced'] ?? 0,
+            number_format($item['total_cost'] ?? 0, 2),
             $item['quantity_available'] ?? 0,
             $item['quantity_sold'] ?? 0,
+            number_format($item['total_sales'] ?? 0, 2),
             $item['wastage'] ?? 0,
-            isset($item['created_at']) ? date('Y-m-d H:i:s', strtotime($item['created_at'])) : '',
-            isset($item['updated_at']) ? date('Y-m-d H:i:s', strtotime($item['updated_at'])) : ''
+            number_format($item['waste_cost'] ?? 0, 2),
+            number_format($item['profit'] ?? 0, 2),
+            isset($item['created_at']) ? date('Y-m-d H:i:s', strtotime($item['created_at'])) : ''
         ]);
     }
 
