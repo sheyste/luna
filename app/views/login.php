@@ -3,7 +3,7 @@
 <style>
     :root {
         --primary-color: #6c5ce7;
-        --secondary-color: #f2f2f2;
+        --secondary-color: #e8f0e8;
         --text-color: #333;
         --light-text-color: #fff;
         --error-color: #ff4d4d;
@@ -32,7 +32,7 @@
     }
 
     .login-banner {
-        background: linear-gradient(135deg, var(--primary-color), #a29bfe);
+        background: linear-gradient(135deg, #033b35, #d5932f, #788e87);
         color: var(--light-text-color);
         padding: 60px;
         display: flex;

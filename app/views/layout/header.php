@@ -49,7 +49,7 @@
     <nav id="sidebar">
         <div class="sidebar-header">
             <a class="navbar-brand" href="/home">
-                <i class="fa-solid fa-cube me-2"></i>
+                <img src="/assets/img/luna.svg" alt="LUNA" class="me-2" style="width: 20px; height: 20px;">
                 <span>LUNA</span>
             </a>
         </div>
