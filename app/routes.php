@@ -20,6 +20,7 @@ $routes = array(
     '/inventory/getPendingEntries' => array('PhysicalCountController', 'getPendingEntries'),
     '/inventory/deleteCountEntry' => array('PhysicalCountController', 'deleteCountEntry'),
     '/inventory/savePhysicalCount' => array('PhysicalCountController', 'savePhysicalCount'),
+    '/inventory/physical-count-export' => array('PhysicalCountController', 'exportExcel'),
     '/inventory/check-low-stock-db' => array('InventoryController', 'checkLowStockDb'),
     '/inventory/check-and-send-alerts' => array('InventoryController', 'checkAndSendAlerts'),
     '/inventory/low-stock-alerts' => array('LowStockAlertController', 'index'),

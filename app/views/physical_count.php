@@ -553,7 +553,12 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 fw-bold text-primary">Physical Count Results</h6>
-        <button id="saveToInventoryBtn" class="btn btn-success" disabled>Save All to Inventory</button>
+        <div class="d-flex gap-2">
+            <button id="exportBtn" class="btn btn-success">
+                <i class="fas fa-download"></i> Export to Excel
+            </button>
+            <button id="saveToInventoryBtn" class="btn btn-success" disabled>Save All to Inventory</button>
+        </div>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -958,6 +963,19 @@
             }
         });
         
+        // Handle export button click
+        $('#exportBtn').on('click', function() {
+            // Check if there are any entries to export
+            const rowCount = $('#physicalCountTable tbody tr').length;
+            if (rowCount === 0) {
+                alert('No physical count entries to export');
+                return;
+            }
+
+            // Trigger CSV download
+            window.location.href = '/inventory/physical-count-export';
+        });
+
         // Handle save to inventory button click
         $('#saveToInventoryBtn').on('click', function() {
             // Get all entry IDs from the table
@@ -968,12 +986,12 @@
                     entryIds.push(entryId);
                 }
             });
-            
+
             if (entryIds.length === 0) {
                 alert('No items to save');
                 return;
             }
-            
+
             if (confirm('This will update inventory quantities with physical count values. Are you sure?')) {
                 // Send entry IDs to server
                 $.ajax({
