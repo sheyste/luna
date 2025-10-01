@@ -210,33 +210,292 @@
             padding-left: 0.75rem;
             padding-right: 0.75rem;
         }
-        
+
         .card {
             margin-bottom: 1rem;
         }
-        
+
         .card-header {
             padding: 1rem 0.75rem;
         }
-        
+
         .card-body {
             padding: 1rem 0.75rem;
         }
-        
+
         #userTable td {
             padding: 0.5rem 0.75rem;
             min-height: 2.5rem;
         }
-        
+
         #userTable td::before {
             flex: 0 0 40%;
             font-size: 0.875rem;
         }
-        
+
         .modal-dialog {
             margin: 0.5rem;
             max-width: calc(100% - 1rem);
         }
+    }
+
+    /* Password requirements styling */
+    .password-requirements {
+        font-size: 0.875rem;
+    }
+
+    .requirement {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .requirement i {
+        margin-right: 0.5rem;
+        width: 12px;
+    }
+
+    .requirement.valid i {
+        color: #198754 !important; /* Bootstrap success green */
+    }
+
+    .requirement.valid i:before {
+        content: "\f00c"; /* check icon */
+    }
+
+    .requirement.invalid i {
+        color: #dc3545 !important; /* Bootstrap danger red */
+    }
+
+    /* Modern Modal Styles */
+    .modern-modal .modal-dialog {
+        max-width: 800px;
+        margin: 1.75rem auto;
+    }
+
+    .modern-modal .modal-content {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    }
+
+    .modern-modal .modal-header {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        border: none;
+        position: relative;
+    }
+
+    .modern-modal .modal-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    /* Green theme for Add Modal */
+    .modern-modal.add-modal .modal-header {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    }
+
+    .modern-modal.add-modal .btn-primary {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .modern-modal.add-modal .btn-primary:hover {
+        background: linear-gradient(135deg, #1e7e34 0%, #28a745 100%);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+    .modern-modal.add-modal .form-control:focus,
+    .modern-modal.add-modal .form-select:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+
+    .modern-modal .modal-title {
+        font-weight: 600;
+        font-size: 1.25rem;
+        position: relative;
+        z-index: 1;
+        margin: 0;
+    }
+
+    .modern-modal .btn-close {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        position: relative;
+        z-index: 1;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+    }
+
+    .modern-modal .btn-close:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+
+    .modern-modal .btn-close::after {
+        content: "";
+    }
+
+    .modern-modal .btn-close i {
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .modern-modal .modal-body {
+        padding: 2rem;
+        background: white;
+    }
+
+    .modern-modal .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .modern-modal .form-control,
+    .modern-modal .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .modern-modal .form-control:focus,
+    .modern-modal .form-select:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        background: white;
+        transform: translateY(-1px);
+    }
+
+    .modern-modal .form-control:hover,
+    .modern-modal .form-select:hover {
+        border-color: #ced4da;
+        background: white;
+    }
+
+    .modern-modal .mb-3 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .modern-modal .modal-footer {
+        padding: 1.5rem 2rem;
+        border-top: 1px solid #e9ecef;
+        background: #f8f9fa;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+
+    .modern-modal .btn {
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .modern-modal .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .modern-modal .btn:hover::before {
+        left: 100%;
+    }
+
+    .modern-modal .btn-primary {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(78, 115, 223, 0.3);
+    }
+
+    .modern-modal .btn-primary:hover {
+        background: linear-gradient(135deg, #224abe 0%, #4e73df 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(78, 115, 223, 0.4);
+        color: white;
+    }
+
+    .modern-modal .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .modern-modal .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 576px) {
+        .modern-modal .modal-dialog {
+            margin: 0.5rem;
+            max-width: none;
+        }
+
+        .modern-modal .modal-header {
+            padding: 1rem 1.5rem;
+        }
+
+        .modern-modal .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modern-modal .modal-footer {
+            padding: 1rem 1.5rem;
+            flex-direction: column;
+        }
+
+        .modern-modal .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .modern-modal .form-control,
+        .modern-modal .form-select {
+            padding: 0.625rem 0.875rem;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Animation for modal appearance */
+    .modern-modal.fade .modal-dialog {
+        transform: scale(0.9) translateY(-20px);
+        transition: transform 0.3s ease-out;
+    }
+
+    .modern-modal.show .modal-dialog {
+        transform: scale(1) translateY(0);
     }
 </style>
 
@@ -328,49 +587,103 @@
 </div>
 
 <!-- Add User Modal -->
-<div class="modal fade" id="modalAddUser" tabindex="-1" aria-labelledby="modalAddUserLabel" aria-hidden="true">
+<div class="modal fade modern-modal add-modal" id="modalAddUser" tabindex="-1" aria-labelledby="modalAddUserLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalAddUserLabel">Add User</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="modalAddUserLabel">
+                    <i class="bi bi-person-plus-fill me-2"></i>Add User
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
             </div>
             <div class="modal-body">
                 <form id="addUserForm" method="post">
-                    <div class="mb-3">
-                        <label for="add_username" class="form-label">Username (*)</label>
-                        <input type="text" class="form-control" name="username" id="add_username" required>
+                    <!-- Username and Email Row -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="add_username" class="form-label">Username (*)</label>
+                            <input type="text" class="form-control" name="username" id="add_username" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="add_email" class="form-label">Email (*)</label>
+                            <input type="email" class="form-control" name="email" id="add_email" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="add_first_name" class="form-label">First Name (*)</label>
-                        <input type="text" class="form-control" name="first_name" id="add_first_name" required>
+
+                    <!-- First Name and Last Name Row -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="add_first_name" class="form-label">First Name (*)</label>
+                            <input type="text" class="form-control" name="first_name" id="add_first_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="add_last_name" class="form-label">Last Name (*)</label>
+                            <input type="text" class="form-control" name="last_name" id="add_last_name" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="add_last_name" class="form-label">Last Name (*)</label>
-                        <input type="text" class="form-control" name="last_name" id="add_last_name" required>
+
+                    <!-- User Type and Receive Email Row -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="add_user_type" class="form-label">User Type (*)</label>
+                            <select class="form-select" name="user_type" id="add_user_type" required>
+                                <option value="Admin">Admin</option>
+                                <option value="Manager">Manager</option>
+                                <option value="User">User</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="add_receive_email" class="form-label">Receive Email</label>
+                            <select class="form-select" name="receive_email" id="add_receive_email">
+                                <option value="1">Yes</option>
+                                <option value="0" selected>No</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="add_email" class="form-label">Email (*)</label>
-                        <input type="email" class="form-control" name="email" id="add_email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="add_user_type" class="form-label">User Type (*)</label>
-                        <select class="form-select" name="user_type" id="add_user_type" required>
-                            <option value="Admin">Admin</option>
-                            <option value="Manager">Manager</option>
-                            <option value="User">User</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="add_receive_email" class="form-label">Receive Email</label>
-                        <select class="form-select" name="receive_email" id="add_receive_email">
-                            <option value="1">Yes</option>
-                            <option value="0" selected>No</option>
-                        </select>
-                    </div>
+
+                    <!-- Password Row -->
                     <div class="mb-3">
                         <label for="add_password" class="form-label">Password (*)</label>
-                        <input type="password" class="form-control" name="password" id="add_password" required>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="password" id="add_password" required>
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="fa fa-eye" id="passwordIcon"></i>
+                            </button>
+                        </div>
+                        <div class="password-requirements mt-2">
+                            <small class="text-muted">Password must contain:</small>
+                            <div class="requirement" id="req-length">
+                                <i class="fa fa-times text-danger"></i>
+                                <small> At least 8 characters</small>
+                            </div>
+                            <div class="requirement" id="req-uppercase">
+                                <i class="fa fa-times text-danger"></i>
+                                <small> One uppercase letter (A-Z)</small>
+                            </div>
+                            <div class="requirement" id="req-lowercase">
+                                <i class="fa fa-times text-danger"></i>
+                                <small> One lowercase letter (a-z)</small>
+                            </div>
+                            <div class="requirement" id="req-number">
+                                <i class="fa fa-times text-danger"></i>
+                                <small> One number (0-9)</small>
+                            </div>
+                            <div class="requirement" id="req-symbol">
+                                <i class="fa fa-times text-danger"></i>
+                                <small> One special character (!@#$%^&*)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password Row -->
+                    <div class="mb-3">
+                        <label for="add_confirm_password" class="form-label">Confirm Password (*)</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="confirm_password" id="add_confirm_password" required>
+                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                <i class="fa fa-eye" id="confirmPasswordIcon"></i>
+                            </button>
+                        </div>
                     </div>
                 </form>
                 <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" style="display:none;">
@@ -387,50 +700,82 @@
 </div>
 
 <!-- Edit User Modal -->
-<div class="modal fade" id="modalEditUser" tabindex="-1" aria-labelledby="modalEditUserLabel" aria-hidden="true">
+<div class="modal fade modern-modal" id="modalEditUser" tabindex="-1" aria-labelledby="modalEditUserLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalEditUserLabel">Edit User</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="modalEditUserLabel">
+                    <i class="bi bi-person-gear me-2"></i>Edit User
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
             </div>
             <div class="modal-body">
                 <form id="editUserForm" method="post">
                     <input type="hidden" name="id" id="edit_id" value="" readonly>
-                    <div class="mb-3">
-                        <label for="edit_username" class="form-label">Username (*)</label>
-                        <input type="text" class="form-control" name="username" id="edit_username" required>
+
+                    <!-- Username and Email Row -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="edit_username" class="form-label">Username (*)</label>
+                            <input type="text" class="form-control" name="username" id="edit_username" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_email" class="form-label">Email (*)</label>
+                            <input type="email" class="form-control" name="email" id="edit_email" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="edit_first_name" class="form-label">First Name (*)</label>
-                        <input type="text" class="form-control" name="first_name" id="edit_first_name" required>
+
+                    <!-- First Name and Last Name Row -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="edit_first_name" class="form-label">First Name (*)</label>
+                            <input type="text" class="form-control" name="first_name" id="edit_first_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_last_name" class="form-label">Last Name (*)</label>
+                            <input type="text" class="form-control" name="last_name" id="edit_last_name" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="edit_last_name" class="form-label">Last Name (*)</label>
-                        <input type="text" class="form-control" name="last_name" id="edit_last_name" required>
+
+                    <!-- User Type and Receive Email Row -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="edit_user_type" class="form-label">User Type (*)</label>
+                            <select class="form-select" name="user_type" id="edit_user_type" required>
+                                <option value="Admin">Admin</option>
+                                <option value="Manager">Manager</option>
+                                <option value="User">User</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="edit_receive_email" class="form-label">Receive Email</label>
+                            <select class="form-select" name="receive_email" id="edit_receive_email">
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="edit_email" class="form-label">Email (*)</label>
-                        <input type="email" class="form-control" name="email" id="edit_email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_user_type" class="form-label">User Type (*)</label>
-                        <select class="form-select" name="user_type" id="edit_user_type" required>
-                            <option value="Admin">Admin</option>
-                            <option value="Manager">Manager</option>
-                            <option value="User">User</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_receive_email" class="form-label">Receive Email</label>
-                        <select class="form-select" name="receive_email" id="edit_receive_email">
-                            <option value="1">Yes</option>
-                            <option value="0">No</option>
-                        </select>
-                    </div>
+
+                    <!-- Password Row -->
                     <div class="mb-3">
                         <label for="edit_password" class="form-label">Password (Leave blank to keep current)</label>
-                        <input type="password" class="form-control" name="password" id="edit_password">
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="password" id="edit_password">
+                            <button class="btn btn-outline-secondary" type="button" id="toggleEditPassword">
+                                <i class="fa fa-eye" id="editPasswordIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password Row -->
+                    <div class="mb-3">
+                        <label for="edit_confirm_password" class="form-label">Confirm Password (Leave blank to keep current)</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="confirm_password" id="edit_confirm_password">
+                            <button class="btn btn-outline-secondary" type="button" id="toggleEditConfirmPassword">
+                                <i class="fa fa-eye" id="editConfirmPasswordIcon"></i>
+                            </button>
+                        </div>
                     </div>
                 </form>
                 <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" style="display:none;">
@@ -545,9 +890,16 @@ $(document).ready(function() {
         },
         add: function() {
             const form = $("#addUserForm").serializeArray();
+            const password = $.trim($('#add_password').val());
 
-            if ($.trim($('#add_username').val()) === '' || $.trim($('#add_first_name').val()) === '' || $.trim($('#add_last_name').val()) === '' || $.trim($('#add_email').val()) === '' || $.trim($('#add_user_type').val()) === '' || $.trim($('#add_password').val()) === '') {
+            if ($.trim($('#add_username').val()) === '' || $.trim($('#add_first_name').val()) === '' || $.trim($('#add_last_name').val()) === '' || $.trim($('#add_email').val()) === '' || $.trim($('#add_user_type').val()) === '' || password === '' || $.trim($('#add_confirm_password').val()) === '') {
                 $('#modalAddUser .alert-danger p').text('All fields required');
+                $('#modalAddUser .alert-danger').show();
+            } else if (!validatePasswordStrength(password)) {
+                $('#modalAddUser .alert-danger p').text('Password does not meet requirements');
+                $('#modalAddUser .alert-danger').show();
+            } else if (password !== $.trim($('#add_confirm_password').val())) {
+                $('#modalAddUser .alert-danger p').text('Passwords do not match');
                 $('#modalAddUser .alert-danger').show();
             } else {
                 $.ajax({
@@ -576,6 +928,9 @@ $(document).ready(function() {
 
             if ($.trim($('#edit_username').val()) === '' || $.trim($('#edit_first_name').val()) === '' || $.trim($('#edit_last_name').val()) === '' || $.trim($('#edit_email').val()) === '' || $.trim($('#edit_user_type').val()) === '') {
                 $('#modalEditUser .alert-danger p').text('All fields required');
+                $('#modalEditUser .alert-danger').show();
+            } else if ($.trim($('#edit_password').val()) !== '' && $.trim($('#edit_confirm_password').val()) !== '' && $.trim($('#edit_password').val()) !== $.trim($('#edit_confirm_password').val())) {
+                $('#modalEditUser .alert-danger p').text('Passwords do not match');
                 $('#modalEditUser .alert-danger').show();
             } else {
                 $.ajax({
@@ -731,6 +1086,83 @@ $(document).ready(function() {
         User.delete();
     });
 
+    // Toggle password visibility
+    $('#togglePassword').on('click', function() {
+        const passwordInput = $('#add_password');
+        const icon = $('#passwordIcon');
+        if (passwordInput.attr('type') === 'password') {
+            passwordInput.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordInput.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+
+    // Toggle confirm password visibility
+    $('#toggleConfirmPassword').on('click', function() {
+        const passwordInput = $('#add_confirm_password');
+        const icon = $('#confirmPasswordIcon');
+        if (passwordInput.attr('type') === 'password') {
+            passwordInput.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordInput.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+
+    // Toggle edit password visibility
+    $('#toggleEditPassword').on('click', function() {
+        const passwordInput = $('#edit_password');
+        const icon = $('#editPasswordIcon');
+        if (passwordInput.attr('type') === 'password') {
+            passwordInput.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordInput.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+
+    // Toggle edit confirm password visibility
+    $('#toggleEditConfirmPassword').on('click', function() {
+        const passwordInput = $('#edit_confirm_password');
+        const icon = $('#editConfirmPasswordIcon');
+        if (passwordInput.attr('type') === 'password') {
+            passwordInput.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordInput.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+
+    // Password strength validation
+    function validatePasswordStrength(password) {
+        const requirements = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /\d/.test(password),
+            symbol: /[!@#$%^&*]/.test(password)
+        };
+
+        // Update UI for each requirement
+        $('#req-length').removeClass('valid invalid').addClass(requirements.length ? 'valid' : 'invalid');
+        $('#req-uppercase').removeClass('valid invalid').addClass(requirements.uppercase ? 'valid' : 'invalid');
+        $('#req-lowercase').removeClass('valid invalid').addClass(requirements.lowercase ? 'valid' : 'invalid');
+        $('#req-number').removeClass('valid invalid').addClass(requirements.number ? 'valid' : 'invalid');
+        $('#req-symbol').removeClass('valid invalid').addClass(requirements.symbol ? 'valid' : 'invalid');
+
+        return requirements.length && requirements.uppercase && requirements.lowercase && requirements.number && requirements.symbol;
+    }
+
+    // Check password strength on input
+    $('#add_password').on('input', function() {
+        validatePasswordStrength($(this).val());
+    });
+
     $('#debugEmailBtn').on('click', function() {
         $.ajax({
             url: '/users/debug-email-config',
@@ -760,6 +1192,10 @@ $(document).ready(function() {
     $('#modalAddUser').on('hidden.bs.modal', function(e){
         $(this).find('form').trigger('reset');
         $(this).find('.alert').hide();
+        $('#passwordIcon').removeClass('fa-eye-slash').addClass('fa-eye');
+        $('#add_password').attr('type', 'password');
+        $('#confirmPasswordIcon').removeClass('fa-eye-slash').addClass('fa-eye');
+        $('#add_confirm_password').attr('type', 'password');
     });
 
     $('#modalEditUser').on('hidden.bs.modal', function(e){
