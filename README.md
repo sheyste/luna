@@ -238,6 +238,7 @@ The system supports three user types with different levels of access and permiss
 - Upload and restore from backup files
 - Complete data protection solution
 
+
 ## System Context Diagram
 
 The following diagram illustrates the high-level context of the LUNA Inventory System, showing the main actors and external systems it interacts with:
@@ -371,17 +372,6 @@ Dashboard
 
 ## Use Case Diagram
 
-### UML Symbols and Notation
-
-| Symbol | Name | Description |
-|--------|------|-------------|
-| ![Actor](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA0MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjEwIiByPSI4IiBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8bGluZSB4MT0iMjAiIHkxPSIxOCIgeDI9IjIwIiB5Mj0iMzUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIvPgogIDxsaW5lIHgxPSIxMCIgeTE9IjI1IiB4Mj0iMzAiIHkyPSIyNSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGxpbmUgeDE9IjIwIiB5MT0iMzUiIHgyPSIxMCIgeTI9IjUwIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8bGluZSB4MT0iMjAiIHkxPSIzNSIgeDI9IjMwIiB5Mj0iNTAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4K) | **Actor** | Actors are the users of a system. When one system is the actor of another system, label the actor system with the actor stereotype. |
-| ![Use Case](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxlbGxpcHNlIGN4PSI1MCIgY3k9IjMwIiByeD0iNDAiIHJ5PSIyMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjwvc3ZnPgo=) | **Use Case** | A use case represents a function or an action within the system. It's drawn as an oval and named after the function. |
-| ![Association](data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTAwIDQwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxsaW5lIHgxPSIwIiB5MT0iMjAiIHgyPSIxMDAiIHkyPSIyMCIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHBvbHlnb24gcG9pbnRzPSI5MCwxMCA5NSwyMCA5MCwzMCIgZmlsbD0iYmxhY2siLz4KPC9zdmc+) | **Association** | An association is the relationship between an actor and a business use case. It indicates that an actor can use a certain functionality of the business system. |
-| `<<include>>` | **Include Relationship** | The include relationship is a relationship between two business use cases that signifies that the business use case on the side to which the arrow points is included in the use case on the other side of the arrow. |
-| `<<extend>>` | **Extend Relationship** | An "extends" relationship indicates alternative options under a certain use case. |
-
-### System Use Case Diagram
 
 The following diagram illustrates the use cases of the LUNA Inventory System, showing the interactions between different user types and system functionalities:
 
@@ -474,3 +464,171 @@ The following diagram illustrates the use cases of the LUNA Inventory System, sh
 - **Limited Barcode Access**: Restricted barcode scanning for assigned tasks
 - **Physical Count (Limited)**: Limited access to physical counting features
 - **No Access**: Cannot access user management, backup/restore, or low stock alerts
+
+## Sequence Diagrams
+
+### Admin User Sequence Diagram
+```
+┌─────────┐     ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  Admin  │     │   Web Browser   │     │   LUNA System   │     │   MySQL DB      │
+└────┬────┘     └─────────┬───────┘     └─────────┬───────┘     └─────────┬───────┘
+     │                   │                       │                       │
+     │ 1. Access Login   │                       │                       │
+     ├──────────────────►│                       │                       │
+     │                   │ 2. Display Login Form │                       │
+     │                   │◄──────────────────────┼                       │
+     │ 3. Enter Credentials                      │                       │
+     ├──────────────────►│                       │                       │
+     │                   │ 4. Submit Login       │                       │
+     │                   │──────────────────────►│                       │
+     │                   │                       │ 5. Validate User      │
+     │                   │                       ├──────────────────────►│
+     │                   │                       │ 6. Return User Data   │
+     │                   │                       │◄──────────────────────┼
+     │                   │                       │ 7. Create Session     │
+     │                   │                       │                       │
+     │                   │ 8. Redirect to Dashboard                      │
+     │                   │◄──────────────────────┼                       │
+     │ 9. Display Dashboard                      │                       │
+     │◄──────────────────┼                       │                       │
+     │                   │                       │                       │
+     │ 10. Access User Management               │                       │
+     ├──────────────────►│                       │                       │
+     │                   │ 11. Request User List │                       │
+     │                   │──────────────────────►│                       │
+     │                   │                       │ 12. Query Users       │
+     │                   │                       ├──────────────────────►│
+     │                   │                       │ 13. Return User Data  │
+     │                   │                       │◄──────────────────────┼
+     │                   │                       │ 14. Render User List  │
+     │                   │ 15. Display User Management                   │
+     │                   │◄──────────────────────┼                       │
+     │ 16. Display User Management               │                       │
+     │◄──────────────────┼                       │                       │
+     │                   │                       │                       │
+     │ 17. Logout        │                       │                       │
+     ├──────────────────►│                       │                       │
+     │                   │ 18. Destroy Session   │                       │
+     │                   │──────────────────────►│                       │
+     │                   │ 19. Redirect to Login │                       │
+     │                   │◄──────────────────────┼                       │
+```
+
+### Manager User Sequence Diagram
+```
+┌──────────┐     ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│ Manager  │     │   Web Browser   │     │   LUNA System   │     │   MySQL DB      │
+└─────┬────┘     └─────────┬───────┘     └─────────┬───────┘     └─────────┬───────┘
+      │                   │                       │                       │
+      │ 1. Access Login   │                       │                       │
+      ├──────────────────►│                       │                       │
+      │                   │ 2. Display Login Form │                       │
+      │                   │◄──────────────────────┼                       │
+      │ 3. Enter Credentials                      │                       │
+      ├──────────────────►│                       │                       │
+      │                   │ 4. Submit Login       │                       │
+      │                   │──────────────────────►│                       │
+      │                   │                       │ 5. Validate User      │
+      │                   │                       ├──────────────────────►│
+      │                   │                       │ 6. Return User Data   │
+      │                   │                       │◄──────────────────────┼
+      │                   │                       │ 7. Create Session     │
+      │                   │                       │                       │
+      │                   │ 8. Redirect to Dashboard                      │
+      │                   │◄──────────────────────┼                       │
+      │ 9. Display Dashboard                      │                       │
+      │◄──────────────────┼                       │                       │
+      │                   │                       │                       │
+      │ 10. Access Inventory Management          │                       │
+      ├──────────────────►│                       │                       │
+      │                   │ 11. Request Inventory│                       │
+      │                   │──────────────────────►│                       │
+      │                   │                       │ 12. Query Inventory   │
+      │                   │                       ├──────────────────────►│
+      │                   │                       │ 13. Return Data       │
+      │                   │                       │◄──────────────────────┼
+      │                   │                       │ 14. Render Table      │
+      │                   │ 15. Display Inventory                        │
+      │                   │◄──────────────────────┼                       │
+      │ 16. Display Inventory                     │                       │
+      │◄──────────────────┼                       │                       │
+      │                   │                       │                       │
+      │ 17. Add New Item  │                       │                       │
+      ├──────────────────►│                       │                       │
+      │                   │ 18. Submit Form       │                       │
+      │                   │──────────────────────►│                       │
+      │                   │                       │ 19. Validate & Save   │
+      │                   │                       ├──────────────────────►│
+      │                   │                       │ 20. Confirm Save      │
+      │                   │                       │◄──────────────────────┼
+      │                   │                       │ 21. Success Message   │
+      │                   │ 22. Redirect to List  │                       │
+      │                   │◄──────────────────────┼                       │
+      │                   │                       │                       │
+      │ 23. Logout        │                       │                       │
+      ├──────────────────►│                       │                       │
+      │                   │ 24. Destroy Session   │                       │
+      │                   │──────────────────────►│                       │
+      │                   │ 25. Redirect to Login │                       │
+      │                   │◄──────────────────────┼                       │
+```
+
+### User Sequence Diagram
+```
+┌────────┐     ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  User  │     │   Web Browser   │     │   LUNA System   │     │   MySQL DB      │
+└───┬────┘     └─────────┬───────┘     └─────────┬───────┘     └─────────┬───────┘
+    │                   │                       │                       │
+    │ 1. Access Login   │                       │                       │
+    ├──────────────────►│                       │                       │
+    │                   │ 2. Display Login Form │                       │
+    │                   │◄──────────────────────┼                       │
+    │ 3. Enter Credentials                      │                       │
+    ├──────────────────►│                       │                       │
+    │                   │ 4. Submit Login       │                       │
+    │                   │──────────────────────►│                       │
+    │                   │                       │ 5. Validate User      │
+    │                   │                       ├──────────────────────►│
+    │                   │                       │ 6. Return User Data   │
+    │                   │                       │◄──────────────────────┼
+    │                   │                       │ 7. Create Session     │
+    │                   │                       │                       │
+    │                   │ 8. Redirect to Dashboard                      │
+    │                   │◄──────────────────────┼                       │
+    │ 9. Display Dashboard                      │                       │
+    │◄──────────────────┼                       │                       │
+    │                   │                       │                       │
+    │ 10. View Inventory│                       │                       │
+    ├──────────────────►│                       │                       │
+    │                   │ 11. Request Inventory│                       │
+    │                   │──────────────────────►│                       │
+    │                   │                       │ 12. Query Inventory   │
+    │                   │                       ├──────────────────────►│
+    │                   │                       │ 13. Return Data       │
+    │                   │                       │◄──────────────────────┼
+    │                   │                       │ 14. Render Read-only  │
+    │                   │ 15. Display Inventory                        │
+    │                   │◄──────────────────────┼                       │
+    │ 16. Display Inventory                     │                       │
+    │◄──────────────────┼                       │                       │
+    │                   │                       │                       │
+    │ 17. View Production                       │                       │
+    ├──────────────────►│                       │                       │
+    │                   │ 18. Request Production                       │
+    │                   │──────────────────────►│                       │
+    │                   │                       │ 19. Query Production  │
+    │                   │                       ├──────────────────────►│
+    │                   │                       │ 20. Return Data       │
+    │                   │                       │◄──────────────────────┼
+    │                   │                       │ 21. Render Read-only  │
+    │                   │ 22. Display Production                       │
+    │                   │◄──────────────────────┼                       │
+    │                   │                       │                       │
+    │ 23. Logout        │                       │                       │
+    ├──────────────────►│                       │                       │
+    │                   │ 24. Destroy Session   │                       │
+    │                   │──────────────────────►│                       │
+    │                   │ 25. Redirect to Login │                       │
+    │                   │◄──────────────────────┼                       │
+```
+=======
