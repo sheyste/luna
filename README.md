@@ -161,7 +161,6 @@ The system supports three user types with different levels of access and permiss
 - **Physical Count**: Full access to inventory counting operations
 - **Low Stock Alerts**: View low stock alerts (cannot access alert management)
 - **Barcode System**: Full access to barcode operations
-- **Backup & Restore**: Access to backup and restore functions
 
 ### 👤 User
 **Basic Operational Access**
@@ -228,14 +227,13 @@ The system supports three user types with different levels of access and permiss
 - Menu item operations with barcode integration
 - Support for inventory, menu, and production item barcodes
 
-### 9. User Management (Admin & Manager Only)
+### 9. User Management (Admin Only)
 - Username-based authentication system
 - Add, edit, and delete users with role-based permissions
 - Secure password hashing and session management
 - Email testing and SMTP configuration debugging (Admin only)
 
-### 10. Backup & Restore (Admin & Manager Only)
+### 10. Backup & Restore (Admin Only)
 - Download database backups
 - Upload and restore from backup files
 - Complete data protection solution
-
