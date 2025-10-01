@@ -237,3 +237,224 @@ The system supports three user types with different levels of access and permiss
 - Download database backups
 - Upload and restore from backup files
 - Complete data protection solution
+
+## System Context Diagram
+
+The following diagram illustrates the high-level context of the LUNA Inventory System, showing the main actors and external systems it interacts with:
+
+```
++----------------+     +-----------------+     +----------------+
+|     Admin      |     |    Manager      |     |      User      |
++----------------+     +-----------------+     +----------------+
+         |                     |                     |
+         |                     |                     |
+         +---------------------+---------------------+
+                               |
+                               v
+                    +---------------------+
+                    |   LUNA System       |
+                    | (Web Application)   |
+                    +---------------------+
+                               |
+                               |
+         +---------------------+---------------------+
+         |                     |                     |
+         v                     v                     v
++----------------+     +-----------------+     +-----------------+
+| MySQL Database |     |  SMTP Server    |     | Barcode Scanner |
+|   (Data)       |     |   (Email)       |     |   (Hardware)    |
++----------------+     +-----------------+     +-----------------+
+```
+
+### Data Flow Description:
+- **Users (Admin/Manager/User)**: Interact with the web interface to perform inventory operations
+- **LUNA System**: Core application handling business logic, user authentication, and data processing
+- **MySQL Database**: Stores all system data including inventory, users, production records, etc.
+- **SMTP Server**: Handles email notifications for low stock alerts and system communications
+- **Barcode Scanner**: External hardware device for scanning barcodes in inventory and production operations
+
+## Program Flow Charts
+
+### Admin User Flow
+```
+Login
+  ↓
+Dashboard
+  ↓
+┌─────────────────────────────────────────────────────────────┐
+│                    Admin Control Panel                      │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │  Inventory  │  │ Production  │  │    Menu     │         │
+│  │ Management  │  │ Management  │  │ Management  │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+│         ↓              ↓              ↓                     │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │ Physical    │  │ Purchase    │  │   User      │         │
+│  │ Count       │  │ Orders      │  │ Management  │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+│         ↓              ↓              ↓                     │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │ Low Stock   │  │  Backup &   │  │   Barcode   │         │
+│  │ Alerts      │  │  Restore    │  │   System    │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+└─────────────────────────────────────────────────────────────┘
+         ↓
+     Logout
+```
+
+## Use Case Diagram
+
+The following diagram illustrates the use cases of the LUNA Inventory System, showing the interactions between different user types and system functionalities:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                              LUNA Inventory System                             │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                 │
+│          ┌─────────────┐          ┌─────────────┐          ┌─────────────┐     │
+│          │   Admin     │          │   Manager   │          │    User     │     │
+│          │             │          │             │          │             │     │
+│          └──────┬──────┘          └──────┬──────┘          └──────┬──────┘     │
+│                 │                       │                       │              │
+│                 │                       │                       │              │
+│          ┌──────▼──────┐          ┌──────▼──────┐          ┌──────▼──────┐     │
+│          │  Login to   │          │  Login to   │          │  Login to   │     │
+│          │   System    │          │   System    │          │   System    │     │
+│          └──────┬──────┘          └──────┬──────┘          └──────┬──────┘     │
+│                 │                       │                       │              │
+│                 │                       │                       │              │
+│          ┌──────▼──────┐          ┌──────▼──────┐          ┌──────▼──────┐     │
+│          │   Access    │          │   Access    │          │   Access    │     │
+│          │  Dashboard  │          │  Dashboard  │          │  Dashboard  │     │
+│          └──────┬──────┘          └──────┬──────┘          └──────┬──────┘     │
+│                 │                       │                       │              │
+│                 │                       │                       │              │
+│    ┌────────────▼────────────┐   ┌──────▼──────┐          ┌──────▼──────┐     │
+│    │     Manage Users       │   │Manage Inventory│          │View Inventory│     │
+│    │   (Create/Edit/Delete) │   │(Add/Edit/View)│          │  (Read Only) │     │
+│    └────────────┬────────────┘   └──────┬──────┘          └──────┬──────┘     │
+│                 │                       │                       │              │
+│    ┌────────────▼────────────┐   ┌──────▼──────┐          ┌──────▼──────┐     │
+│    │   Database Backup &    │   │Manage Production│          │View Production│     │
+│    │       Restore          │   │(Full Control) │          │  (Read Only) │     │
+│    └────────────┬────────────┘   └──────┬──────┘          └──────┬──────┘     │
+│                 │                       │                       │              │
+│    ┌────────────▼────────────┐   ┌──────▼──────┐          ┌──────▼──────┐     │
+│    │   Configure Email &    │   │  Manage Menu │          │  View Menu   │     │
+│    │     SMTP Settings      │   │ (View Only)  │          │  (Read Only) │     │
+│    └────────────┬────────────┘   └──────┬──────┘          └──────┬──────┘     │
+│                 │                       │                       │              │
+│    ┌────────────▼────────────┐   ┌──────▼──────┐          ┌──────▼──────┐     │
+│    │    Test Email Config   │   │Manage Purchase│          │View Purchase │     │
+│    │                        │   │   Orders     │          │  Orders      │     │
+│    └────────────┬────────────┘   └──────┬──────┘          └──────┬──────┘     │
+│                 │                       │                       │              │
+│    ┌────────────▼────────────┐   ┌──────▼──────┐          ┌──────▼──────┐     │
+│    │   Full Barcode Access  │   │ Full Barcode │          │Limited Barcode│     │
+│    │                        │   │   Access     │          │   Access     │     │
+│    └────────────┬────────────┘   └──────┬──────┘          └──────┬──────┘     │
+│                 │                       │                       │              │
+│    ┌────────────▼────────────┐   ┌──────▼──────┐          ┌──────▼──────┐     │
+│    │  Physical Count (Full) │   │Physical Count│          │Physical Count│     │
+│    │                        │   │   (Full)     │          │  (Limited)   │     │
+│    └────────────┬────────────┘   └──────┬──────┘          └──────┬──────┘     │
+│                 │                       │                       │              │
+│    ┌────────────▼────────────┐   ┌──────▼──────┐          ┌──────▼──────┐     │
+│    │ Low Stock Alerts (Full)│   │View Low Stock│          │   No Access  │     │
+│    │                        │   │   Alerts     │          │              │     │
+│    └─────────────────────────┘   └─────────────┘          └─────────────┘     │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Use Case Descriptions:
+
+#### Admin Use Cases:
+- **Manage Users**: Create, edit, delete user accounts and manage permissions
+- **Database Backup & Restore**: Export and import database backups
+- **Configure Email & SMTP**: Set up email server configurations
+- **Test Email Config**: Send test emails to verify SMTP settings
+- **Full Barcode Access**: Complete access to all barcode scanning features
+- **Physical Count (Full)**: Complete physical inventory counting capabilities
+- **Low Stock Alerts (Full)**: Configure, view, and manage low stock alert system
+
+#### Manager Use Cases:
+- **Manage Inventory**: Add, edit, and view inventory items (cannot delete)
+- **Manage Production**: Full control over production batches and tracking
+- **Manage Menu**: View menu items (read-only access)
+- **Manage Purchase Orders**: Create and manage purchase orders
+- **Full Barcode Access**: Complete barcode scanning capabilities
+- **Physical Count (Full)**: Full physical inventory counting access
+- **View Low Stock Alerts**: View low stock alert information
+
+#### User Use Cases:
+- **View Inventory**: Read-only access to inventory items
+- **View Production**: Read-only access to production records
+- **View Menu**: Read-only access to menu items
+- **View Purchase Orders**: Read-only access to purchase orders
+- **Limited Barcode Access**: Restricted barcode scanning for assigned tasks
+- **Physical Count (Limited)**: Limited access to physical counting features
+- **No Access**: Cannot access user management, backup/restore, or low stock alerts
+
+### Manager User Flow
+```
+Login
+  ↓
+Dashboard
+  ↓
+┌─────────────────────────────────────────────────────────────┐
+│                  Manager Operations Panel                   │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │  Inventory  │  │ Production  │  │    Menu     │         │
+│  │ Management  │  │ Management  │  │ Management  │         │
+│  │ (View/Add/  │  │ (View/Manage)│  │ (View Only) │         │
+│  │  Edit)      │  └─────────────┘  └─────────────┘         │
+│  └─────────────┘                                            │
+│         ↓                                                   │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │ Physical    │  │ Purchase    │  │ Low Stock   │         │
+│  │ Count       │  │ Orders      │  │ Alerts      │         │
+│  │ (Full)      │  │ (Full)      │  │ (View Only)  │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+│                                                            │
+│  ┌─────────────┐                                           │
+│  │   Barcode   │                                           │
+│  │   System    │                                           │
+│  │ (Full)      │                                           │
+│  └─────────────┘                                           │
+└─────────────────────────────────────────────────────────────┘
+         ↓
+     Logout
+```
+
+### User Flow
+```
+Login
+  ↓
+Dashboard
+  ↓
+┌─────────────────────────────────────────────────────────────┐
+│                   User Access Panel                         │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │  Inventory  │  │ Production  │  │    Menu     │         │
+│  │ (View Only) │  │ (View Only) │  │ (View Only) │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+│                                                            │
+│  ┌─────────────┐  ┌─────────────┐                          │
+│  │ Purchase    │  │ Physical    │                          │
+│  │ Orders      │  │ Count       │                          │
+│  │ (View Only) │  │ (Limited)   │                          │
+│  └─────────────┘  └─────────────┘                          │
+│                                                            │
+│  ┌─────────────┐                                           │
+│  │   Barcode   │                                           │
+│  │   System    │                                           │
+│  │ (Limited)   │                                           │
+│  └─────────────┘                                           │
+└─────────────────────────────────────────────────────────────┘
+         ↓
+     Logout
+```
