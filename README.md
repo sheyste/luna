@@ -569,9 +569,11 @@ The following diagram illustrates the use cases of the LUNA Inventory System, sh
       ├──────────────────►│                       │                       │
       │                   │ 24. Destroy Session   │                       │
       │                   │──────────────────────►│                       │
-      │                   │ 25. Redirect to Login │                       │
-      │                   │◄──────────────────────┼                       │
+    │                   │ 25. Redirect to Login │                       │
+    │                   │◄──────────────────────┼                       │
 ```
+
+
 
 ### User Sequence Diagram
 ```
@@ -632,3 +634,120 @@ The following diagram illustrates the use cases of the LUNA Inventory System, sh
     │                   │◄──────────────────────┼                       │
 ```
 =======
+
+
+
+## System Activity Diagram
+
+The following activity diagram illustrates the overall workflow and activities within the LUNA Inventory System:
+
+```
+┌─────────────────┐
+│   Start System  │
+└───────┬─────────┘
+        │
+        v
+┌─────────────────┐
+│   User Login    │
+│   (Admin/Manager│
+│      /User)     │
+└───────┬─────────┘
+        │
+        v
+┌─────────────────┐     ┌─────────────────┐
+│ Access Dashboard│────►│   Check User    │
+│                 │     │     Role        │
+└───────┬─────────┘     └───────┬─────────┘
+        │                       │
+        v                       v
+┌─────────────────┐     ┌─────────────────┐
+│ Select Module   │     │   Admin Path    │
+│ (Inventory/Prod/│     └───────┬─────────┘
+│  Menu/etc.)     │             │
+└───────┬─────────┘             v
+        │             ┌─────────────────┐
+        v             │ User Management │
+┌─────────────────┐  │ (Create/Edit/   │
+│   Module Access │  │   Delete Users) │
+│   Check         │  └───────┬─────────┘
+└───────┬─────────┘          │
+        │                    v
+        v           ┌─────────────────┐
+┌─────────────────┐ │ System Admin    │
+│   Permission    │ │ (Backup/Restore│
+│   Granted?      │ │ Email Config)   │
+└───────┬─────────┘ └───────┬─────────┘
+   ├────┘                    │
+   │ No                      v
+   v               ┌─────────────────┐
+┌─────────────────┐│   Manager Path  │
+│  Access Denied  │└───────┬─────────┘
+│  (Show Error)   │        │
+└───────┬─────────┘        v
+        │         ┌─────────────────┐
+        v         │ Manage Inventory│
+┌─────────────────┐│ (Add/Edit/View │
+│     End         ││ Cannot Delete) │
+└─────────────────┘└───────┬─────────┘
+                          │
+                          v
+                 ┌─────────────────┐
+                 │ Manage Production│
+                 │ (Full Control)   │
+                 └───────┬─────────┘
+                          │
+                          v
+                 ┌─────────────────┐
+                 │  View Reports   │
+                 │ (Low Stock      │
+                 │   Alerts)       │
+                 └───────┬─────────┘
+                          │
+                          v
+                 ┌─────────────────┐
+                 │   User Path     │
+                 └───────┬─────────┘
+                          │
+                          v
+                 ┌─────────────────┐
+                 │ View Inventory  │
+                 │ (Read Only)     │
+                 └───────┬─────────┘
+                          │
+                          v
+                 ┌─────────────────┐
+                 │ View Production │
+                 │ (Read Only)     │
+                 └───────┬─────────┘
+                          │
+                          v
+                 ┌─────────────────┐
+                 │ Limited Barcode │
+                 │ Operations      │
+                 └───────┬─────────┘
+                          │
+                          v
+                 ┌─────────────────┐
+                 │   User Logout   │
+                 └───────┬─────────┘
+                          │
+                          v
+                 ┌─────────────────┐
+                 │   System End    │
+                 └─────────────────┘
+```
+
+### Activity Flow Description:
+
+1. **System Start**: User initiates access to the LUNA system
+2. **User Login**: Authentication process for Admin, Manager, or User roles
+3. **Dashboard Access**: Main system interface loads
+4. **Role Check**: System determines user permissions based on role
+5. **Module Selection**: User chooses specific functionality (Inventory, Production, etc.)
+6. **Permission Check**: System validates if user has access to selected module
+7. **Role-Specific Paths**:
+   - **Admin Path**: Full system access including user management and system administration
+   - **Manager Path**: Operational management with add/edit capabilities
+   - **User Path**: Read-only access to basic modules
+8. **Operations**: Users perform allowed activities within their permission level
+9. **Logout**: Session termination and system exit
