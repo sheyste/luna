@@ -234,7 +234,7 @@ class PurchaseOrderController extends Controller {
         }
 
         $id = intval($_GET['id']);
-        
+
         $stmt = $this->conn->prepare("SELECT * FROM purchase_orders WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -272,5 +272,60 @@ class PurchaseOrderController extends Controller {
 
         header('Content-Type: application/json');
         echo json_encode($order);
+    }
+
+    public function delete() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['error' => 'Method not allowed']);
+            exit;
+        }
+
+        if (!isset($_POST['id'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing ID']);
+            exit;
+        }
+
+        $id = intval($_POST['id']);
+        $this->conn->begin_transaction();
+
+        try {
+            // Fetch the order to check status
+            $stmt = $this->conn->prepare("SELECT status FROM purchase_orders WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $order = $result->fetch_assoc();
+            $stmt->close();
+
+            if (!$order) {
+                throw new Exception("Purchase Order not found");
+            }
+
+            // Delete items
+            $delete_items_stmt = $this->conn->prepare("DELETE FROM purchase_order_items WHERE purchase_order_id = ?");
+            $delete_items_stmt->bind_param("i", $id);
+            $delete_items_stmt->execute();
+            $delete_items_stmt->close();
+
+            // Delete order
+            $delete_order_stmt = $this->conn->prepare("DELETE FROM purchase_orders WHERE id = ?");
+            $delete_order_stmt->bind_param("i", $id);
+            $delete_order_stmt->execute();
+            $delete_order_stmt->close();
+
+            $this->conn->commit();
+
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true]);
+            exit;
+
+        } catch (Exception $e) {
+            $this->conn->rollback();
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+            exit;
+        }
     }
 }

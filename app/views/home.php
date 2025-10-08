@@ -100,7 +100,10 @@
             <?php endforeach; ?>
           </div>
         <?php else: ?>
-          <p class="text-muted text-center">No low stock alerts</p>
+          <div class="text-center py-3">
+            <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
+            <p class="text-muted mb-0">No low stock alerts</p>
+          </div>
         <?php endif; ?>
       </div>
     </div>
@@ -139,7 +142,7 @@
         <div class="mt-2">
           <small class="text-muted">
             <i class="fas fa-info-circle me-1"></i>
-            Shows menu items that can produce fewer than 20 units before running out of ingredients
+            Shows menu items that can produce fewer than 20 units before running out of ingredients.
           </small>
         </div>
       </div>
@@ -254,7 +257,7 @@
             <?php if (($wastagePercentageWeek ?? 0) > 15): ?>
               <i class="fas fa-exclamation-triangle text-danger"></i> High wastage rate this week
             <?php else: ?>
-              <i class="fas fa-check-circle text-success"></i> Within acceptable range
+              <i class="fas fa-check-circle text-success"></i> Within acceptable range (15%)
             <?php endif; ?>
           </small>
         </div>

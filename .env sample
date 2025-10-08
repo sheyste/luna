@@ -6,13 +6,19 @@ DB_PASSWORD=rootroot
 DB_PORT=3306
 
 # SMTP Email Configuration
+# Replace these with your actual SMTP server details
 SMTP_HOST=
 SMTP_PORT=587
 SMTP_USERNAME=
 SMTP_PASSWORD=
 SMTP_SECURITY=tls
+
+# Application URLs
+APP_INVENTORY_URL=http://localhost/inventory
+
+# Email Settings
 FROM_EMAIL=noreply@ahasend.com
-FROM_NAME=LUNA Inventory System
+FROM_NAME=LUNA Inventory Management System
 
 # Example SMTP configurations for common providers:
 #

@@ -48,7 +48,12 @@ class InventoryController extends Controller
     public function delete()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $this->inventoryModel->delete($_POST['id']);
+            try {
+                $this->inventoryModel->delete($_POST['id']);
+            } catch (Exception $e) {
+                header('Location: /inventory?error=' . urlencode($e->getMessage()));
+                exit();
+            }
         }
         header('Location: /inventory');
         exit();

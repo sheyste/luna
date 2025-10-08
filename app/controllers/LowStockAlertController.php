@@ -196,6 +196,7 @@ class LowStockAlertController extends Controller
                             
                             .logo-text {
                                 letter-spacing: 1px;
+                                color: #ffffff;
                             }
                             
                             
@@ -456,7 +457,7 @@ class LowStockAlertController extends Controller
                                 <!-- Call to Action -->
                                 <div class="cta-section">
                                     <p>Please restock these items as soon as possible to maintain inventory levels.</p>
-                                    <a href="http://localhost/inventory" class="cta-button">View Inventory</a>
+                                    <a href="' . APP_INVENTORY_URL . '" class="cta-button">View Inventory</a>
                                 </div>
                             </div>
                             

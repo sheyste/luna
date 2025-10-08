@@ -88,6 +88,24 @@ class Inventory extends Model
 
     public function delete($id)
     {
+        // Check if the item is referenced in purchase_order_items
+        $poStmt = $this->db->prepare("SELECT COUNT(*) FROM purchase_order_items WHERE inventory_id = :id");
+        $poStmt->execute(['id' => $id]);
+        $poCount = $poStmt->fetchColumn();
+
+        if ($poCount > 0) {
+            throw new Exception("Cannot delete this inventory item because it is referenced in purchase orders.");
+        }
+
+        // Check if the item is referenced in menu_ingredients
+        $menuStmt = $this->db->prepare("SELECT COUNT(*) FROM menu_ingredients WHERE inventory_id = :id");
+        $menuStmt->execute(['id' => $id]);
+        $menuCount = $menuStmt->fetchColumn();
+
+        if ($menuCount > 0) {
+            throw new Exception("Cannot delete this inventory item because it is used in menu ingredients.");
+        }
+
         $stmt = $this->db->prepare("DELETE FROM inventory WHERE id = :id");
         return $stmt->execute(['id' => $id]);
     }

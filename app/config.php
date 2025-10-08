@@ -63,3 +63,8 @@ if (!defined('DB_PASSWORD')) {
 if (!defined('DB_PORT')) {
     define('DB_PORT', '3306'); // Default fallback
 }
+
+// Application URLs
+if (!defined('APP_INVENTORY_URL')) {
+    define('APP_INVENTORY_URL', getenv('APP_INVENTORY_URL') ?: 'http://localhost/inventory'); // Default fallback
+}

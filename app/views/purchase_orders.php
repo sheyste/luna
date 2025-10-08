@@ -415,6 +415,7 @@
         </div>
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete Purchase Order</button>
         <button type="submit" class="btn btn-success">Save Changes</button>
       </div>
     </form>
@@ -688,4 +689,22 @@ $(document).ready(function() {
         });
     });
 });
+
+function confirmDelete() {
+    if (confirm('Are you sure you want to delete this purchase order? This action cannot be undone.')) {
+        $.post('/purchase_order/delete',
+            { id: $('#editPOId').val() },
+            function(data) {
+                if (data.success) {
+                    window.location.href = '/purchase_order';
+                } else {
+                    alert('Error deleting purchase order: ' + (data.error || 'Unknown error'));
+                }
+            },
+            'json'
+        ).fail(function(xhr, status, error) {
+            alert('Request failed: ' + error);
+        });
+    }
+}
 </script>
