@@ -69,10 +69,7 @@
                               <td data-label="Sent Date"><?= htmlspecialchars(isset($alert['sent_date']) && $alert['sent_date'] ? date('F j, Y g:i A', strtotime($alert['sent_date'])):'') ?></td>
                           </tr>
                       <?php endforeach; ?>
-                  <?php else: ?>
-                      <tr>
-                          <td colspan="8" class="text-center">No low stock alerts found</td>
-                      </tr>
+
                   <?php endif; ?>
                 </tbody>
             </table>
