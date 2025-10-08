@@ -73,7 +73,9 @@
         <h5 class="card-title mb-0">
           <i class="fas fa-exclamation-triangle me-2"></i>Low Stock Alerts
         </h5>
-        <a href="/inventory/low-stock-alerts" class="btn btn-sm btn-light">View All</a>
+        <?php if ($_SESSION['user_type'] !== 'User'): ?>
+          <a href="/inventory/low-stock-alerts" class="btn btn-sm btn-light">View All</a>
+        <?php endif; ?>
       </div>
       <div class="card-body">
         <?php if (!empty($latestLowStockAlerts)): ?>
