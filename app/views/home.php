@@ -257,7 +257,7 @@
             <?php if (($wastagePercentageWeek ?? 0) > 15): ?>
               <i class="fas fa-exclamation-triangle text-danger"></i> High wastage rate this week
             <?php else: ?>
-              <i class="fas fa-check-circle text-success"></i> Within acceptable range
+              <i class="fas fa-check-circle text-success"></i> Within acceptable range (15%)
             <?php endif; ?>
           </small>
         </div>
