@@ -554,9 +554,6 @@
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 fw-bold text-primary">Physical Count Results</h6>
         <div class="d-flex gap-2">
-            <button id="exportBtn" class="btn btn-success">
-                <i class="fas fa-download"></i> Export to Excel
-            </button>
             <button id="saveToInventoryBtn" class="btn btn-success" disabled>Save All to Inventory</button>
         </div>
     </div>
@@ -857,11 +854,8 @@
                         <td data-label="Variance %"><span class="badge bg-danger">${variancePercent.toFixed(2)}%</span></td>
                         <td data-label="Value Impact">₱${valueImpact.toFixed(2)}</td>
                         <td data-label="Actions">
-                            <button class="btn btn-success btn-sm save-individual-btn" data-entry-id="${entry.id}">
-                                <i class="fa fa-save"></i> Save
-                            </button>
                             <button class="btn btn-danger btn-sm delete-btn" data-entry-id="${entry.id}">
-                                <i class="fa fa-trash"></i> 
+                                <i class="fa fa-trash"></i>
                             </button>
                         </td>
                     </tr>
@@ -937,45 +931,6 @@
             }
         });
         
-        // Handle individual save button click
-        $('#physicalCountTable').on('click', '.save-individual-btn', function() {
-            const entryId = $(this).data('entry-id');
-            
-            if (confirm('This will update the inventory quantity for this item. Are you sure?')) {
-                $.ajax({
-                    url: '/inventory/savePhysicalCount',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ entries: [entryId] }),
-                    success: function(response) {
-                        if (response.success) {
-                            alert('Physical count saved to inventory successfully!');
-                            // Reload the table from database
-                            loadPendingEntries();
-                        } else {
-                            alert('Error saving physical count: ' + response.message);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        alert('Error saving physical count: ' + error);
-                    }
-                });
-            }
-        });
-        
-        // Handle export button click
-        $('#exportBtn').on('click', function() {
-            // Check if there are any entries to export
-            const rowCount = $('#physicalCountTable tbody tr').length;
-            if (rowCount === 0) {
-                alert('No physical count entries to export');
-                return;
-            }
-
-            // Trigger CSV download
-            window.location.href = '/inventory/physical-count-export';
-        });
-
         // Handle save to inventory button click
         $('#saveToInventoryBtn').on('click', function() {
             // Get all entry IDs from the table
@@ -1002,6 +957,8 @@
                     success: function(response) {
                         if (response.success) {
                             alert('Physical counts saved to inventory successfully!');
+                            // Trigger CSV download
+                            window.location.href = '/inventory/physical-count-export';
                             // Reload the table from database
                             loadPendingEntries();
                         } else {
