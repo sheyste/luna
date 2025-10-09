@@ -2,6 +2,7 @@
 
 require_once BASE_PATH . '/core/Model.php';
 
+#[AllowDynamicProperties]
 class Inventory extends Model
 {
     public function __construct()
