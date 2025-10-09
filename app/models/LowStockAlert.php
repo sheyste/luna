@@ -5,6 +5,7 @@
 
 require_once BASE_PATH . '/core/Model.php';
 
+#[AllowDynamicProperties]
 class LowStockAlert extends Model
 {
     public function __construct()
