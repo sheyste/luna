@@ -8,6 +8,7 @@ require_once BASE_PATH . '/app/config.php';
 class Model
 {
     protected $table;
+    protected $db;
 
     function __construct()
     {
