@@ -40,31 +40,3 @@ if (!function_exists('loadEnv')) {
 
 // Load environment variables
 loadEnv(__DIR__ . '/../.env');
-
-/**
- * Define Database credentials
- */
-if (!defined('DB_HOST')) {
-    define('DB_HOST', 'localhost'); // Default fallback
-}
-
-if (!defined('DB_NAME')) {
-    define('DB_NAME', 'luna'); // Default fallback
-}
-
-if (!defined('DB_USERNAME')) {
-    define('DB_USERNAME', 'root'); // Default fallback
-}
-
-if (!defined('DB_PASSWORD')) {
-    define('DB_PASSWORD', 'rootroot'); // Default fallback
-}
-
-if (!defined('DB_PORT')) {
-    define('DB_PORT', '3306'); // Default fallback
-}
-
-// Application URLs
-if (!defined('APP_INVENTORY_URL')) {
-    define('APP_INVENTORY_URL', getenv('APP_INVENTORY_URL') ?: 'http://localhost/inventory'); // Default fallback
-}
