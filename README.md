@@ -1,7 +1,5 @@
 # LUNA Inventory Management System
 
-hello
-
 A comprehensive inventory and production management system built with PHP using a Model-View-Controller (MVC) architecture. The system provides robust features for managing inventory, production, purchase orders, and low stock alerts with automated email notifications. The front-end is styled with Bootstrap 5 and uses jQuery and DataTables for dynamic table interactions.
 
 ## Features
