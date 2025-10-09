@@ -38,5 +38,16 @@ if (!function_exists('loadEnv')) {
     }
 }
 
-// Load environment variables
+// Load environment variables from .env file
 loadEnv(__DIR__ . '/../.env');
+
+// Check for environment variables if not defined from .env (for hosting providers that set env vars)
+$envKeys = ['DB_HOST', 'DB_NAME', 'DB_USERNAME', 'DB_PASSWORD', 'DB_PORT', 'APP_INVENTORY_URL'];
+foreach ($envKeys as $key) {
+    if (!defined($key) && ($value = getenv($key)) !== false) {
+        define($key, $value);
+        if (!getenv($key)) {
+            putenv($key . '=' . $value);
+        }
+    }
+}
