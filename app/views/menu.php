@@ -611,6 +611,8 @@
            <button class="btn btn-info btn-sm edit-btn-modal" data-bs-dismiss="modal">
                <i class="fa fa-edit"></i> Edit
            </button>
+           <?php endif; ?>
+           <?php if ($_SESSION['user_type'] !== 'User' && $_SESSION['user_type'] !== 'Manager'): ?>
            <button class="btn btn-outline-danger btn-sm delete-btn-modal" data-bs-dismiss="modal">
                <i class="fa fa-trash"></i> Delete
            </button>

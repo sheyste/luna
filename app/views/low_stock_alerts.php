@@ -121,6 +121,8 @@
 <script>
   $(document).ready(function() {
     $('#alertsTable').DataTable({
+      "pageLength": 50, // Set entries per page to 50
+      "lengthChange": true, // Disable the entries per page dropdown
       "language": {
         "emptyTable": "No low stock alerts found"
       },

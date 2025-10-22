@@ -163,7 +163,90 @@
     </div>
   </div>
 
-  <!-- Production Chart -->
+  <?php if ($_SESSION['user_type'] === 'User'): ?>
+  <!-- User Layout: Production Chart + Stacked Efficiency Data -->
+  <div class="col-md-6 mt-4">
+    <div class="card">
+      <div class="card-header bg-success text-white">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-chart-line me-2"></i>Production and Sales
+        </h5>
+      </div>
+      <div class="card-body">
+        <canvas id="productionChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 mt-4">
+    <!-- Recent Production -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-industry me-2"></i>Recent Production
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row text-center">
+          <div class="col-4">
+            <h4 class="text-primary"><?= $totalProducedRecent ?? 0 ?></h4>
+            <small class="text-muted">Produced (7d)</small>
+          </div>
+          <div class="col-4">
+            <h4 class="text-success"><?= $totalSoldRecent ?? 0 ?></h4>
+            <small class="text-muted">Sold (7d)</small>
+          </div>
+          <div class="col-4">
+            <h4 class="text-warning"><?= $totalWastageRecent ?? 0 ?></h4>
+            <small class="text-muted">Wastage (7d)</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wastage Rate -->
+    <div class="card">
+      <div class="card-header bg-warning text-white">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-chart-pie me-2"></i>Wastage Rate
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row text-center mb-2">
+          <div class="col-4">
+            <h5 class="<?= ($wastagePercentageToday ?? 0) > 15 ? 'text-danger' : 'text-success' ?>">
+              <?= $wastagePercentageToday ?? 0 ?>%
+            </h5>
+            <small class="text-muted">Today</small>
+          </div>
+          <div class="col-4">
+            <h5 class="<?= ($wastagePercentageWeek ?? 0) > 15 ? 'text-danger' : 'text-warning' ?>">
+              <?= $wastagePercentageWeek ?? 0 ?>%
+            </h5>
+            <small class="text-muted">7 Days</small>
+          </div>
+          <div class="col-4">
+            <h5 class="<?= ($wastagePercentageMonth ?? 0) > 15 ? 'text-danger' : 'text-info' ?>">
+              <?= $wastagePercentageMonth ?? 0 ?>%
+            </h5>
+            <small class="text-muted">30 Days</small>
+          </div>
+        </div>
+        <div class="text-center">
+          <small class="text-muted">
+            <?php if (($wastagePercentageWeek ?? 0) > 15): ?>
+              <i class="fas fa-exclamation-triangle text-danger"></i> High wastage rate this week
+            <?php else: ?>
+              <i class="fas fa-check-circle text-success"></i> Within acceptable range (15%)
+            <?php endif; ?>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <?php else: ?>
+  <!-- Non-User Layout: Production Chart + Daily Cost vs Profit -->
   <div class="col-md-6 mt-4">
     <div class="card">
       <div class="card-header bg-success text-white">
@@ -190,11 +273,13 @@
       </div>
     </div>
   </div>
+  <?php endif; ?>
 
 
 </div>
 
-<!-- Production Efficiency Section -->
+<!-- Production Efficiency Section - Only show for non-User types -->
+<?php if ($_SESSION['user_type'] !== 'User'): ?>
 <div class="row mt-4">
   <!-- Today's Production Totals -->
   <div class="col-md-6">
@@ -265,6 +350,7 @@
     </div>
   </div>
 </div>
+<?php endif; ?>
 
 
 
@@ -300,6 +386,7 @@
     }
   });
 
+  <?php if ($_SESSION['user_type'] !== 'User'): ?>
   // Daily Cost vs Profit
   const costProfitCtx = document.getElementById('costProfitChart').getContext('2d');
   new Chart(costProfitCtx, {
@@ -320,6 +407,7 @@
       ]
     }
   });
+  <?php endif; ?>
 
   // Inventory Pie Chart
   const inventoryCtx = document.getElementById('inventoryPieChart').getContext('2d');
