@@ -764,10 +764,6 @@ if (!empty($items)) {
         </div>
 
         <div class="mb-3">
-          <label for="barcode" class="form-label">Barcode</label>
-          <input type="text" class="form-control" id="barcode" name="barcode" readonly>
-        </div>
-        <div class="mb-3">
           <label for="quantityProduced" class="form-label">Quantity</label>
           <input type="number" class="form-control" id="quantityProduced" name="quantity_produced" min="0" required>
         </div>
