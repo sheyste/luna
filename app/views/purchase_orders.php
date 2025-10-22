@@ -153,7 +153,9 @@
                         <th>Order Date</th>
                         <th>Expected Delivery</th>
                         <th>Status</th>
+                        <?php if ($_SESSION['user_type'] !== 'User'): ?>
                         <th>Actions</th>
+                        <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -218,11 +220,13 @@
                                     : 'N/A' ?></td>
 
                             <td data-label="Status"><span class="badge <?= getStatusBadgeClass($order['status']) ?>"><?= htmlspecialchars($order['status']) ?></span></td>
+                            <?php if ($_SESSION['user_type'] !== 'User'): ?>
                             <td data-label="Actions">
                                 <button class="btn btn-warning btn-sm edit-btn" data-id="<?= $order['id'] ?>">
                                     <i class="fa fa-edit"></i> Update
                                 </button>
                             </td>
+                            <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

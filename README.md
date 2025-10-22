@@ -137,15 +137,16 @@ A comprehensive inventory and production management system built with PHP using 
 
 ## User Roles and Permissions
 
-The system supports three user types with different levels of access and permissions:
+The system supports three user types with finely-grained role-based access control:
 
 ### 👑 Admin
 **Full System Access**
+- **Dashboard**: View all charts including Daily Cost vs Profit
 - **User Management**: Create, edit, delete, and manage all user accounts
 - **Inventory Management**: Full CRUD operations including item deletion
 - **Production Management**: Full control including production deletion
 - **Menu Management**: Create, edit, and delete menu items
-- **Purchase Orders**: Complete management of purchase orders
+- **Purchase Orders**: Complete management of purchase orders and Actions column visible
 - **Physical Count**: Full access to inventory counting operations
 - **Low Stock Alerts**: View alerts, configure email settings, and test SMTP
 - **Backup & Restore**: Database backup and restore operations
@@ -154,23 +155,26 @@ The system supports three user types with different levels of access and permiss
 
 ### 👨‍💼 Manager
 **Operational Management Access**
+- **Dashboard**: View all charts including Daily Cost vs Profit
 - **Inventory Management**: View, add, and edit inventory items (cannot delete)
 - **Production Management**: View and manage production batches (cannot delete production records)
 - **Menu Management**: View menu items (cannot edit or delete)
-- **Purchase Orders**: Full management of purchase orders
+- **Purchase Orders**: Full management of purchase orders and Actions column visible
 - **Physical Count**: Full access to inventory counting operations
 - **Low Stock Alerts**: View low stock alerts (cannot access alert management)
 - **Barcode System**: Full access to barcode operations
+- **No Access**: User management, backup/restore, email testing
 
 ### 👤 User
 **Basic Operational Access**
+- **Dashboard**: Limited view - Daily Cost vs Profit chart hidden, Recent Production and Wastage Rate displayed in single column beside Production chart
 - **Inventory Management**: View inventory items only (read-only)
 - **Production Management**: View production records (cannot add, edit, or delete)
 - **Menu Management**: View menu items only (read-only)
-- **Purchase Orders**: View purchase orders only (read-only)
+- **Purchase Orders**: View purchase orders only - Actions column completely hidden
 - **Physical Count**: Limited access to physical counting
 - **Barcode System**: Limited barcode scanning for assigned tasks
-- **No Access**: User management, backup/restore, low stock alerts, email testing
+- **No Access**: User management, inventory/management controls, menu editing/deleting, backup/restore, low stock alerts, email testing
 
 ## System Modules
 
@@ -237,5 +241,3 @@ The system supports three user types with different levels of access and permiss
 - Download database backups
 - Upload and restore from backup files
 - Complete data protection solution
-
-
