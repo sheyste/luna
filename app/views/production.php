@@ -597,9 +597,11 @@ if (!empty($items)) {
         </div>
         <!-- Buttons on the bottom in mobile, right in desktop -->
         <div class="d-flex flex-wrap gap-2">
+            <?php if ($_SESSION['user_type'] !== 'User'): ?>
             <button class="btn btn-success btn-sm" id="exportExcelBtn">
                 <i class="fa fa-file-excel-o me-1"></i> Export to Excel
             </button>
+            <?php endif; ?>
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addProductionModal">
                 <i class="fa fa-plus me-1"></i> Add Production
             </button>
