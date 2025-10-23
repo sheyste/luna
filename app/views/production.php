@@ -597,9 +597,11 @@ if (!empty($items)) {
         </div>
         <!-- Buttons on the bottom in mobile, right in desktop -->
         <div class="d-flex flex-wrap gap-2">
+            <?php if ($_SESSION['user_type'] !== 'User'): ?>
             <button class="btn btn-success btn-sm" id="exportExcelBtn">
                 <i class="fa fa-file-excel-o me-1"></i> Export to Excel
             </button>
+            <?php endif; ?>
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addProductionModal">
                 <i class="fa fa-plus me-1"></i> Add Production
             </button>
@@ -617,7 +619,7 @@ if (!empty($items)) {
             <?php if (!empty($combinedItems)): ?>
                 <?php foreach ($combinedItems as $item): ?>
                     <div class="col-lg-3 col-md-3 mb-4" data-created-at="<?= htmlspecialchars($item['created_at']) ?>" data-menu-id="<?= htmlspecialchars($item['menu_id']) ?>">
-                        <div class="card menu-card h-100 shadow-sm border-0 rounded-3">
+                        <div class="card menu-card h-100 shadow-sm border-0 rounded-3" data-menu-id="<?= htmlspecialchars($item['menu_id']) ?>" data-menu-name="<?= htmlspecialchars($item['menu_name']) ?>" style="cursor: pointer;">
                             <div class="card-body">
                                 <div class="price-tag">Available: <?= htmlspecialchars($item['quantity_available']) ?></div>
                                 <h5 class="card-title"><?= htmlspecialchars($item['menu_name']) ?></h5>
@@ -762,10 +764,6 @@ if (!empty($items)) {
         </div>
 
         <div class="mb-3">
-          <label for="barcode" class="form-label">Barcode</label>
-          <input type="text" class="form-control" id="barcode" name="barcode" readonly>
-        </div>
-        <div class="mb-3">
           <label for="quantityProduced" class="form-label">Quantity</label>
           <input type="number" class="form-control" id="quantityProduced" name="quantity_produced" min="0" required>
         </div>
@@ -891,6 +889,80 @@ if (!empty($items)) {
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-primary" id="confirmProductionBtn">Confirm & Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Menu Details Modal -->
+<div class="modal fade modern-modal" id="menuDetailsModal" tabindex="-1" aria-labelledby="menuDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <!-- Header -->
+      <div class="modal-header" style="background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);">
+        <h5 class="modal-title fw-bold" id="menuDetailsModalLabel">
+          <i class="bi bi-info-circle-fill me-2"></i>Menu Details
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <!-- Menu Info Card -->
+        <div class="card mb-4">
+          <div class="card-header bg-success text-white">
+            <h6 class="mb-0"><i class="bi bi-cup-straw me-2"></i>Menu Information</h6>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>Name:</strong> <span id="modalMenuName"></span></p>
+                <p><strong>Price:</strong> ₱<span id="modalMenuPrice"></span></p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Max Producible:</strong> <span id="modalMaxProducible" class="badge bg-primary fs-6"></span></p>
+                <p><strong>Limiting Factor:</strong> <span id="modalLimitingFactor"></span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ingredients List -->
+        <div class="card">
+          <div class="card-header bg-info text-white">
+            <h6 class="mb-0"><i class="bi bi-list-check me-2"></i>Ingredients & Stock Status</h6>
+          </div>
+          <div class="card-body">
+            <div id="ingredientsContainer" class="row g-3">
+              <!-- Ingredients will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ingredient Row Template -->
+<div id="ingredient-row-template" style="display: none;">
+  <div class="col-md-6 col-lg-4">
+    <div class="card h-100 border">
+      <div class="card-body">
+        <h6 class="card-title ingredient-name"></h6>
+        <div class="ingredient-details">
+          <p class="mb-1"><small><strong>Required per unit:</strong> <span class="required-qty"></span></small></p>
+          <p class="mb-1"><small><strong>Available Stock:</strong> <span class="stock-qty"></span></small></p>
+          <p class="mb-1"><small><strong>Producible:</strong> <span class="producible-qty"></span></small></p>
+        </div>
+        <div class="progress mt-2" style="height: 6px;">
+          <div class="progress-bar progress-bar-striped ingredient-status" role="progressbar" style="width: 0%"></div>
+        </div>
+        <div class="mt-1 ingredient-status-text"></div>
       </div>
     </div>
   </div>
@@ -1681,6 +1753,132 @@ $('#wastageSearch').on('input', function() {
     // Handle Export to Excel button click
     $('#exportExcelBtn').on('click', function() {
         window.location.href = '/production/exportExcel';
+    });
+
+    // Handle menu card click to show details modal
+    $('#production-container').on('click', '.menu-card .card-body', function(e) {
+        // Prevent event bubbling if clicking on delete button
+        if ($(e.target).closest('.delete-btn').length > 0) {
+            return;
+        }
+
+        var $card = $(this).closest('.menu-card');
+        var menuId = $card.data('menu-id');
+        var menuName = $card.data('menu-name');
+
+        $('#menuDetailsModalLabel').text('Menu Details - ' + menuName);
+
+        // Fetch menu details
+        $.ajax({
+            url: '/menu/getDetail?id=' + menuId,
+            method: 'GET',
+            dataType: 'json',
+            success: function(menu) {
+                if (menu) {
+                    // Populate menu info
+                    $('#modalMenuName').text(menu.name || 'N/A');
+                    $('#modalMenuPrice').text(parseFloat(menu.price || 0).toFixed(2));
+
+                    if (Array.isArray(menu.ingredients) && menu.ingredients.length > 0) {
+                        var maxProducible = Infinity;
+                        var limitingIngredient = '';
+
+                        // Clear previous ingredients
+                        $('#ingredientsContainer').empty();
+
+                        // Use promise to handle multiple AJAX calls
+                        var ingredientsProcessed = 0;
+                        var totalIngredients = menu.ingredients.length;
+
+                        menu.ingredients.forEach(function(ingredient) {
+                            // Get ingredient details from inventory
+                            $.ajax({
+                                url: '/inventory/getDetail?id=' + ingredient.inventory_id,
+                                method: 'GET',
+                                dataType: 'json',
+                                success: function(inventoryItem) {
+                                    if (inventoryItem) {
+                                        var requiredQty = parseFloat(ingredient.quantity);
+                                        var availableQty = parseFloat(inventoryItem.quantity || 0);
+                                        var producible = Math.floor(availableQty / requiredQty);
+
+                                        // Track limiting ingredient
+                                        if (producible < maxProducible) {
+                                            maxProducible = producible;
+                                            limitingIngredient = inventoryItem.name;
+                                        }
+
+                                        // Create ingredient card
+                                        var template = $('#ingredient-row-template .col-md-6').clone();
+
+                                        template.find('.ingredient-name').text(inventoryItem.name || 'Unnamed Ingredient');
+                                        template.find('.required-qty').text(requiredQty + ' ' + (inventoryItem.unit || ''));
+                                        template.find('.stock-qty').text(availableQty + ' ' + (inventoryItem.unit || ''));
+
+                                        // Style based on availability
+                                        var statusClass = 'bg-success';
+                                        var statusWidth = 100;
+                                        var statusText = 'Sufficient';
+
+                                        if (availableQty < requiredQty) {
+                                            statusClass = 'bg-danger';
+                                            statusWidth = 0;
+                                            statusText = 'Insufficient';
+                                            producible = 0;
+                                        } else if (availableQty < requiredQty * 10) {
+                                            statusClass = 'bg-warning';
+                                            statusWidth = (availableQty / (requiredQty * 10)) * 100;
+                                            statusText = 'Low Stock';
+                                        }
+
+                                        template.find('.producible-qty').text(producible);
+                                        template.find('.ingredient-status').removeClass('bg-success bg-warning bg-danger').addClass(statusClass).css('width', statusWidth + '%');
+                                        template.find('.ingredient-status-text').text(statusText);
+
+                                        $('#ingredientsContainer').append(template);
+                                    }
+                                    ingredientsProcessed++;
+                                    if (ingredientsProcessed === totalIngredients) {
+                                        // All ingredients processed, update summary
+                                        var maxDisplay = maxProducible === Infinity ? 'Unlimited' : maxProducible;
+                                        $('#modalMaxProducible').text(maxDisplay);
+                                        $('#modalLimitingFactor').text(limitingIngredient || 'N/A');
+
+                                        // Show modal
+                                        $('#menuDetailsModal').modal('show');
+                                    }
+                                },
+                                error: function() {
+                                    var template = $('#ingredient-row-template .col-md-6').clone();
+                                    template.find('.ingredient-name').text('Error loading ingredient');
+                                    template.find('.required-qty').text('Error');
+                                    template.find('.stock-qty').text('Error');
+                                    template.find('.producible-qty').text('0');
+                                    $('#ingredientsContainer').append(template);
+
+                                    ingredientsProcessed++;
+                                    if (ingredientsProcessed === totalIngredients) {
+                                        $('#modalMaxProducible').text('0');
+                                        $('#modalLimitingFactor').text('Error loading data');
+                                        $('#menuDetailsModal').modal('show');
+                                    }
+                                }
+                            });
+                        });
+                    } else {
+                        $('#ingredientsContainer').empty().append('<div class="col-12"><div class="alert alert-info">No ingredients found for this menu.</div></div>');
+                        $('#modalMaxProducible').text('Unlimited');
+                        $('#modalLimitingFactor').text('N/A');
+                        $('#menuDetailsModal').modal('show');
+                    }
+                } else {
+                    alert('Could not fetch menu details.');
+                }
+            },
+            error: function() {
+                alert('Error fetching menu details.');
+            }
+        });
     });
 });
 

@@ -487,9 +487,11 @@
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 fw-bold text-primary">Inventory List</h6>
         <div class="d-flex gap-2">
+            <?php if ($_SESSION['user_type'] !== 'User'): ?>
             <button class="btn btn-success btn-sm export-excel-btn" id="exportExcelBtn">
                 <i class="bi bi-file-earmark-excel me-1"></i> Export to Excel
             </button>
+            <?php endif; ?>
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addInventoryModal">
                 <i class="bi bi-plus-circle me-1"></i> Add Item
             </button>

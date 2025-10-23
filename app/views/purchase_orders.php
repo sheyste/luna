@@ -419,7 +419,6 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete Purchase Order</button>
         <button type="submit" class="btn btn-success">Save Changes</button>
       </div>
     </form>
@@ -532,13 +531,14 @@ $(document).ready(function() {
     function addPOItemRowToEditModal() {
         const template = $('#po-item-template').html();
         const newRow = $(template);
-        
+
         newRow.find('[name]').each(function() {
             const name = $(this).attr('name').replace(/\[0\]/, `[new_${editItemIndex}]`);
             $(this).attr('name', name);
         });
-        
+
         newRow.find('input[name*="[id]"]').val('');
+        newRow.find('.remove-po-item-btn').remove();
         $('#edit-po-items-container').append(newRow);
         editItemIndex++;
     }
@@ -631,7 +631,8 @@ $(document).ready(function() {
                     newRow.find('input[name*="[quantity]"]').val(item.quantity);
                     newRow.find('input[name*="[unit_price]"]').val(item.unit_price);
                     newRow.find('input[name*="[received_quantity]"]').val(item.received_quantity || '');
-                    
+
+                    newRow.find('.remove-po-item-btn').remove();
                     updateItemUnit(newRow.find('.item-select'));
                     itemsContainer.append(newRow);
                 });
