@@ -38,6 +38,7 @@ $routes = array(
     '/production/getMenuIngredients' => array('ProductionController', 'getMenuIngredients'),
     '/production/updateSold' => array('ProductionController', 'updateSold'),
     '/production/updateWastage' => array('ProductionController', 'updateWastage'),
+    '/production/getInventoryDetail' => array('ProductionController', 'getInventoryDetail'),
     '/production/exportExcel' => array('ProductionController', 'exportExcel'),
 
     '/users'        => array('UserController', 'index'),
@@ -82,7 +83,143 @@ $routes = array(
 );
 
 session_start();
+
+// Handle redirections for users who don't have access to dashboard
+if (isset($_SESSION['user_type'])) {
+    $request = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+    if ($request === '/home') {
+        if ($_SESSION['user_type'] === 'Inventory Staff') {
+            header('Location: /inventory');
+            exit;
+        } elseif ($_SESSION['user_type'] === 'Cashier' || $_SESSION['user_type'] === 'Kitchen Staff') {
+            header('Location: /production');
+            exit;
+        }
+    }
+}
 if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'User') {
     unset($routes['/users']);
     unset($routes['/backup']);
+}
+
+// Restrictions for Inventory Staff
+if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Inventory Staff') {
+    // Remove system/admin routes
+    unset($routes['/home']);
+    unset($routes['/users']);
+    unset($routes['/users/show']);
+    unset($routes['/users/add']);
+    unset($routes['/users/edit']);
+    unset($routes['/users/delete']);
+    unset($routes['/users/getAll']);
+    unset($routes['/users/test-email']);
+    unset($routes['/users/debug-email-config']);
+    unset($routes['/backup']);
+    unset($routes['/backup/download']);
+    unset($routes['/backup/upload']);
+    // Remove non-inventory related routes
+    unset($routes['/menu']);
+    unset($routes['/menu/add']);
+    unset($routes['/menu/edit']);
+    unset($routes['/menu/delete']);
+    unset($routes['/menu/getMenus']);
+    unset($routes['/menu/getDetail']);
+    unset($routes['/menu/print-barcode']);
+    unset($routes['/production']);
+    unset($routes['/production/add']);
+    unset($routes['/production/edit']);
+    unset($routes['/production/delete']);
+    unset($routes['/production/getDetail']);
+    unset($routes['/production/getMenuIngredients']);
+    unset($routes['/production/updateSold']);
+    unset($routes['/production/updateWastage']);
+    unset($routes['/production/exportExcel']);
+}
+
+// Restrictions for Cashier
+if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Cashier') {
+    // Remove system/admin routes
+    unset($routes['/home']);
+    unset($routes['/users']);
+    unset($routes['/users/show']);
+    unset($routes['/users/add']);
+    unset($routes['/users/edit']);
+    unset($routes['/users/delete']);
+    unset($routes['/users/getAll']);
+    unset($routes['/users/test-email']);
+    unset($routes['/users/debug-email-config']);
+    unset($routes['/backup']);
+    unset($routes['/backup/download']);
+    unset($routes['/backup/upload']);
+    // Remove non-cashier related routes
+    unset($routes['/inventory']);
+    unset($routes['/inventory/add']);
+    unset($routes['/inventory/edit']);
+    unset($routes['/inventory/delete']);
+    unset($routes['/inventory/getDetail']);
+    unset($routes['/inventory/getAll']);
+    unset($routes['/inventory/print-barcode']);
+    unset($routes['/inventory/physical-count']);
+    unset($routes['/inventory/addCountEntry']);
+    unset($routes['/inventory/getPendingEntries']);
+    unset($routes['/inventory/deleteCountEntry']);
+    unset($routes['/inventory/savePhysicalCount']);
+    unset($routes['/inventory/physical-count-export']);
+    unset($routes['/inventory/check-low-stock-db']);
+    unset($routes['/inventory/check-and-send-alerts']);
+    unset($routes['/inventory/low-stock-alerts']);
+    unset($routes['/inventory/auto-update-alerts']);
+    unset($routes['/inventory/check-low-stock-db']);
+    unset($routes['/inventory/check-and-send-alerts']);
+    unset($routes['/inventory/test-smtp-connection']);
+    unset($routes['/inventory/send-test-email']);
+    unset($routes['/purchase_order']);
+    unset($routes['/purchase_order/add']);
+    unset($routes['/purchase_order/delete']);
+    unset($routes['/purchase_order/get']);
+    unset($routes['/purchase_order/edit']);
+}
+
+// Restrictions for Kitchen Staff (same as Cashier)
+if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Kitchen Staff') {
+    // Remove system/admin routes
+    unset($routes['/home']);
+    unset($routes['/users']);
+    unset($routes['/users/show']);
+    unset($routes['/users/add']);
+    unset($routes['/users/edit']);
+    unset($routes['/users/delete']);
+    unset($routes['/users/getAll']);
+    unset($routes['/users/test-email']);
+    unset($routes['/users/debug-email-config']);
+    unset($routes['/backup']);
+    unset($routes['/backup/download']);
+    unset($routes['/backup/upload']);
+    // Remove non-kitchen-staff related routes
+    unset($routes['/inventory']);
+    unset($routes['/inventory/add']);
+    unset($routes['/inventory/edit']);
+    unset($routes['/inventory/delete']);
+    unset($routes['/inventory/getDetail']);
+    unset($routes['/inventory/getAll']);
+    unset($routes['/inventory/print-barcode']);
+    unset($routes['/inventory/physical-count']);
+    unset($routes['/inventory/addCountEntry']);
+    unset($routes['/inventory/getPendingEntries']);
+    unset($routes['/inventory/deleteCountEntry']);
+    unset($routes['/inventory/savePhysicalCount']);
+    unset($routes['/inventory/physical-count-export']);
+    unset($routes['/inventory/check-low-stock-db']);
+    unset($routes['/inventory/check-and-send-alerts']);
+    unset($routes['/inventory/low-stock-alerts']);
+    unset($routes['/inventory/auto-update-alerts']);
+    unset($routes['/inventory/check-low-stock-db']);
+    unset($routes['/inventory/check-and-send-alerts']);
+    unset($routes['/inventory/test-smtp-connection']);
+    unset($routes['/inventory/send-test-email']);
+    unset($routes['/purchase_order']);
+    unset($routes['/purchase_order/add']);
+    unset($routes['/purchase_order/delete']);
+    unset($routes['/purchase_order/get']);
+    unset($routes['/purchase_order/edit']);
 }

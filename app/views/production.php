@@ -1022,20 +1022,21 @@ $(document).ready(function() {
 
                         if (Array.isArray(menu.ingredients) && menu.ingredients.length > 0) {
                             menu.ingredients.forEach(function(ingredient) {
-                                $.ajax({
-                                    url: '/inventory/getDetail?id=' + ingredient.inventory_id,
-                                    method: 'GET',
-                                    dataType: 'json',
-                                    success: function(inventoryItem) {
-                                        if (inventoryItem) {
-                                            var displayQuantity = Number.isInteger(ingredient.quantity) ? ingredient.quantity : parseFloat(ingredient.quantity).toFixed(3).replace(/\.?0+$/, "");
-                                            $ingredientsList.append('<li>' + (inventoryItem.name || 'Unnamed Ingredient') + ' - ' + displayQuantity + ' ' + (inventoryItem.unit || '') + '</li>');
-                                        }
-                                    },
-                                    error: function() {
-                                        $ingredientsList.append('<li>Error loading ingredient details.</li>');
+                            $.ajax({
+                                url: '/production/getInventoryDetail?id=' + ingredient.inventory_id,
+                                method: 'GET',
+                                dataType: 'json',
+                                success: function(response) {
+                                    if (response.success && response.data) {
+                                        var inventoryItem = response.data;
+                                        var displayQuantity = Number.isInteger(ingredient.quantity) ? ingredient.quantity : parseFloat(ingredient.quantity).toFixed(3).replace(/\.?0+$/, "");
+                                        $ingredientsList.append('<li>' + (inventoryItem.name || 'Unnamed Ingredient') + ' - ' + displayQuantity + ' ' + (inventoryItem.unit || '') + '</li>');
                                     }
-                                });
+                                },
+                                error: function() {
+                                    $ingredientsList.append('<li>Error loading ingredient details.</li>');
+                                }
+                            });
                             });
                         } else {
                             $ingredientsList.append('<li>No ingredients listed for this menu.</li>');
@@ -1102,11 +1103,12 @@ $(document).ready(function() {
                             promises.push(deferred.promise());
 
                             $.ajax({
-                                url: '/inventory/getDetail?id=' + ingredient.inventory_id,
+                                url: '/production/getInventoryDetail?id=' + ingredient.inventory_id,
                                 method: 'GET',
                                 dataType: 'json',
-                                success: function(inventoryItem) {
-                                    if (inventoryItem) {
+                                success: function(response) {
+                                    if (response.success && response.data) {
+                                        var inventoryItem = response.data;
                                         var availableStock = parseFloat(inventoryItem.quantity);
                                         var hasEnoughStock = availableStock >= totalQuantity;
                                         if (!hasEnoughStock) {
@@ -1793,11 +1795,12 @@ $('#wastageSearch').on('input', function() {
                         menu.ingredients.forEach(function(ingredient) {
                             // Get ingredient details from inventory
                             $.ajax({
-                                url: '/inventory/getDetail?id=' + ingredient.inventory_id,
+                                url: '/production/getInventoryDetail?id=' + ingredient.inventory_id,
                                 method: 'GET',
                                 dataType: 'json',
-                                success: function(inventoryItem) {
-                                    if (inventoryItem) {
+                                success: function(response) {
+                                    if (response.success && response.data) {
+                                        var inventoryItem = response.data;
                                         var requiredQty = parseFloat(ingredient.quantity);
                                         var availableQty = parseFloat(inventoryItem.quantity || 0);
                                         var producible = Math.floor(availableQty / requiredQty);

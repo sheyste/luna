@@ -630,6 +630,9 @@
                                 <option value="Admin">Admin</option>
                                 <option value="Manager">Manager</option>
                                 <option value="User">User</option>
+                                <option value="Inventory Staff">Inventory Staff</option>
+                                <option value="Cashier">Cashier</option>
+                                <option value="Kitchen Staff">Kitchen Staff</option>
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -745,6 +748,9 @@
                                 <option value="Admin">Admin</option>
                                 <option value="Manager">Manager</option>
                                 <option value="User">User</option>
+                                <option value="Inventory Staff">Inventory Staff</option>
+                                <option value="Cashier">Cashier</option>
+                                <option value="Kitchen Staff">Kitchen Staff</option>
                             </select>
                         </div>
                         <div class="col-md-6">
