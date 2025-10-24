@@ -487,7 +487,7 @@
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 fw-bold text-primary">Inventory List</h6>
         <div class="d-flex gap-2">
-            <?php if ($_SESSION['user_type'] !== 'User'): ?>
+            <?php if ($_SESSION['user_type'] !== 'Inventory Staff'): ?>
             <button class="btn btn-success btn-sm export-excel-btn" id="exportExcelBtn">
                 <i class="bi bi-file-earmark-excel me-1"></i> Export to Excel
             </button>
@@ -764,7 +764,7 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           <i class="bi bi-x-circle me-2"></i>Cancel
         </button>
-        <?php if ($_SESSION['user_type'] !== 'User'): ?>
+        <?php if ($_SESSION['user_type'] !== 'Inventory Staff'): ?>
         <button type="submit" class="btn btn-primary">
           <i class="bi bi-check-circle me-2"></i>Save Changes
         </button>

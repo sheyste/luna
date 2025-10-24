@@ -627,12 +627,12 @@
                         <div class="col-md-6">
                             <label for="add_user_type" class="form-label">User Type (*)</label>
                             <select class="form-select" name="user_type" id="add_user_type" required>
-                                <option value="Admin">Admin</option>
+                                <option value="Admin">Super Admin</option>
+                                <option value="Owner">Owner</option>
                                 <option value="Manager">Manager</option>
-                                <option value="User">User</option>
+                                <option value="Kitchen Staff">Kitchen Staff</option>
                                 <option value="Inventory Staff">Inventory Staff</option>
                                 <option value="Cashier">Cashier</option>
-                                <option value="Kitchen Staff">Kitchen Staff</option>
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -747,7 +747,7 @@
                             <select class="form-select" name="user_type" id="edit_user_type" required>
                                 <option value="Admin">Admin</option>
                                 <option value="Manager">Manager</option>
-                                <option value="User">User</option>
+                                <option value="Owner">Owner</option>
                                 <option value="Inventory Staff">Inventory Staff</option>
                                 <option value="Cashier">Cashier</option>
                                 <option value="Kitchen Staff">Kitchen Staff</option>
