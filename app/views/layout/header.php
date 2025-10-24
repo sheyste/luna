@@ -75,11 +75,10 @@
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/purchase_order') !== false) echo 'active'; ?>">
                 <a href="/purchase_order"><i class="fa fa-file-invoice"></i><span>Purchase Orders</span></a>
             </li>
-<?php if ($_SESSION['user_type'] !== 'User'): ?>
+
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/inventory/low-stock-alerts') !== false) echo 'active'; ?>">
                 <a href="/inventory/low-stock-alerts"><i class="fa fa-exclamation-triangle"></i><span>Low Stock Alerts</span></a>
             </li>
-<?php endif; ?>
 <?php endif; ?>
 <?php if ($_SESSION['user_type'] !== 'Inventory Staff'): ?>
             <li><h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">

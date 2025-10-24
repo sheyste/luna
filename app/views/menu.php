@@ -378,7 +378,7 @@
             <i class="fa fa-times"></i>
         </button>
     </div>
-    <?php if ($_SESSION['user_type'] !== 'User'): ?>
+    <?php if ($_SESSION['user_type'] === 'Admin' || $_SESSION['user_type'] === 'Manager'): ?>
     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMenuModal">
         <i class="fa fa-plus me-1"></i> Add Menu
     </button>
@@ -607,12 +607,10 @@
            <button class="btn btn-primary btn-sm print-btn-modal" data-bs-dismiss="modal">
                <i class="fa fa-print"></i> Print Barcode
            </button>
-           <?php if ($_SESSION['user_type'] !== 'User'): ?>
+           <?php if ($_SESSION['user_type'] === 'Admin' || $_SESSION['user_type'] === 'Manager'): ?>
            <button class="btn btn-info btn-sm edit-btn-modal" data-bs-dismiss="modal">
                <i class="fa fa-edit"></i> Edit
            </button>
-           <?php endif; ?>
-           <?php if ($_SESSION['user_type'] !== 'User' && $_SESSION['user_type'] !== 'Manager'): ?>
            <button class="btn btn-outline-danger btn-sm delete-btn-modal" data-bs-dismiss="modal">
                <i class="fa fa-trash"></i> Delete
            </button>

@@ -602,15 +602,19 @@ if (!empty($items)) {
                 <i class="fa fa-file-excel-o me-1"></i> Export to Excel
             </button>
             <?php endif; ?>
+            <?php if ($_SESSION['user_type'] !== 'Cashier' && $_SESSION['user_type'] !== 'User'): ?>
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addProductionModal">
                 <i class="fa fa-plus me-1"></i> Add Production
             </button>
+            <?php endif; ?>
+            <?php if ($_SESSION['user_type'] !== 'Kitchen Staff' && $_SESSION['user_type'] !== 'User'): ?>
             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateSoldModal">
                 <i class="fa fa-edit me-1"></i> Update Sold
             </button>
             <button class="btn btn-warning btn-sm text-white" data-bs-toggle="modal" data-bs-target="#updateWastageModal">
                 <i class="fa fa-exclamation-triangle me-1"></i> Update Wastage
             </button>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -643,7 +647,7 @@ if (!empty($items)) {
                                 </div>
                             </div>
                             <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
-                                <?php if ($_SESSION['user_type'] !== 'User' && $_SESSION['user_type'] !== 'Manager'): ?>
+                                <?php if ($_SESSION['user_type'] === 'Admin' || $_SESSION['user_type'] === 'Manager'): ?>
                                 <button class="btn btn-outline-danger btn-sm delete-btn" data-ids="<?= htmlspecialchars(implode(',', $item['original_ids'])) ?>" data-menu-name="<?= htmlspecialchars($item['menu_name']) ?>">
                                     <i class="fa fa-trash"></i> Delete
                                 </button>

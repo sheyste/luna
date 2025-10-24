@@ -491,10 +491,10 @@
             <button class="btn btn-success btn-sm export-excel-btn" id="exportExcelBtn">
                 <i class="bi bi-file-earmark-excel me-1"></i> Export to Excel
             </button>
-            <?php endif; ?>
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addInventoryModal">
                 <i class="bi bi-plus-circle me-1"></i> Add Item
             </button>
+            <?php endif; ?>
         </div>
     </div>
     <div class="card-body">
