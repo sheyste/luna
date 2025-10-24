@@ -554,7 +554,9 @@
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 fw-bold text-primary">Physical Count Results</h6>
         <div class="d-flex gap-2">
+            <?php if ($_SESSION['user_type'] !== 'Inventory Staff'): ?>
             <button id="saveToInventoryBtn" class="btn btn-success" disabled>Save All to Inventory</button>
+            <?php endif; ?>
         </div>
     </div>
     <div class="card-body">
@@ -854,9 +856,11 @@
                         <td data-label="Variance %"><span class="badge bg-danger">${variancePercent.toFixed(2)}%</span></td>
                         <td data-label="Value Impact">₱${valueImpact.toFixed(2)}</td>
                         <td data-label="Actions">
+                            <?php if ($_SESSION['user_type'] !== 'Inventory Staff'): ?>
                             <button class="btn btn-danger btn-sm delete-btn" data-entry-id="${entry.id}">
                                 <i class="fa fa-trash"></i>
                             </button>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 `;
