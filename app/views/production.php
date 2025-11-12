@@ -597,20 +597,24 @@ if (!empty($items)) {
         </div>
         <!-- Buttons on the bottom in mobile, right in desktop -->
         <div class="d-flex flex-wrap gap-2">
-            <?php if ($_SESSION['user_type'] !== 'User'): ?>
+            <?php if ($_SESSION['user_type'] !== 'Manager'): ?>
             <button class="btn btn-success btn-sm" id="exportExcelBtn">
                 <i class="fa fa-file-excel-o me-1"></i> Export to Excel
             </button>
             <?php endif; ?>
+            <?php if ($_SESSION['user_type'] !== 'Cashier' && $_SESSION['user_type'] !== 'Owner'): ?>
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addProductionModal">
                 <i class="fa fa-plus me-1"></i> Add Production
             </button>
+            <?php endif; ?>
+            <?php if ($_SESSION['user_type'] !== 'Kitchen Staff' && $_SESSION['user_type'] !== 'Owner'): ?>
             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateSoldModal">
                 <i class="fa fa-edit me-1"></i> Update Sold
             </button>
             <button class="btn btn-warning btn-sm text-white" data-bs-toggle="modal" data-bs-target="#updateWastageModal">
                 <i class="fa fa-exclamation-triangle me-1"></i> Update Wastage
             </button>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -639,11 +643,11 @@ if (!empty($items)) {
                                         <span class="waste-cost"><strong>Waste Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_waste_cost'] ?? 0, 2)) ?></span>
                                     </div>
 
-                                    <p class="mb-1 profit"><strong>Profit:</strong> &#8369;<?= htmlspecialchars(number_format($item['profit'] ?? 0, 2)) ?></p>
+
                                 </div>
                             </div>
                             <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
-                                <?php if ($_SESSION['user_type'] !== 'User' && $_SESSION['user_type'] !== 'Manager'): ?>
+                                <?php if ($_SESSION['user_type'] === 'Admin'): ?>
                                 <button class="btn btn-outline-danger btn-sm delete-btn" data-ids="<?= htmlspecialchars(implode(',', $item['original_ids'])) ?>" data-menu-name="<?= htmlspecialchars($item['menu_name']) ?>">
                                     <i class="fa fa-trash"></i> Delete
                                 </button>
@@ -1022,20 +1026,21 @@ $(document).ready(function() {
 
                         if (Array.isArray(menu.ingredients) && menu.ingredients.length > 0) {
                             menu.ingredients.forEach(function(ingredient) {
-                                $.ajax({
-                                    url: '/inventory/getDetail?id=' + ingredient.inventory_id,
-                                    method: 'GET',
-                                    dataType: 'json',
-                                    success: function(inventoryItem) {
-                                        if (inventoryItem) {
-                                            var displayQuantity = Number.isInteger(ingredient.quantity) ? ingredient.quantity : parseFloat(ingredient.quantity).toFixed(3).replace(/\.?0+$/, "");
-                                            $ingredientsList.append('<li>' + (inventoryItem.name || 'Unnamed Ingredient') + ' - ' + displayQuantity + ' ' + (inventoryItem.unit || '') + '</li>');
-                                        }
-                                    },
-                                    error: function() {
-                                        $ingredientsList.append('<li>Error loading ingredient details.</li>');
+                            $.ajax({
+                                url: '/production/getInventoryDetail?id=' + ingredient.inventory_id,
+                                method: 'GET',
+                                dataType: 'json',
+                                success: function(response) {
+                                    if (response.success && response.data) {
+                                        var inventoryItem = response.data;
+                                        var displayQuantity = Number.isInteger(ingredient.quantity) ? ingredient.quantity : parseFloat(ingredient.quantity).toFixed(3).replace(/\.?0+$/, "");
+                                        $ingredientsList.append('<li>' + (inventoryItem.name || 'Unnamed Ingredient') + ' - ' + displayQuantity + ' ' + (inventoryItem.unit || '') + '</li>');
                                     }
-                                });
+                                },
+                                error: function() {
+                                    $ingredientsList.append('<li>Error loading ingredient details.</li>');
+                                }
+                            });
                             });
                         } else {
                             $ingredientsList.append('<li>No ingredients listed for this menu.</li>');
@@ -1102,11 +1107,12 @@ $(document).ready(function() {
                             promises.push(deferred.promise());
 
                             $.ajax({
-                                url: '/inventory/getDetail?id=' + ingredient.inventory_id,
+                                url: '/production/getInventoryDetail?id=' + ingredient.inventory_id,
                                 method: 'GET',
                                 dataType: 'json',
-                                success: function(inventoryItem) {
-                                    if (inventoryItem) {
+                                success: function(response) {
+                                    if (response.success && response.data) {
+                                        var inventoryItem = response.data;
                                         var availableStock = parseFloat(inventoryItem.quantity);
                                         var hasEnoughStock = availableStock >= totalQuantity;
                                         if (!hasEnoughStock) {
@@ -1743,7 +1749,7 @@ $('#wastageSearch').on('input', function() {
             $(this).find('.total-sales').html('<strong>Sales:</strong> &#8369;' + data.total_sales.toFixed(2));
             $(this).find('.wastage-qty').html('<strong>Wastage:</strong> ' + data.total_wastage);
             $(this).find('.waste-cost').html('<strong>Waste Cost:</strong> &#8369;' + data.total_waste_cost.toFixed(2));
-            $(this).find('.profit').html('<strong>Profit:</strong> &#8369;' + profit.toFixed(2));
+
         });
     }
 
@@ -1793,11 +1799,12 @@ $('#wastageSearch').on('input', function() {
                         menu.ingredients.forEach(function(ingredient) {
                             // Get ingredient details from inventory
                             $.ajax({
-                                url: '/inventory/getDetail?id=' + ingredient.inventory_id,
+                                url: '/production/getInventoryDetail?id=' + ingredient.inventory_id,
                                 method: 'GET',
                                 dataType: 'json',
-                                success: function(inventoryItem) {
-                                    if (inventoryItem) {
+                                success: function(response) {
+                                    if (response.success && response.data) {
+                                        var inventoryItem = response.data;
                                         var requiredQty = parseFloat(ingredient.quantity);
                                         var availableQty = parseFloat(inventoryItem.quantity || 0);
                                         var producible = Math.floor(availableQty / requiredQty);

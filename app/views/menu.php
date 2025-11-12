@@ -378,7 +378,7 @@
             <i class="fa fa-times"></i>
         </button>
     </div>
-    <?php if ($_SESSION['user_type'] !== 'User'): ?>
+    <?php if ($_SESSION['user_type'] === 'Kitchen Staff'): ?>
     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMenuModal">
         <i class="fa fa-plus me-1"></i> Add Menu
     </button>
@@ -397,12 +397,6 @@
                         <div class="mt-3">
                             <p class="mb-1"><strong>Price:</strong> &#8369;<?= htmlspecialchars(number_format($menu['price'] ?? 0, 2)) ?></p>
                             <p class="mb-1"><strong>Cost:</strong> &#8369;<?= htmlspecialchars(number_format($menu['cost'] ?? 0, 2)) ?></p>
-                            <?php
-                                $price = $menu['price'] ?? 0;
-                                $cost = $menu['cost'] ?? 0;
-                                $profitMargin = ($price > 0) ? (($price - $cost) / $price) * 100 : 0;
-                            ?>
-                            <p class="mb-1"><strong>Profit Margin:</strong> <?= htmlspecialchars(number_format($profitMargin, 2)) ?>%</p>
                         </div>
                     </div>
                     <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
@@ -603,16 +597,14 @@
         </table>
       </div>
       <!-- Add modal footer here -->
-      <div class="modal-footer">
+        <div class="modal-footer">
            <button class="btn btn-primary btn-sm print-btn-modal" data-bs-dismiss="modal">
                <i class="fa fa-print"></i> Print Barcode
            </button>
-           <?php if ($_SESSION['user_type'] !== 'User'): ?>
+           <?php if ($_SESSION['user_type'] === 'Admin'): ?>
            <button class="btn btn-info btn-sm edit-btn-modal" data-bs-dismiss="modal">
                <i class="fa fa-edit"></i> Edit
            </button>
-           <?php endif; ?>
-           <?php if ($_SESSION['user_type'] !== 'User' && $_SESSION['user_type'] !== 'Manager'): ?>
            <button class="btn btn-outline-danger btn-sm delete-btn-modal" data-bs-dismiss="modal">
                <i class="fa fa-trash"></i> Delete
            </button>

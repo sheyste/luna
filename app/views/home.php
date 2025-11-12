@@ -73,9 +73,7 @@
         <h5 class="card-title mb-0">
           <i class="fas fa-exclamation-triangle me-2"></i>Low Stock Alerts
         </h5>
-        <?php if ($_SESSION['user_type'] !== 'User'): ?>
           <a href="/inventory/low-stock-alerts" class="btn btn-sm btn-light">View All</a>
-        <?php endif; ?>
       </div>
       <div class="card-body">
         <?php if (!empty($latestLowStockAlerts)): ?>
@@ -163,7 +161,7 @@
     </div>
   </div>
 
-  <?php if ($_SESSION['user_type'] === 'User'): ?>
+  <?php if ($_SESSION['user_type'] === 'Owner'): ?>
   <!-- User Layout: Production Chart + Stacked Efficiency Data -->
   <div class="col-md-6 mt-4">
     <div class="card">
@@ -278,8 +276,8 @@
 
 </div>
 
-<!-- Production Efficiency Section - Only show for non-User types -->
-<?php if ($_SESSION['user_type'] !== 'User'): ?>
+<!-- Production Efficiency Section - Only show for non-Owner types -->
+<?php if ($_SESSION['user_type'] !== 'Owner'): ?>
 <div class="row mt-4">
   <!-- Today's Production Totals -->
   <div class="col-md-6">
@@ -386,7 +384,7 @@
     }
   });
 
-  <?php if ($_SESSION['user_type'] !== 'User'): ?>
+  <?php if ($_SESSION['user_type'] !== 'Owner'): ?>
   // Daily Cost vs Profit
   const costProfitCtx = document.getElementById('costProfitChart').getContext('2d');
   new Chart(costProfitCtx, {
@@ -411,12 +409,13 @@
 
   // Inventory Pie Chart
   const inventoryCtx = document.getElementById('inventoryPieChart').getContext('2d');
+  const inventoryData2 = <?= json_encode($inventoryData) ?>;
   new Chart(inventoryCtx, {
     type: 'pie',
     data: {
-      labels: <?= json_encode(array_column($inventoryData, 'name')) ?>,
+      labels: inventoryData2.map(item => `${item.name} (${item.quantity})`),
       datasets: [{
-        data: <?= json_encode(array_column($inventoryData, 'quantity')) ?>,
+        data: inventoryData2.map(item => item.quantity),
         backgroundColor: [
           '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
           '#858796', '#5a5c69', '#fd7e14', '#20c997', '#6f42c1'
@@ -429,12 +428,33 @@
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: 'none'
+          position: 'right',
+          labels: {
+            generateLabels: function(chart) {
+              const data = chart.data;
+              if (data.labels.length && data.datasets.length) {
+                return data.labels.map((label, i) => {
+                  const value = data.datasets[0].data[i];
+                  const backgroundColor = data.datasets[0].backgroundColor[i];
+                  return {
+                    text: `${label}`,
+                    fillStyle: backgroundColor,
+                    strokeStyle: backgroundColor,
+                    lineWidth: 1,
+                    hidden: false,
+                    index: i
+                  };
+                });
+              }
+              return [];
+            }
+          }
         },
         tooltip: {
           callbacks: {
             label: function(context) {
-              return context.label + ': ' + context.parsed;
+              const item = inventoryData2[context.dataIndex];
+              return `${item.name}: ${item.quantity}`;
             }
           }
         }

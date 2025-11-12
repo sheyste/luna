@@ -47,7 +47,15 @@ class AuthController extends Controller
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['user_name'] = $user['first_name'];
                     $_SESSION['user_type'] = $user['user_type'];
-                    header('Location: /home');
+
+                    // Redirect based on user type
+                    if ($user['user_type'] === 'Inventory Staff') {
+                        header('Location: /inventory');
+                    } elseif ($user['user_type'] === 'Cashier' || $user['user_type'] === 'Kitchen Staff') {
+                        header('Location: /production');
+                    } else {
+                        header('Location: /home');
+                    }
                     exit;
                 } else {
                     // Invalid credentials

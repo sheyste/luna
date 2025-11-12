@@ -282,6 +282,37 @@ public function getDetail() {
     echo json_encode($item);
 }
 
+public function getInventoryDetail() {
+    header('Content-Type: application/json');
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'GET' || !isset($_GET['id'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid request']);
+        return;
+    }
+
+    $inventory_id = intval($_GET['id']);
+
+    $sql = "
+        SELECT id, name, unit, price, quantity
+        FROM inventory
+        WHERE id = ?
+    ";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $inventory_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $item = $result->fetch_assoc();
+    $stmt->close();
+
+    if ($item) {
+        echo json_encode(['success' => true, 'data' => $item]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Item not found']);
+    }
+}
+
 public function getMenuIngredients() {
     header('Content-Type: application/json');
     
