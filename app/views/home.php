@@ -409,12 +409,13 @@
 
   // Inventory Pie Chart
   const inventoryCtx = document.getElementById('inventoryPieChart').getContext('2d');
+  const inventoryData2 = <?= json_encode($inventoryData) ?>;
   new Chart(inventoryCtx, {
     type: 'pie',
     data: {
-      labels: <?= json_encode(array_column($inventoryData, 'name')) ?>,
+      labels: inventoryData2.map(item => `${item.name} (${item.quantity})`),
       datasets: [{
-        data: <?= json_encode(array_column($inventoryData, 'quantity')) ?>,
+        data: inventoryData2.map(item => item.quantity),
         backgroundColor: [
           '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
           '#858796', '#5a5c69', '#fd7e14', '#20c997', '#6f42c1'
@@ -427,12 +428,33 @@
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: 'none'
+          position: 'right',
+          labels: {
+            generateLabels: function(chart) {
+              const data = chart.data;
+              if (data.labels.length && data.datasets.length) {
+                return data.labels.map((label, i) => {
+                  const value = data.datasets[0].data[i];
+                  const backgroundColor = data.datasets[0].backgroundColor[i];
+                  return {
+                    text: `${label}`,
+                    fillStyle: backgroundColor,
+                    strokeStyle: backgroundColor,
+                    lineWidth: 1,
+                    hidden: false,
+                    index: i
+                  };
+                });
+              }
+              return [];
+            }
+          }
         },
         tooltip: {
           callbacks: {
             label: function(context) {
-              return context.label + ': ' + context.parsed;
+              const item = inventoryData2[context.dataIndex];
+              return `${item.name}: ${item.quantity}`;
             }
           }
         }

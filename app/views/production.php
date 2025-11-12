@@ -643,7 +643,7 @@ if (!empty($items)) {
                                         <span class="waste-cost"><strong>Waste Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_waste_cost'] ?? 0, 2)) ?></span>
                                     </div>
 
-                                    <p class="mb-1 profit"><strong>Profit:</strong> &#8369;<?= htmlspecialchars(number_format($item['profit'] ?? 0, 2)) ?></p>
+
                                 </div>
                             </div>
                             <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
@@ -1749,7 +1749,7 @@ $('#wastageSearch').on('input', function() {
             $(this).find('.total-sales').html('<strong>Sales:</strong> &#8369;' + data.total_sales.toFixed(2));
             $(this).find('.wastage-qty').html('<strong>Wastage:</strong> ' + data.total_wastage);
             $(this).find('.waste-cost').html('<strong>Waste Cost:</strong> &#8369;' + data.total_waste_cost.toFixed(2));
-            $(this).find('.profit').html('<strong>Profit:</strong> &#8369;' + profit.toFixed(2));
+
         });
     }
 

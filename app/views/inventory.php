@@ -675,7 +675,7 @@
     <form class="modal-content" method="post" action="/inventory/edit">
       <div class="modal-header">
         <h5 class="modal-title" id="editInventoryModalLabel">
-          <i class="bi bi-pencil-square me-2"></i>Edit Inventory Item
+          <i class="bi bi-pencil-square me-2"></i>Inventory Item
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x"></i></button>
       </div>
@@ -686,13 +686,13 @@
           <div class="col-md-6">
             <div class="mb-3">
               <label for="editItemName" class="form-label">NAME</label>
-              <input type="text" class="form-control" id="editItemName" name="name" required placeholder="Enter item name">
+              <input type="text" class="form-control" id="editItemName" name="name" required placeholder="Enter item name" <?php echo ($_SESSION['user_type'] !== 'Admin') ? 'disabled' : ''; ?>>
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-3">
               <label for="editItemBarcode" class="form-label">BARCODE</label>
-              <input type="number" class="form-control" id="editItemBarcode" name="barcode" required placeholder="Enter barcode">
+              <input type="number" class="form-control" id="editItemBarcode" name="barcode" required placeholder="Enter barcode" <?php echo ($_SESSION['user_type'] !== 'Admin') ? 'disabled' : ''; ?>>
             </div>
           </div>
         </div>
@@ -701,13 +701,13 @@
           <div class="col-md-6">
             <div class="mb-3">
               <label for="editItemQty" class="form-label">QUANTITY</label>
-              <input type="number" step="0.01" class="form-control" id="editItemQty" name="quantity" min="0" required placeholder="0.00">
+              <input type="number" step="0.01" class="form-control" id="editItemQty" name="quantity" min="0" required placeholder="0.00" <?php echo ($_SESSION['user_type'] !== 'Admin') ? 'disabled' : ''; ?>>
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-3">
               <label for="editItemMaxQty" class="form-label">MAX QUANTITY</label>
-              <input type="number" step="0.01" class="form-control" id="editItemMaxQty" name="max_quantity" min="0" required placeholder="0.00">
+              <input type="number" step="0.01" class="form-control" id="editItemMaxQty" name="max_quantity" min="0" required placeholder="0.00" <?php echo ($_SESSION['user_type'] !== 'Admin') ? 'disabled' : ''; ?>>
             </div>
           </div>
         </div>
@@ -716,7 +716,7 @@
           <div class="col-md-6">
             <div class="mb-3">
               <label for="editItemUnit" class="form-label">UNIT</label>
-              <select class="form-select" id="editItemUnit" name="unit" required>
+              <select class="form-select" id="editItemUnit" name="unit" required <?php echo ($_SESSION['user_type'] !== 'Admin') ? 'disabled' : ''; ?>>
                 <option value="pcs">pcs</option>
                 <option value="Kg">Kg</option>
                 <option value="g">g</option>
@@ -729,7 +729,7 @@
           <div class="col-md-6">
             <div class="mb-3">
               <label for="editItemPrice" class="form-label">PRICE (PER UNIT)</label>
-              <input type="number" class="form-control" id="editItemPrice" name="price" min="0" step="0.01" required placeholder="0.00">
+              <input type="number" class="form-control" id="editItemPrice" name="price" min="0" step="0.01" required placeholder="0.00" <?php echo ($_SESSION['user_type'] !== 'Admin') ? 'disabled' : ''; ?>>
             </div>
           </div>
         </div>
@@ -738,13 +738,13 @@
           <div class="col-md-6">
             <div class="mb-3">
               <label for="editItemPurchaseDate" class="form-label">PURCHASE DATE</label>
-              <input type="date" class="form-control" id="editItemPurchaseDate" name="purchase_date" required>
+              <input type="date" class="form-control" id="editItemPurchaseDate" name="purchase_date" required <?php echo ($_SESSION['user_type'] !== 'Admin') ? 'disabled' : ''; ?>>
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-3">
               <label for="editItemCategory" class="form-label">CATEGORY</label>
-              <select class="form-select" id="editItemCategory" name="category" required>
+              <select class="form-select" id="editItemCategory" name="category" required <?php echo ($_SESSION['user_type'] !== 'Admin') ? 'disabled' : ''; ?>>
                 <option value="Vegetables">Vegetables</option>
                 <option value="Meat">Meat</option>
                 <option value="Dairy">Dairy</option>
@@ -761,10 +761,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          <i class="bi bi-x-circle me-2"></i>Cancel
-        </button>
-        <?php if ($_SESSION['user_type'] !== 'Inventory Staff'): ?>
+        <?php if ($_SESSION['user_type'] === 'Admin'): ?>
         <button type="submit" class="btn btn-primary">
           <i class="bi bi-check-circle me-2"></i>Save Changes
         </button>

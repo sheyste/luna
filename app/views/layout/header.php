@@ -84,7 +84,7 @@
 <?php endif; ?>
 <?php if ($_SESSION['user_type'] !== 'Inventory Staff'): ?>
             <li><h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
-                    <span>Production</span>
+                    <span>Kitchen Management</span>
                 </h6></li>
 
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/menu') !== false) echo 'active'; ?>">

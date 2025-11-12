@@ -554,7 +554,7 @@
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 fw-bold text-primary">Physical Count Results</h6>
         <div class="d-flex gap-2">
-            <?php if ($_SESSION['user_type'] !== 'Inventory Staff'): ?>
+            <?php if ($_SESSION['user_type'] === 'Admin' || $_SESSION['user_type'] === 'Owner'): ?>
             <button id="saveToInventoryBtn" class="btn btn-success" disabled>Save All to Inventory</button>
             <?php endif; ?>
         </div>
@@ -621,15 +621,15 @@
                             <div id="selectedItemInfo" class="d-none">
                                 <div class="alert alert-info border-0 bg-info bg-opacity-10">
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <small class="text-muted">Item Name</small>
                                             <div class="fw-bold" id="selectedItemName">-</div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4" style="display: none;">
                                             <small class="text-muted">Current Stock</small>
                                             <div class="fw-bold text-primary" id="selectedItemStock">-</div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <small class="text-muted">Unit</small>
                                             <div class="fw-bold" id="selectedItemUnit">-</div>
                                         </div>
@@ -646,11 +646,11 @@
                                 <i class="bi bi-calculator me-2"></i>Physical Count Entry
                             </h6>
                             <div class="row align-items-end">
-                                <div class="col-md-6">
+                                <div class="col-md-6" style="display: none;">
                                     <label for="systemCount" class="form-label">SYSTEM COUNT</label>
                                     <input type="text" class="form-control form-control-lg bg-white" id="systemCount" readonly placeholder="Select item first">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <label for="physicalCount" class="form-label">PHYSICAL COUNT</label>
                                     <input type="number" step="0.01" class="form-control form-control-lg" id="physicalCount" min="0" required placeholder="Enter counted amount">
                                 </div>
@@ -856,7 +856,7 @@
                         <td data-label="Variance %"><span class="badge bg-danger">${variancePercent.toFixed(2)}%</span></td>
                         <td data-label="Value Impact">₱${valueImpact.toFixed(2)}</td>
                         <td data-label="Actions">
-                            <?php if ($_SESSION['user_type'] !== 'Inventory Staff'): ?>
+                            <?php if ($_SESSION['user_type'] === 'Admin' || $_SESSION['user_type'] === 'Owner'): ?>
                             <button class="btn btn-danger btn-sm delete-btn" data-entry-id="${entry.id}">
                                 <i class="fa fa-trash"></i>
                             </button>
