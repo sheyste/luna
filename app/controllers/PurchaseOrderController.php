@@ -34,7 +34,7 @@ class PurchaseOrderController extends Controller {
         }
 
         $inventory = [];
-        $invResult = $this->conn->query("SELECT id, name, unit, price FROM inventory ORDER BY name ASC");
+        $invResult = $this->conn->query("SELECT id, name, unit, price, max_quantity, quantity FROM inventory ORDER BY name ASC");
         while ($row = $invResult->fetch_assoc()) {
             $inventory[] = $row;
         }
@@ -73,7 +73,17 @@ class PurchaseOrderController extends Controller {
                     if (empty($item['inventory_id'])) continue;
                     $inventory_id = intval($item['inventory_id']);
                     $quantity = intval($item['quantity']);
-                    $unit_price = floatval($item['unit_price']);
+                    // If unit_price not provided, get it from inventory
+                    $unit_price = isset($item['unit_price']) && $item['unit_price'] !== '' ? floatval($item['unit_price']) : null;
+                    if ($unit_price === null || $unit_price <= 0) {
+                        $price_stmt = $this->conn->prepare("SELECT price FROM inventory WHERE id = ?");
+                        $price_stmt->bind_param("i", $inventory_id);
+                        $price_stmt->execute();
+                        $price_result = $price_stmt->get_result();
+                        $price_row = $price_result->fetch_assoc();
+                        $unit_price = floatval($price_row['price'] ?? 0.00);
+                        $price_stmt->close();
+                    }
                     $item_stmt->bind_param("iiid", $po_id, $inventory_id, $quantity, $unit_price);
                     $item_stmt->execute();
                 }

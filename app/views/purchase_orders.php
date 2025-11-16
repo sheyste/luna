@@ -294,20 +294,57 @@
 <div id="po-item-template" style="display: none;">
     <div class="row align-items-end po-item-row mb-2 g-2">
         <input type="hidden" name="items[0][id]" value="">
-        <div class="col-md-4"><label>Item</label><select name="items[0][inventory_id]" class="form-select item-select" required><option value="" selected disabled>-- Select Item --</option><?php foreach($inventory as $item): ?><option value="<?= $item['id'] ?>" data-unit="<?= htmlspecialchars($item['unit'] ?? 'unit') ?>" data-price="<?= htmlspecialchars($item['price'] ?? '0.00') ?>"><?= htmlspecialchars($item['name']) ?></option><?php endforeach; ?></select></div>
-        <div class="col-md-2">
+        <div class="col-md-4"><label>Item</label><select name="items[0][inventory_id]" class="form-select item-select" required><option value="" selected disabled>-- Select Item --</option></select></div>
+        <div class="col-md-3">
             <label>Quantity</label>
             <div class="input-group">
                 <input type="number" name="items[0][quantity]" class="form-control" required min="1">
                 <span class="input-group-text item-unit">--</span>
             </div>
         </div>
-        <div class="col-md-2">
-            <label>Price (Per Unit)</label>
-            <input type="number" name="items[0][unit_price]" class="form-control" step="0.01" required min="0">
-        </div>
         <div class="col-md-2 received-qty-container" style="display: none;"><label>Received Qty</label><input type="number" name="items[0][received_quantity]" class="form-control" step="0.01" min="0"></div>
-        <div class="col-md-2"><button type="button" class="btn btn-danger remove-po-item-btn w-100">Remove</button></div>
+        <div class="col-md-3"><button type="button" class="btn btn-danger remove-po-item-btn w-100">Remove</button></div>
+    </div>
+</div>
+
+<!-- Quantity Warning Modal -->
+<div class="modal fade" id="quantityWarningModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title text-dark">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Inventory Limit Warning
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <strong>Warning:</strong> The quantity you entered will exceed the maximum inventory limit for this item.
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Item:</strong> <span id="warningItemName"></span></p>
+                        <p><strong>Entered Quantity:</strong> <span id="warningEnteredQty"></span> units</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Current Stock:</strong> <span id="warningCurrentQty"></span> units</p>
+                        <p><strong>Maximum Capacity:</strong> <span id="warningMaxQty"></span> units</p>
+                        <p><strong>After Addition:</strong> <span id="warningAfterAddition"></span> units</p>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="alert alert-info">
+                    <strong>Recommended Action:</strong>
+                    <p>To stay within the inventory limit, consider reducing the quantity to:</p>
+                    <p class="fw-bold text-primary fs-5" id="warningRecommendedQty"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Adjust Quantity</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -360,9 +397,10 @@
                             <span class="text-muted">Expected Delivery:</span>
                             <strong id="viewExpected"></strong>
                         </div>
-                        <div class="d-flex justify-content-between py-2" id="receivedDateRow" style="display: none;">
-                            <span class="text-muted">Received Date:</span>
-                            <strong id="viewReceivedDate"></strong>
+                        <hr>
+                        <div class="d-flex justify-content-between py-2" id="updatedDateRow">
+                            <span class="text-muted">Updated Date:</span>
+                            <strong id="viewUpdatedDate"></strong>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -390,6 +428,8 @@
 <?php include_once __DIR__ . '/layout/footer.php'; ?>
 
 <script>
+const inventoryData = <?= json_encode($inventory) ?>;
+
 $(document).ready(function() {
     // Custom sorting for status
     $.fn.dataTable.ext.type.order['status-order-pre'] = function (d) {
@@ -426,6 +466,45 @@ $(document).ready(function() {
     });
     let itemIndex = 0;
 
+    function populateItemSelect(selectElement, selectedValue = '') {
+        const currentSelectedItems = getSelectedItemIds();
+        // Remove the selected value of this select if it's currently selected, so it doesn't filter itself out if already selected
+        if (selectedValue && currentSelectedItems.includes(selectedValue)) {
+            const index = currentSelectedItems.indexOf(selectedValue);
+            if (index > -1) {
+                currentSelectedItems.splice(index, 1);
+            }
+        }
+        $(selectElement).empty();
+        $(selectElement).append('<option value="" selected disabled>-- Select Item --</option>');
+        inventoryData.forEach(item => {
+            if (!currentSelectedItems.includes(item.id.toString())) {
+                const option = $('<option></option>');
+                option.val(item.id);
+                option.text(item.name);
+                option.data('unit', item.unit || 'unit');
+                option.data('price', item.price || '0.00');
+                option.data('max-quantity', item.max_quantity || '0');
+                option.data('current-quantity', item.quantity || '0');
+                if (selectedValue == item.id) {
+                    option.prop('selected', true);
+                }
+                $(selectElement).append(option);
+            }
+        });
+    }
+
+    function getSelectedItemIds() {
+        const selectedIds = [];
+        $('#po-items-container .item-select').each(function() {
+            const val = $(this).val();
+            if (val) {
+                selectedIds.push(val);
+            }
+        });
+        return selectedIds;
+    }
+
     function addPOItemRow() {
         const template = $('#po-item-template').html();
         const newRow = $(template);
@@ -436,7 +515,16 @@ $(document).ready(function() {
         });
         
         $('#po-items-container').append(newRow);
+        const selectEl = newRow.find('.item-select');
+        populateItemSelect(selectEl[0]);
         itemIndex++;
+    }
+
+    function updateAllSelects() {
+        $('#po-items-container .item-select').each(function() {
+            const currentVal = $(this).val();
+            populateItemSelect(this, currentVal);
+        });
     }
 
     addPOModalEl.addEventListener('shown.bs.modal', function () {
@@ -456,34 +544,68 @@ $(document).ready(function() {
 
     $('#po-items-container').on('click', '.remove-po-item-btn', function() {
         $(this).closest('.po-item-row').remove();
+        updateAllSelects(); // Re-enable options in other selects
     });
 
     function updateItemInfo(selectElement) {
         const selectedOption = $(selectElement).find('option:selected');
         const unit = selectedOption.data('unit');
-        const price = selectedOption.data('price');
 
         const unitSpan = $(selectElement).closest('.po-item-row').find('.item-unit');
-        const priceInput = $(selectElement).closest('.po-item-row').find('input[name*="[unit_price]"]');
 
         if ($(selectElement).val() && unit) {
             unitSpan.text(unit);
         } else {
             unitSpan.text('--');
         }
+    }
 
-        if ($(selectElement).val() && price !== undefined) {
-            priceInput.val(price);
-        } else {
-            // Only clear if no option is selected
-            if (!$(selectElement).val()) {
-                priceInput.val('');
+    function checkQuantityLimit(inputElement) {
+        const quantityInput = $(inputElement);
+        const quantity = parseFloat(quantityInput.val()) || 0;
+        const itemSelect = quantityInput.closest('.po-item-row').find('.item-select');
+        const selectedOption = itemSelect.find('option:selected');
+
+        if (selectedOption.val()) {
+            const currentQuantity = parseFloat(selectedOption.data('current-quantity')) || 0;
+            const maxQuantity = parseFloat(selectedOption.data('max-quantity')) || 0;
+
+            if (currentQuantity + quantity > maxQuantity) {
+                const recommendedQuantity = Math.max(0, maxQuantity - currentQuantity);
+
+                // Populate warning modal
+                $('#warningItemName').text(selectedOption.text());
+                $('#warningEnteredQty').text(quantity);
+                $('#warningCurrentQty').text(currentQuantity);
+                $('#warningMaxQty').text(maxQuantity);
+                $('#warningAfterAddition').text(currentQuantity + quantity);
+                $('#warningRecommendedQty').text(`${recommendedQuantity} units`);
+
+                // Show modal without adding additional backdrop (since Add PO modal is already open)
+                const warningModal = new bootstrap.Modal(document.getElementById('quantityWarningModal'), {
+                    backdrop: false
+                });
+                warningModal.show();
             }
         }
     }
 
     $('#po-items-container').on('change', '.item-select', function() {
         updateItemInfo(this);
+        updateAllSelects(); // Update other selects when this selection changes
+        // Check quantity limit when item changes if quantity is already entered
+        const quantityInput = $(this).closest('.po-item-row').find('input[name*="[quantity]"]');
+        if (quantityInput.val()) {
+            checkQuantityLimit(quantityInput[0]);
+        }
+    });
+
+    $('#po-items-container').on('input', 'input[name*="[quantity]"]', function() {
+        checkQuantityLimit(this);
+    });
+
+    $('#po-items-container').on('change', 'input[name*="[quantity]"]', function() {
+        checkQuantityLimit(this);
     });
 
     function populateViewModal(data) {
@@ -492,18 +614,13 @@ $(document).ready(function() {
         $('#viewOrderDate').text(formatDate(data.order_date));
         $('#viewExpected').text(formatDate(data.expected_delivery));
 
-        // Handle received date display
-        if (data.status === 'Received' && data.updated_at) {
-            $('#receivedDateRow').show();
-            $('#viewReceivedDate').text(formatDate(data.updated_at.split(' ')[0])); // Extract date part only
-        } else {
-            $('#receivedDateRow').hide();
-        }
-
         const $statusBadge = $('#viewStatus');
         $statusBadge.text(data.status);
         $statusBadge.removeClass('bg-success bg-info bg-danger bg-warning text-dark')
                     .addClass(getStatusBadgeClass(data.status));
+
+        // Handle updated date display - show for all purchase orders
+        $('#viewUpdatedDate').text(data.updated_at ? formatDate(data.updated_at.split(' ')[0]) : 'N/A'); // Extract date part only
 
         const itemsContainer = $('#view-items-container');
         itemsContainer.empty();
@@ -588,7 +705,7 @@ $(document).ready(function() {
                 confirmMessage = 'Are you sure you want to mark this purchase order as Received?';
                 break;
             case 'cancelled':
-                confirmMessage = 'Are you sure you want to cancel this purchase order?';
+                confirmMessage = 'Are you sure you want cancel this purchase order?';
                 break;
         }
 
