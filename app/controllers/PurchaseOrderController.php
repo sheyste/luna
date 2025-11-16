@@ -34,7 +34,7 @@ class PurchaseOrderController extends Controller {
         }
 
         $inventory = [];
-        $invResult = $this->conn->query("SELECT id, name, unit FROM inventory ORDER BY name ASC");
+        $invResult = $this->conn->query("SELECT id, name, unit, price, max_quantity, quantity FROM inventory ORDER BY name ASC");
         while ($row = $invResult->fetch_assoc()) {
             $inventory[] = $row;
         }
@@ -73,7 +73,17 @@ class PurchaseOrderController extends Controller {
                     if (empty($item['inventory_id'])) continue;
                     $inventory_id = intval($item['inventory_id']);
                     $quantity = intval($item['quantity']);
-                    $unit_price = floatval($item['unit_price']);
+                    // If unit_price not provided, get it from inventory
+                    $unit_price = isset($item['unit_price']) && $item['unit_price'] !== '' ? floatval($item['unit_price']) : null;
+                    if ($unit_price === null || $unit_price <= 0) {
+                        $price_stmt = $this->conn->prepare("SELECT price FROM inventory WHERE id = ?");
+                        $price_stmt->bind_param("i", $inventory_id);
+                        $price_stmt->execute();
+                        $price_result = $price_stmt->get_result();
+                        $price_row = $price_result->fetch_assoc();
+                        $unit_price = floatval($price_row['price'] ?? 0.00);
+                        $price_stmt->close();
+                    }
                     $item_stmt->bind_param("iiid", $po_id, $inventory_id, $quantity, $unit_price);
                     $item_stmt->execute();
                 }
@@ -235,7 +245,7 @@ class PurchaseOrderController extends Controller {
 
         $id = intval($_GET['id']);
 
-        $stmt = $this->conn->prepare("SELECT * FROM purchase_orders WHERE id = ?");
+        $stmt = $this->conn->prepare("SELECT *, updated_at FROM purchase_orders WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -272,6 +282,140 @@ class PurchaseOrderController extends Controller {
 
         header('Content-Type: application/json');
         echo json_encode($order);
+    }
+
+    public function updateStatus() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['error' => 'Method not allowed']);
+            exit;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (!$input || !isset($input['id']) || !isset($input['status'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required fields']);
+            exit;
+        }
+
+        $id = intval($input['id']);
+        $newStatus = trim($input['status']);
+
+        // Validate status
+        $validStatuses = ['Pending', 'Ordered', 'Received', 'Cancelled'];
+        if (!in_array($newStatus, $validStatuses)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid status']);
+            exit;
+        }
+
+        $this->conn->begin_transaction();
+
+        try {
+            // Fetch the current order to get the old status
+            $stmt = $this->conn->prepare("SELECT status FROM purchase_orders WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $order = $result->fetch_assoc();
+            $stmt->close();
+
+            if (!$order) {
+                throw new Exception("Purchase Order not found");
+            }
+
+            $oldStatus = $order['status'];
+
+            // If status is changing to 'Received' and wasn't previously 'Received',
+            // we need to update inventory quantities. For simplicity, we'll assume
+            // all quantities are received for this status update.
+            if ($newStatus === 'Received' && $oldStatus !== 'Received') {
+                // Include Inventory and LowStockAlert models
+                require_once BASE_PATH . '/app/models/Inventory.php';
+                require_once BASE_PATH . '/app/models/LowStockAlert.php';
+
+                // Fetch all items for this PO
+                $items_stmt = $this->conn->prepare("
+                    SELECT poi.inventory_id, poi.quantity, poi.unit_price
+                    FROM purchase_order_items poi
+                    WHERE poi.purchase_order_id = ?
+                ");
+                $items_stmt->bind_param("i", $id);
+                $items_stmt->execute();
+                $items_result = $items_stmt->get_result();
+
+                $update_inventory_stmt = $this->conn->prepare(
+                    "UPDATE inventory SET quantity = quantity + ?, purchase_date = ?, price = ? WHERE id = ?"
+                );
+                $current_date = date('Y-m-d');
+
+                while ($item = $items_result->fetch_assoc()) {
+                    $received_qty = floatval($item['quantity']); // Assume full quantity received
+                    $inv_id = intval($item['inventory_id']);
+                    $unit_price = floatval($item['unit_price']);
+
+                    if ($received_qty > 0) {
+                        // Get current inventory item before updating
+                        $inventoryModel = new Inventory();
+                        $currentItem = $inventoryModel->getItemById($inv_id);
+
+                        $update_inventory_stmt->bind_param("dssi", $received_qty, $current_date, $unit_price, $inv_id);
+                        $update_inventory_stmt->execute();
+
+                        // Update alert resolution status based on current inventory status
+                        if ($currentItem) {
+                            $alertModel = new LowStockAlert();
+
+                            // Calculate new quantity
+                            $newQuantity = $currentItem['quantity'] + $received_qty;
+                            $maxQuantity = $currentItem['max_quantity'];
+
+                            // Check if item is currently low stock
+                            $isLowStock = ($newQuantity / $maxQuantity) <= 0.2;
+
+                            // Get all pending alerts for this item and update their resolution status
+                            $pendingAlerts = $alertModel->getPendingAlerts();
+                            foreach ($pendingAlerts as $alert) {
+                                if ($alert['item_id'] == $inv_id) {
+                                    // Update the resolved status based on current inventory status
+                                    $alertModel->updateAlertResolutionStatus($alert['id'], !$isLowStock);
+                                }
+                            }
+                        }
+                    }
+                }
+                $update_inventory_stmt->close();
+                $items_stmt->close();
+
+                // Update the purchase_order_items to set received_quantity
+                $update_items_stmt = $this->conn->prepare("
+                    UPDATE purchase_order_items
+                    SET received_quantity = quantity
+                    WHERE purchase_order_id = ?
+                ");
+                $update_items_stmt->bind_param("i", $id);
+                $update_items_stmt->execute();
+                $update_items_stmt->close();
+            }
+
+            // Update the purchase order status
+            $update_stmt = $this->conn->prepare("UPDATE purchase_orders SET status = ? WHERE id = ?");
+            $update_stmt->bind_param("si", $newStatus, $id);
+            $update_stmt->execute();
+            $update_stmt->close();
+
+            $this->conn->commit();
+
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'status' => $newStatus]);
+            exit;
+
+        } catch (Exception $e) {
+            $this->conn->rollback();
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+            exit;
+        }
     }
 
     public function delete() {
