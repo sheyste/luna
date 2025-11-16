@@ -64,6 +64,7 @@ $routes = array(
     '/purchase_order/delete' => array('PurchaseOrderController', 'delete'),
     '/purchase_order/get' => array('PurchaseOrderController', 'get'),
     '/purchase_order/edit' => array('PurchaseOrderController', 'edit'),
+    '/purchase_order/updateStatus' => array('PurchaseOrderController', 'updateStatus'),
 
     // Backup routes
     '/backup' => array('BackupController', 'index'),
