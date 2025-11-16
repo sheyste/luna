@@ -468,11 +468,13 @@
 </div>
 
 <!-- Add Physical Count Button -->
+<?php if ($_SESSION['user_type'] === 'Inventory Staff'): ?>
 <div class="mb-4">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPhysicalCountModal">
         <i class="fa fa-plus"></i> Add Physical Count
     </button>
 </div>
+<?php endif; ?>
 
 <!-- Summary Cards -->
 <div class="row mb-4">
@@ -570,7 +572,6 @@
                         <th>Difference</th>
                         <th>Variance %</th>
                         <th>Value Impact</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -656,17 +657,6 @@
                                 </div>
                             </div>
 
-                            <!-- Difference Preview -->
-                            <div id="differencePreview" class="mt-3 d-none">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="p-3 rounded bg-white border">
-                                            <small class="text-muted">Difference Preview</small>
-                                            <div class="fw-bold fs-5" id="previewDifference">0</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </form>
@@ -716,38 +706,10 @@
                 $('#selectedItemInfo').addClass('d-none');
                 $('#systemCount').val('');
                 $('#physicalCount').prop('disabled', true).val('');
-                $('#differencePreview').addClass('d-none');
             }
         });
         
-        // Handle physical count input change for difference preview
-        $('#physicalCount').on('input', function() {
-            const selectedOption = $('#itemSelect').find(':selected');
-            const systemCount = parseFloat(selectedOption.data('system')) || 0;
-            const physicalCount = parseFloat($(this).val()) || 0;
-            
-            if (systemCount > 0 && physicalCount >= 0) {
-                const difference = physicalCount - systemCount;
-                let differenceClass = 'text-dark';
-                let differenceIcon = 'fa-equals';
-                
-                if (difference > 0) {
-                    differenceClass = 'text-success';
-                    differenceIcon = 'fa-arrow-up';
-                } else if (difference < 0) {
-                    differenceClass = 'text-danger';
-                    differenceIcon = 'fa-arrow-down';
-                }
-                
-                $('#differencePreview').removeClass('d-none');
-                $('#previewDifference').html(`
-                    <i class="fas ${differenceIcon} me-2"></i>
-                    <span class="${differenceClass}">${difference > 0 ? '+' : ''}${difference.toFixed(2)}</span>
-                `);
-            } else {
-                $('#differencePreview').addClass('d-none');
-            }
-        });
+
         
         // Handle form submission - Add to count list (save to database)
         $('#physicalCountForm').on('submit', function(e) {
@@ -801,7 +763,6 @@
             $('#physicalCount').val('').prop('disabled', true);
             $('#systemCount').val('');
             $('#selectedItemInfo').addClass('d-none');
-            $('#differencePreview').addClass('d-none');
         }
         
         // Reset form when modal is closed
@@ -855,13 +816,6 @@
                         <td data-label="Difference"><span class="${differenceColor} fw-bold">${difference.toFixed(2)}</span></td>
                         <td data-label="Variance %"><span class="badge bg-danger">${variancePercent.toFixed(2)}%</span></td>
                         <td data-label="Value Impact">₱${valueImpact.toFixed(2)}</td>
-                        <td data-label="Actions">
-                            <?php if ($_SESSION['user_type'] === 'Admin' || $_SESSION['user_type'] === 'Owner'): ?>
-                            <button class="btn btn-danger btn-sm delete-btn" data-entry-id="${entry.id}">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                            <?php endif; ?>
-                        </td>
                     </tr>
                 `;
                 
@@ -882,19 +836,19 @@
             let totalValueAtRisk = 0;
             let totalOverages = 0;
             let totalShortages = 0;
-            
+
             entries.forEach(function(entry) {
                 const difference = parseFloat(entry.difference);
                 const valueImpact = parseFloat(entry.value_impact);
-                
+
                 // Count items with any difference (positive or negative)
                 if (difference !== 0) {
                     totalDiscrepancies++;
                 }
-                
+
                 // Total absolute value of all impacts
                 totalValueAtRisk += Math.abs(valueImpact);
-                
+
                 // Count items with overages (positive differences) and shortages (negative differences)
                 if (difference > 0) {
                     totalOverages++;
@@ -902,38 +856,13 @@
                     totalShortages++;
                 }
             });
-            
+
             // Update the card values
             $('#totalDiscrepancies').text(totalDiscrepancies);
             $('#valueAtRisk').text('₱' + totalValueAtRisk.toFixed(2));
             $('#overages').text(totalOverages);
             $('#shortages').text(totalShortages);
         }
-        
-        // Handle delete button click
-        $('#physicalCountTable').on('click', '.delete-btn', function() {
-            const entryId = $(this).data('entry-id');
-            
-            if (confirm('Are you sure you want to delete this entry?')) {
-                $.ajax({
-                    url: '/inventory/deleteCountEntry',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ entryId: entryId }),
-                    success: function(response) {
-                        if (response.success) {
-                            alert('Entry deleted successfully!');
-                            loadPendingEntries();
-                        } else {
-                            alert('Error deleting entry: ' + response.message);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        alert('Error deleting entry: ' + error);
-                    }
-                });
-            }
-        });
         
         // Handle save to inventory button click
         $('#saveToInventoryBtn').on('click', function() {

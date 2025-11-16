@@ -597,17 +597,15 @@ if (!empty($items)) {
         </div>
         <!-- Buttons on the bottom in mobile, right in desktop -->
         <div class="d-flex flex-wrap gap-2">
-            <?php if ($_SESSION['user_type'] !== 'Manager'): ?>
             <button class="btn btn-success btn-sm" id="exportExcelBtn">
-                <i class="fa fa-file-excel-o me-1"></i> Export to Excel
+                <i class="bi bi-file-earmark-excel me-1"></i> Export to Excel
             </button>
-            <?php endif; ?>
-            <?php if ($_SESSION['user_type'] !== 'Cashier' && $_SESSION['user_type'] !== 'Owner'): ?>
+            <?php if ($_SESSION['user_type'] !== 'Cashier' && $_SESSION['user_type'] !== 'Manager' && $_SESSION['user_type'] !== 'Owner'): ?>
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addProductionModal">
                 <i class="fa fa-plus me-1"></i> Add Production
             </button>
             <?php endif; ?>
-            <?php if ($_SESSION['user_type'] !== 'Kitchen Staff' && $_SESSION['user_type'] !== 'Owner'): ?>
+            <?php if ($_SESSION['user_type'] !== 'Kitchen Staff' && $_SESSION['user_type'] !== 'Manager' && $_SESSION['user_type'] !== 'Owner'): ?>
             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateSoldModal">
                 <i class="fa fa-edit me-1"></i> Update Sold
             </button>
