@@ -855,11 +855,11 @@ if (!empty($items)) {
             </select>
         </div>
         <div class="col-12 col-md-3">
-            <input type="number" class="form-control wastage-quantity" name="wastage_quantity" placeholder="Qty" min="0" step="1" required>
+            <input type="number" class="form-control wastage-quantity" name="wastage_quantity" placeholder="Qty" min="0" step="1" readonly required>
         </div>
-        <div class="col-6 col-md-2 text-center text-md-start">
+       <!-- <div class="col-6 col-md-2 text-center text-md-start">
             <small class="available-qty-span fw-bold text-muted">Available: 0</small>
-        </div>
+        </div> -->
         <div class="col-4 col-md-2 text-center text-md-start">
             <span class="wastage-cost-span fw-bold">₱0.00</span>
         </div>
@@ -1514,6 +1514,9 @@ $('#wastageSearch').on('input', function() {
 
         // Set max quantity to available
         $row.find('.wastage-quantity').attr('max', available);
+
+        // Auto-fill quantity with available
+        $row.find('.wastage-quantity').val(available);
 
         // Store unit cost for calculation
         $row.data('unit-cost', unitCost);
