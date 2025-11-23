@@ -597,7 +597,7 @@ if (!empty($items)) {
         </div>
         <!-- Buttons on the bottom in mobile, right in desktop -->
         <div class="d-flex flex-wrap gap-2">
-            <?php if ($_SESSION['user_type'] === 'Admin' || $_SESSION['user_type'] === 'Owner'): ?>
+            <?php if ($_SESSION['user_type'] === 'Admin' || $_SESSION['user_type'] === 'Owner' || $_SESSION['user_type'] === 'Manager'): ?>
             <button class="btn btn-success btn-sm" id="exportExcelBtn">
                 <i class="bi bi-file-earmark-excel me-1"></i> Export to Excel
             </button>
