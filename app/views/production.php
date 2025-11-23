@@ -611,6 +611,9 @@ if (!empty($items)) {
             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateSoldModal">
                 <i class="fa fa-edit me-1"></i> Update Sold
             </button>
+
+            <?php elseif ($_SESSION['user_type'] === 'Kitchen Staff'): ?>
+
             <button class="btn btn-warning btn-sm text-white" data-bs-toggle="modal" data-bs-target="#updateWastageModal">
                 <i class="fa fa-exclamation-triangle me-1"></i> Update Wastage
             </button>
