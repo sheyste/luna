@@ -635,15 +635,21 @@ if (!empty($items)) {
                                     <p class="mb-1"><strong>Price:</strong> &#8369;<?= htmlspecialchars(number_format($item['price'] ?? 0, 2)) ?></p>
                                     <div class="d-flex justify-content-between mb-1">
                                         <span class="produced-qty"><strong>Produced:</strong> <?= htmlspecialchars($item['quantity_produced']) ?></span>
+<?php if ($_SESSION['user_type'] !== 'Kitchen Staff'): ?>
                                         <span class="total-cost"><strong>Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_cost'] ?? 0, 2)) ?></span>
+<?php endif; ?>
                                     </div>
                                     <div class="d-flex justify-content-between mb-1">
                                         <span class="sold-qty"><strong>Sold:</strong> <?= htmlspecialchars($item['quantity_sold']) ?></span>
+<?php if ($_SESSION['user_type'] !== 'Kitchen Staff'): ?>
                                         <span class="total-sales"><strong>Sales:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_sales'] ?? 0, 2)) ?></span>
+<?php endif; ?>
                                     </div>
                                     <div class="d-flex justify-content-between mb-1">
                                         <span class="wastage-qty"><strong>Wastage:</strong> <?= htmlspecialchars($item['total_wastage']) ?></span>
+<?php if ($_SESSION['user_type'] !== 'Kitchen Staff'): ?>
                                         <span class="waste-cost"><strong>Waste Cost:</strong> &#8369;<?= htmlspecialchars(number_format($item['total_waste_cost'] ?? 0, 2)) ?></span>
+<?php endif; ?>
                                     </div>
 
 
