@@ -95,7 +95,7 @@
             </li>
 <?php endif; ?>
 
-<?php if ($_SESSION['user_type'] !== 'Owner' && $_SESSION['user_type'] !== 'Manager' && $_SESSION['user_type'] !== 'Inventory Staff' && $_SESSION['user_type'] !== 'Cashier' && $_SESSION['user_type'] !== 'Kitchen Staff'): ?>
+<?php if ($_SESSION['user_type'] === 'Owner' || $_SESSION['user_type'] === 'Admin'): ?>
             <li><h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1">
                     <span>System</span>
                 </h6>
