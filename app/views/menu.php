@@ -395,8 +395,10 @@
                         <h5 class="card-title"><?= htmlspecialchars($menu['name']) ?></h5>
                         <p class="card-text text-muted">Barcode: <?= htmlspecialchars($menu['barcode']) ?></p>
                         <div class="mt-3">
+<?php if ($_SESSION['user_type'] !== 'Kitchen Staff'): ?>
                             <p class="mb-1"><strong>Price:</strong> &#8369;<?= htmlspecialchars(number_format($menu['price'] ?? 0, 2)) ?></p>
                             <p class="mb-1"><strong>Cost:</strong> &#8369;<?= htmlspecialchars(number_format($menu['cost'] ?? 0, 2)) ?></p>
+<?php endif; ?>
                         </div>
                     </div>
                     <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
