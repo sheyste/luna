@@ -137,9 +137,11 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 fw-bold text-primary">Purchase Orders</h6>
+<?php if ($_SESSION['user_type'] !== 'Inventory Staff'): ?>
         <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addPOModal">
             <i class="fa fa-plus me-1"></i> Add Purchase Order
         </button>
+<?php endif; ?>
     </div>
     <div class="card-body">
         <div class="table-responsive">

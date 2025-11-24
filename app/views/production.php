@@ -604,7 +604,7 @@ if (!empty($items)) {
             <?php endif; ?>
             <?php if ($_SESSION['user_type'] !== 'Cashier' && $_SESSION['user_type'] !== 'Manager' && $_SESSION['user_type'] !== 'Owner'): ?>
             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addProductionModal">
-                <i class="fa fa-plus me-1"></i> Add Production
+                <i class="fa fa-plus me-1"></i> Produce
             </button>
             <?php endif; ?>
             <?php if ($_SESSION['user_type'] !== 'Kitchen Staff' && $_SESSION['user_type'] !== 'Manager' && $_SESSION['user_type'] !== 'Owner'): ?>

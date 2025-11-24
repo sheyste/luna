@@ -59,7 +59,7 @@
                 <a href="/home"><i class="fa fa-home"></i><span>Dashboard</span></a>
             </li>
 <?php endif; ?>
-<?php if ($_SESSION['user_type'] !== 'Owner' && $_SESSION['user_type'] !== 'Manager'): ?>
+<?php if ($_SESSION['user_type'] !== 'Owner' && $_SESSION['user_type'] !== 'Manager' && $_SESSION['user_type'] !== 'Cashier'): ?>
             <li class="nav-item <?php if (strpos($_SERVER['REQUEST_URI'], '/barcode') !== false) echo 'active'; ?>">
                 <a href="/barcode"><i class="fa fa-barcode"></i><span>Barcode Scan</span></a>
             </li>
