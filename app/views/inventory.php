@@ -645,13 +645,13 @@
           <div class="col-md-6">
             <div class="mb-3">
               <label for="itemQty" class="form-label">QUANTITY</label>
-              <input type="number" step="0.01" class="form-control" id="itemQty" name="quantity" min="0" required placeholder="0.00">
+              <input type="number" step="0.01" class="form-control" id="itemQty" name="quantity" min="0" required placeholder="0">
             </div>
           </div>
           <div class="col-md-6">
             <div class="mb-3">
               <label for="itemMaxQty" class="form-label">MAX QUANTITY</label>
-              <input type="number" step="0.01" class="form-control" id="itemMaxQty" name="max_quantity" min="0" required placeholder="0.00">
+              <input type="number" step="0.01" class="form-control" id="itemMaxQty" name="max_quantity" min="0" required placeholder="0">
             </div>
           </div>
         </div>
@@ -660,7 +660,7 @@
           <div class="col-md-6">
             <div class="mb-3">
               <label for="itemPrice" class="form-label">PRICE (PER UNIT)</label>
-              <input type="number" class="form-control" id="itemPrice" name="price" min="0" step="0.01" required placeholder="0.00">
+              <input type="number" class="form-control" id="itemPrice" name="price" min="0" step="0.01" required placeholder="0">
             </div>
           </div>
           <div class="col-md-6">
