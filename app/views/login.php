@@ -187,12 +187,12 @@
         <form action="/login" method="POST" style="width: 100%; max-width: 400px;">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
+                <input type="text" class="form-control" id="username" name="username" autocomplete="off" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
                 <div class="password-wrapper">
-                    <input type="password" class="form-control" id="password" name="password" required>
+                    <input type="password" class="form-control" id="password" name="password" autocomplete="off" required>
                     <i class="bi bi-eye-slash" id="togglePassword"></i>
                 </div>
             </div>
