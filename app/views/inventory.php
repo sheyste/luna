@@ -537,11 +537,11 @@
                           <tr class="<?= $rowClass ?> clickable-row" data-id="<?= htmlspecialchars($item['id']) ?>">
                               <td data-label="Name"><?= htmlspecialchars($item['name'] ?? '') ?></td>
                               <td data-label="Category"><?= htmlspecialchars($item['category'] ?? '') ?></td>
-                              <td data-label="Stock Quantity"><?= htmlspecialchars($item['quantity'] ?? '') ?></td>
-                              <td data-label="Max Quantity"><?= htmlspecialchars($item['max_quantity'] ?? '') ?></td>
+                              <td data-label="Stock Quantity"><?= (floor($quantity) == $quantity) ? number_format($quantity, 0) : number_format($quantity, 2) ?></td>
+                              <td data-label="Max Quantity"><?= (floor($max_quantity) == $max_quantity) ? number_format($max_quantity, 0) : number_format($max_quantity, 2) ?></td>
                               <td data-label="Unit"><?= htmlspecialchars($item['unit'] ?? '') ?></td>
-                              <td data-label="Price (Per Unit)">&#8369;<?= htmlspecialchars(number_format($price, 2)) ?></td>
-                              <td data-label="Total Price">&#8369;<?= htmlspecialchars(number_format($totalPrice, 2)) ?></td>
+                              <td data-label="Price (Per Unit)">&#8369;<?= (floor($price) == $price) ? number_format($price, 0) : number_format($price, 2) ?></td>
+                              <td data-label="Total Price">&#8369;<?= (floor($totalPrice) == $totalPrice) ? number_format($totalPrice, 0) : number_format($totalPrice, 2) ?></td>
                               <td data-label="Purchase Date"><?= htmlspecialchars(isset($item['purchase_date']) ? date('F j, Y', strtotime($item['purchase_date'])):'') ?></td>
                               <td data-label="Barcode"><?= htmlspecialchars($item['barcode'] ?? '') ?></td>
                               <td data-label="Actions">
@@ -873,8 +873,10 @@
             $('#editItemId').val(data.id);
             $('#editItemName').val(data.name);
             $('#editItemBarcode').val(data.barcode);
-            $('#editItemQty').val(data.quantity);
-            $('#editItemMaxQty').val(data.max_quantity);
+            var qty = parseFloat(data.quantity);
+            $('#editItemQty').val(qty === Math.floor(qty) ? qty : qty.toFixed(2));
+            var maxQty = parseFloat(data.max_quantity);
+            $('#editItemMaxQty').val(maxQty === Math.floor(maxQty) ? maxQty : maxQty.toFixed(2));
             $('#editItemUnit').val(data.unit);
             $('#editItemPrice').val(data.price);
             $('#editItemPurchaseDate').val(data.purchase_date ? data.purchase_date.substring(0, 10) : '');
