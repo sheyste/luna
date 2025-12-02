@@ -24,7 +24,7 @@
     }
 
     .card-title {
-        margin-right: 5rem;
+        margin-right: 7rem;
         word-wrap: break-word;
         hyphens: auto;
         line-height: 1.3;
@@ -966,16 +966,13 @@ if (!empty($items)) {
   <div class="col-md-6 col-lg-4">
     <div class="card h-100 border">
       <div class="card-body">
-        <h6 class="card-title ingredient-name"></h6>
+        <h6 class="card-title-menu ingredient-name"></h6>
         <div class="ingredient-details">
           <p class="mb-1"><small><strong>Required per unit:</strong> <span class="required-qty"></span></small></p>
           <p class="mb-1"><small><strong>Available Stock:</strong> <span class="stock-qty"></span></small></p>
           <p class="mb-1"><small><strong>Producible:</strong> <span class="producible-qty"></span></small></p>
         </div>
-        <div class="progress mt-2" style="height: 6px;">
-          <div class="progress-bar progress-bar-striped ingredient-status" role="progressbar" style="width: 0%"></div>
-        </div>
-        <div class="mt-1 ingredient-status-text"></div>
+
       </div>
     </div>
   </div>
@@ -1835,24 +1832,11 @@ $('#wastageSearch').on('input', function() {
                                         template.find('.stock-qty').text(availableQty + ' ' + (inventoryItem.unit || ''));
 
                                         // Style based on availability
-                                        var statusClass = 'bg-success';
-                                        var statusWidth = 100;
-                                        var statusText = 'Sufficient';
-
                                         if (availableQty < requiredQty) {
-                                            statusClass = 'bg-danger';
-                                            statusWidth = 0;
-                                            statusText = 'Insufficient';
                                             producible = 0;
-                                        } else if (availableQty < requiredQty * 10) {
-                                            statusClass = 'bg-warning';
-                                            statusWidth = (availableQty / (requiredQty * 10)) * 100;
-                                            statusText = 'Low Stock';
                                         }
 
                                         template.find('.producible-qty').text(producible);
-                                        template.find('.ingredient-status').removeClass('bg-success bg-warning bg-danger').addClass(statusClass).css('width', statusWidth + '%');
-                                        template.find('.ingredient-status-text').text(statusText);
 
                                         $('#ingredientsContainer').append(template);
                                     }

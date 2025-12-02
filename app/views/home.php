@@ -112,7 +112,7 @@
     <div class="card">
       <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
         <h5 class="card-title mb-0">
-          <i class="fas fa-exclamation-triangle me-2"></i>Ingredient Alerts
+          <i class="fas fa-exclamation-triangle me-2"></i>Production Capacity Alerts
         </h5>
         <a href="/production" class="btn btn-sm btn-light">View All</a>
       </div>
@@ -161,7 +161,7 @@
     </div>
   </div>
 
-  <?php if ($_SESSION['user_type'] === 'Owner'): ?>
+  <?php if ($_SESSION['user_type'] === 'Manager'): ?>
   <!-- User Layout: Production Chart + Stacked Efficiency Data -->
   <div class="col-md-6 mt-4">
     <div class="card">
@@ -276,8 +276,8 @@
 
 </div>
 
-<!-- Production Efficiency Section - Only show for non-Owner types -->
-<?php if ($_SESSION['user_type'] !== 'Owner'): ?>
+<!-- Production Efficiency Section - Only show for non-Manager types -->
+<?php if ($_SESSION['user_type'] !== 'Manager'): ?>
 <div class="row mt-4">
   <!-- Today's Production Totals -->
   <div class="col-md-6">
@@ -384,7 +384,7 @@
     }
   });
 
-  <?php if ($_SESSION['user_type'] !== 'Owner'): ?>
+  <?php if ($_SESSION['user_type'] !== 'Manager'): ?>
   // Daily Cost vs Profit
   const costProfitCtx = document.getElementById('costProfitChart').getContext('2d');
   new Chart(costProfitCtx, {
