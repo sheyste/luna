@@ -435,7 +435,7 @@
           <div class="col-md-4">
             <div class="mb-3">
               <label for="menuPrice" class="form-label">SELLING PRICE</label>
-              <input type="number" class="form-control" id="menuPrice" name="price" required min="0" step="0.01" placeholder="0.00">
+              <input type="number" class="form-control" id="menuPrice" name="price" required min="0" step="0.01" placeholder="">
             </div>
           </div>
         </div>
