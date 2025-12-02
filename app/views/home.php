@@ -152,7 +152,7 @@
     <div class="card">
       <div class="card-header bg-secondary text-white">
         <h5 class="card-title mb-0">
-          <i class="fas fa-chart-pie me-2"></i>Top Item Price Contribution
+          <i class="fas fa-chart-pie me-2"></i>Top 10 Inventory Value
         </h5>
       </div>
       <div class="card-body">
@@ -436,8 +436,10 @@
                 return data.labels.map((label, i) => {
                   const value = data.datasets[0].data[i];
                   const backgroundColor = data.datasets[0].backgroundColor[i];
+                  // Split long labels into multiple lines
+                  const wrappedLabel = label.length > 25 ? label.substring(0, 18) + '\n' + label.substring(18) : label;
                   return {
-                    text: `${label}`,
+                    text: `${wrappedLabel}`,
                     fillStyle: backgroundColor,
                     strokeStyle: backgroundColor,
                     lineWidth: 1,
@@ -447,7 +449,14 @@
                 });
               }
               return [];
-            }
+            },
+            boxWidth: 12,
+            padding: 8,
+            font: {
+              size: 11
+            },
+            usePointStyle: true,
+            maxWidth: 150
           }
         },
         tooltip: {
