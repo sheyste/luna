@@ -378,7 +378,7 @@
             <i class="fa fa-times"></i>
         </button>
     </div>
-    <?php if ($_SESSION['user_type'] === 'Kitchen Staff'): ?>
+    <?php if ($_SESSION['user_type'] === 'Admin' || $_SESSION['user_type'] === 'Kitchen Staff'): ?>
     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMenuModal">
         <i class="fa fa-plus me-1"></i> Add Menu
     </button>

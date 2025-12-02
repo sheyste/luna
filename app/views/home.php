@@ -152,7 +152,7 @@
     <div class="card">
       <div class="card-header bg-secondary text-white">
         <h5 class="card-title mb-0">
-          <i class="fas fa-chart-pie me-2"></i>Inventory Items Distribution
+          <i class="fas fa-chart-pie me-2"></i>Top Item Price Contribution
         </h5>
       </div>
       <div class="card-body">
@@ -413,9 +413,9 @@
   new Chart(inventoryCtx, {
     type: 'pie',
     data: {
-      labels: inventoryData2.map(item => `${item.name} (${item.quantity})`),
+      labels: inventoryData2.map(item => `${item.name} (₱${parseFloat(item.total_price).toLocaleString()})`),
       datasets: [{
-        data: inventoryData2.map(item => item.quantity),
+        data: inventoryData2.map(item => item.total_price),
         backgroundColor: [
           '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
           '#858796', '#5a5c69', '#fd7e14', '#20c997', '#6f42c1'
@@ -454,7 +454,7 @@
           callbacks: {
             label: function(context) {
               const item = inventoryData2[context.dataIndex];
-              return `${item.name}: ${item.quantity}`;
+              return `${item.name}: ₱${parseFloat(item.total_price).toLocaleString()}`;
             }
           }
         }

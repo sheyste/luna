@@ -512,9 +512,11 @@
                  <button class="btn btn-success btn-sm me-2" data-bs-toggle="modal" data-bs-target="#modalAddUser">
                      <i class="fa fa-user-plus me-1"></i> Add User
                  </button>
+                 <?php if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'Owner'): ?>
                  <button class="btn btn-info btn-sm" id="debugEmailBtn">
                      <i class="fa fa-cog me-1"></i> Debug SMTP Config
                  </button>
+                 <?php endif; ?>
              </div>
         </div>
     <div class="card-body">
@@ -545,9 +547,11 @@
                                     <button class="btn btn-info btn-sm edit-btn" data-id="<?= htmlspecialchars($user['id']) ?>">
                                         <i class="fa fa-edit"></i> Edit
                                     </button>
+                                    <?php if (!isset($_SESSION['user_id']) || $user['id'] != $_SESSION['user_id']): ?>
                                     <button class="btn btn-danger btn-sm delete-btn" data-id="<?= htmlspecialchars($user['id']) ?>">
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
+                                    <?php endif; ?>
                                     <?php if (isset($_SESSION['user_type']) && $_SESSION['user_type'] == 'Admin'): ?>
                                         <button class="btn btn-secondary btn-sm test-email-btn" data-email="<?= htmlspecialchars($user['email']) ?>" data-name="<?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?>">
                                             <i class="fa fa-envelope"></i> Test Email
@@ -564,6 +568,7 @@
 </div>
 
 <!-- SMTP Testing Card -->
+<?php if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'Owner'): ?>
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 fw-bold text-success">SMTP Email Testing</h6>
@@ -585,6 +590,7 @@
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <!-- Add User Modal -->
 <div class="modal fade modern-modal add-modal" id="modalAddUser" tabindex="-1" aria-labelledby="modalAddUserLabel" aria-hidden="true">

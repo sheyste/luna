@@ -83,7 +83,7 @@ public function index()
     $arrivingToday = $result->fetch_assoc()['count'] ?? 0;
 
     // Inventory data for pie chart
-    $result = $this->conn->query("SELECT name, quantity FROM inventory WHERE quantity > 0 ORDER BY quantity DESC");
+    $result = $this->conn->query("SELECT name, (quantity * price) as total_price FROM inventory WHERE quantity > 0 ORDER BY total_price DESC");
     $inventoryData = [];
     while ($row = $result->fetch_assoc()) {
         $inventoryData[] = $row;

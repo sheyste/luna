@@ -158,7 +158,7 @@ if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Cashier') {
     unset($routes['/inventory/edit']);
     unset($routes['/inventory/delete']);
     unset($routes['/inventory/getDetail']);
-    unset($routes['/inventory/getAll']);
+
     unset($routes['/inventory/print-barcode']);
     unset($routes['/inventory/physical-count']);
     unset($routes['/inventory/addCountEntry']);
@@ -198,26 +198,6 @@ if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'Kitchen Staff')
     unset($routes['/backup/upload']);
     // Remove non-kitchen-staff related routes
     unset($routes['/inventory']);
-    unset($routes['/inventory/add']);
-    unset($routes['/inventory/edit']);
-    unset($routes['/inventory/delete']);
-    unset($routes['/inventory/getDetail']);
-    unset($routes['/inventory/getAll']);
-    unset($routes['/inventory/print-barcode']);
-    unset($routes['/inventory/physical-count']);
-    unset($routes['/inventory/addCountEntry']);
-    unset($routes['/inventory/getPendingEntries']);
-    unset($routes['/inventory/deleteCountEntry']);
-    unset($routes['/inventory/savePhysicalCount']);
-    unset($routes['/inventory/physical-count-export']);
-    unset($routes['/inventory/check-low-stock-db']);
-    unset($routes['/inventory/check-and-send-alerts']);
-    unset($routes['/inventory/low-stock-alerts']);
-    unset($routes['/inventory/auto-update-alerts']);
-    unset($routes['/inventory/check-low-stock-db']);
-    unset($routes['/inventory/check-and-send-alerts']);
-    unset($routes['/inventory/test-smtp-connection']);
-    unset($routes['/inventory/send-test-email']);
     unset($routes['/purchase_order']);
     unset($routes['/purchase_order/add']);
     unset($routes['/purchase_order/delete']);
