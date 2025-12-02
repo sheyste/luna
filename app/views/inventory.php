@@ -527,7 +527,7 @@
                               $rowClass = '';
                               if ($max_quantity > 0) {
                                   $stockRatio = $quantity / $max_quantity;
-                                  if ($stockRatio <= 0.2) {
+                                  if ($stockRatio <= 0.25) {
                                       $rowClass = 'table-danger'; // Low stock
                                   } elseif ($stockRatio >= 1.1) {
                                       $rowClass = 'table-warning'; // Overstock

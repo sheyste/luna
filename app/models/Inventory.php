@@ -72,7 +72,7 @@ class Inventory extends Model
             $alertModel = new LowStockAlert();
             
             // Check if item is currently low stock
-            $isLowStock = ($data['quantity'] / $data['max_quantity']) <= 0.2;
+            $isLowStock = ($data['quantity'] / $data['max_quantity']) <= 0.25;
             
             // Get all pending alerts for this item and update their resolution status
             $pendingAlerts = $alertModel->getPendingAlerts();
@@ -113,7 +113,7 @@ class Inventory extends Model
 
     public function getLowStockItems()
     {
-        $stmt = $this->db->query("SELECT * FROM inventory WHERE quantity / max_quantity <= 0.2");
+        $stmt = $this->db->query("SELECT * FROM inventory WHERE quantity / max_quantity <= 0.25");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
