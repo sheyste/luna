@@ -424,7 +424,7 @@ class LowStockAlertController extends Controller
                         
                         // Determine percentage color class
                         $percentageClass = 'ok';
-                        if ($percentage <= 20) {
+                        if ($percentage <= 25) {
                             $percentageClass = 'critical';
                         } elseif ($percentage <= 50) {
                             $percentageClass = 'warning';

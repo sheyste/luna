@@ -255,7 +255,7 @@ class LowStockAlert extends Model
             // Check if item is currently low stock
             $item = $inventoryModel->getItemById($alert['item_id']);
             if ($item) {
-                $isLowStock = ($item['quantity'] / $item['max_quantity']) <= 0.2;
+                $isLowStock = ($item['quantity'] / $item['max_quantity']) <= 0.25;
                 
                 // If item is not low stock, mark alert as resolved
                 if (!$isLowStock) {
@@ -289,12 +289,12 @@ class LowStockAlert extends Model
         require_once BASE_PATH . '/app/models/Inventory.php';
         $inventoryModel = new Inventory();
         $item = $inventoryModel->getItemById($itemId);
-        
+
         if (!$item) {
             return false;
         }
-        
-        // Check if item is low stock (quantity is 20% or less of max_quantity)
-        return ($item['quantity'] / $item['max_quantity']) <= 0.2;
+
+        // Check if item is low stock (quantity is 25% or less of max_quantity)
+        return ($item['quantity'] / $item['max_quantity']) <= 0.25;
     }
 }
