@@ -592,10 +592,16 @@
                 <option value="Grains">Grains</option>
                 <option value="Spices">Spices</option>
                 <option value="Beverages">Beverages</option>
-                <option value="Condiments">Condiments</option>
                 <option value="Frozen">Frozen</option>
                 <option value="Canned">Canned</option>
-                <option value="Other">Other</option>
+                <option value="Condiments">Condiments</option>
+                <option value="Bakery">Bakery</option>
+                <option value="Snacks">Snacks</option>
+                <option value="Seafood">Seafood</option>
+                <option value="Soft Drinks">Soft Drinks</option>
+                <option value="Juices">Juices</option>
+                <option value="Alcoholic Drinks">Alcoholic Drinks</option>
+                <option value="Energy Drinks">Energy Drinks</option>
               </select>
             </div>
           </div>
@@ -619,11 +625,17 @@
               <label for="itemUnit" class="form-label">UNIT</label>
               <select class="form-select" id="itemUnit" name="unit" required>
                 <option value="pcs">pcs</option>
+
+                <!-- Weight units -->
                 <option value="Kg">Kg</option>
                 <option value="g">g</option>
                 <option value="mg">mg</option>
+                <option value="oz">oz</option>
+
+                <!-- Volume units -->
                 <option value="L">L</option>
                 <option value="ml">ml</option>
+                <option value="gallon">gallon</option>
               </select>
             </div>
           </div>
