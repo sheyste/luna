@@ -137,7 +137,7 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 fw-bold text-primary">Purchase Orders</h6>
-<?php if ($_SESSION['user_type'] !== 'Inventory Staff'): ?>
+<?php if ($_SESSION['user_type'] !== 'Manager' && $_SESSION['user_type'] !== 'Owner'): ?>
         <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addPOModal">
             <i class="fa fa-plus me-1"></i> Add Purchase Order
         </button>
@@ -155,7 +155,9 @@
                         <th>Order Date</th>
                         <th>Expected Delivery</th>
                         <th>Status</th>
+                        <?php if ($_SESSION['user_type'] !== 'Manager' && $_SESSION['user_type'] !== 'Owner'): ?>
                         <th>Actions</th>
+                        <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -220,14 +222,15 @@
                                     : 'N/A' ?></td>
 
                             <td data-label="Status"><span class="badge <?= getStatusBadgeClass($order['status']) ?>"><?= htmlspecialchars($order['status']) ?></span></td>
+                            <?php if ($_SESSION['user_type'] !== 'Manager' && $_SESSION['user_type'] !== 'Owner'): ?>
                             <td data-label="Actions">
                                 <?php if ($order['status'] === 'Pending'): ?>
                                     <button class="btn btn-primary btn-sm status-btn" data-id="<?= $order['id'] ?>" data-action="ordered">
-                                        <i class="fa fa-shopping-cart"></i> Order
+                                        <i class="fa fa-shopping-cart"></i> Ordered
                                     </button>
                                 <?php elseif ($order['status'] === 'Ordered'): ?>
                                     <button class="btn btn-success btn-sm status-btn" data-id="<?= $order['id'] ?>" data-action="received">
-                                        <i class="fa fa-truck"></i> Receive
+                                        <i class="fa fa-truck"></i> Received
                                     </button>
                                 <?php elseif ($order['status'] === 'Received' || $order['status'] === 'Cancelled'): ?>
                                     <button class="btn btn-secondary btn-sm view-btn" data-id="<?= $order['id'] ?>">
@@ -236,10 +239,11 @@
                                 <?php endif; ?>
                                 <?php if ($order['status'] !== 'Received' && $order['status'] !== 'Cancelled'): ?>
                                     <button class="btn btn-danger btn-sm status-btn" data-id="<?= $order['id'] ?>" data-action="cancelled">
-                                        <i class="fa fa-times"></i> Cancel
+                                        <i class="fa fa-times"></i> Canceled
                                     </button>
                                 <?php endif; ?>
                             </td>
+                            <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -743,19 +747,19 @@ $(document).ready(function() {
                         if (response.status === 'Pending') {
                             actionsHtml = `
                                 <button class="btn btn-primary btn-sm status-btn" data-id="${poId}" data-action="ordered">
-                                    <i class="fa fa-shopping-cart"></i> Order
+                                    <i class="fa fa-shopping-cart"></i> Ordered
                                 </button>
                             `;
                         } else if (response.status === 'Ordered') {
                             actionsHtml = `
                                 <button class="btn btn-success btn-sm status-btn" data-id="${poId}" data-action="received">
-                                    <i class="fa fa-truck"></i> Receive
+                                    <i class="fa fa-truck"></i> Received
                                 </button>
                             `;
                         }
                         actionsHtml += `
                             <button class="btn btn-danger btn-sm status-btn" data-id="${poId}" data-action="cancelled">
-                                <i class="fa fa-times"></i> Cancel
+                                <i class="fa fa-times"></i> Canceled
                             </button>
                         `;
 

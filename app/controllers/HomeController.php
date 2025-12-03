@@ -64,7 +64,7 @@ public function index()
     $result = $this->conn->query("SELECT COUNT(*) as total FROM inventory");
     $totalItems = $result->fetch_assoc()['total'] ?? 0;
 
-    $result = $this->conn->query("SELECT COUNT(*) as count FROM inventory WHERE max_quantity > 0 AND quantity <= (max_quantity * 0.2)");
+    $result = $this->conn->query("SELECT COUNT(*) as count FROM inventory WHERE max_quantity > 0 AND quantity <= (max_quantity * 0.25)");
     $lowStockItems = $result->fetch_assoc()['count'] ?? 0;
 
     $result = $this->conn->query("SELECT COUNT(*) as count FROM inventory WHERE max_quantity > 0 AND quantity >= (max_quantity * 1.1)");
@@ -89,8 +89,8 @@ public function index()
         $inventoryData[] = $row;
     }
 
-    // Latest low stock alerts
-    $result = $this->conn->query("SELECT item_name, current_quantity, unit, resolved, alert_date FROM low_stock_alerts WHERE status != 'resolved' ORDER BY alert_date DESC LIMIT 5");
+    // Latest low stock items
+    $result = $this->conn->query("SELECT name as item_name, quantity as current_quantity, unit FROM inventory WHERE max_quantity > 0 AND quantity <= (max_quantity * 0.25) ORDER BY (max_quantity * 0.25 - quantity) DESC");
     $latestLowStockAlerts = [];
     while ($row = $result->fetch_assoc()) {
         $latestLowStockAlerts[] = $row;
@@ -152,26 +152,6 @@ public function index()
     $totalWastageRecent = $totalWastageWeek;
     $wastagePercentage = $wastagePercentageWeek;
 
-    // Ingredient availability alerts - check which menu items have insufficient ingredients
-    $result = $this->conn->query("
-        SELECT
-            m.name as menu_name,
-            m.id as menu_id,
-            FLOOR(MIN(i.quantity / mi.quantity)) as max_producible
-        FROM menus m
-        JOIN menu_ingredients mi ON m.id = mi.menu_id
-        JOIN inventory i ON mi.inventory_id = i.id
-        WHERE mi.quantity > 0
-        GROUP BY m.id, m.name
-        HAVING max_producible < 20
-        ORDER BY max_producible ASC
-        LIMIT 5
-    ");
-    $ingredientAlerts = [];
-    while ($row = $result->fetch_assoc()) {
-        $ingredientAlerts[] = $row;
-    }
-
     $this->view('home', [
         'productionData'    => $productionData,
         'costProfitData'    => $costProfitData,
@@ -190,8 +170,7 @@ public function index()
         'wastagePercentage' => $wastagePercentage,
         'wastagePercentageToday' => $wastagePercentageToday,
         'wastagePercentageWeek' => $wastagePercentageWeek,
-        'wastagePercentageMonth' => $wastagePercentageMonth,
-        'ingredientAlerts' => $ingredientAlerts
+        'wastagePercentageMonth' => $wastagePercentageMonth
     ]);
 }
 
