@@ -300,6 +300,7 @@ class PurchaseOrderController extends Controller {
 
         $id = intval($input['id']);
         $newStatus = trim($input['status']);
+        $expectedDelivery = isset($input['expected_delivery']) ? $input['expected_delivery'] : null;
 
         // Validate status
         $validStatuses = ['Pending', 'Ordered', 'Received', 'Cancelled'];
@@ -398,9 +399,14 @@ class PurchaseOrderController extends Controller {
                 $update_items_stmt->close();
             }
 
-            // Update the purchase order status
-            $update_stmt = $this->conn->prepare("UPDATE purchase_orders SET status = ? WHERE id = ?");
-            $update_stmt->bind_param("si", $newStatus, $id);
+            // Update the purchase order status (and expected delivery if provided for Ordered status)
+            if ($newStatus === 'Ordered' && $expectedDelivery) {
+                $update_stmt = $this->conn->prepare("UPDATE purchase_orders SET status = ?, expected_delivery = ? WHERE id = ?");
+                $update_stmt->bind_param("ssi", $newStatus, $expectedDelivery, $id);
+            } else {
+                $update_stmt = $this->conn->prepare("UPDATE purchase_orders SET status = ? WHERE id = ?");
+                $update_stmt->bind_param("si", $newStatus, $id);
+            }
             $update_stmt->execute();
             $update_stmt->close();
 

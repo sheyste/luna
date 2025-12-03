@@ -137,7 +137,7 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 fw-bold text-primary">Purchase Orders</h6>
-<?php if ($_SESSION['user_type'] !== 'Inventory Staff'): ?>
+<?php if ($_SESSION['user_type'] !== 'Manager' && $_SESSION['user_type'] !== 'Owner'): ?>
         <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addPOModal">
             <i class="fa fa-plus me-1"></i> Add Purchase Order
         </button>
@@ -155,7 +155,9 @@
                         <th>Order Date</th>
                         <th>Expected Delivery</th>
                         <th>Status</th>
+                        <?php if ($_SESSION['user_type'] !== 'Manager' && $_SESSION['user_type'] !== 'Owner'): ?>
                         <th>Actions</th>
+                        <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -220,14 +222,15 @@
                                     : 'N/A' ?></td>
 
                             <td data-label="Status"><span class="badge <?= getStatusBadgeClass($order['status']) ?>"><?= htmlspecialchars($order['status']) ?></span></td>
+                            <?php if ($_SESSION['user_type'] !== 'Manager' && $_SESSION['user_type'] !== 'Owner'): ?>
                             <td data-label="Actions">
                                 <?php if ($order['status'] === 'Pending'): ?>
                                     <button class="btn btn-primary btn-sm status-btn" data-id="<?= $order['id'] ?>" data-action="ordered">
-                                        <i class="fa fa-shopping-cart"></i> Order
+                                        <i class="fa fa-shopping-cart"></i> Ordered
                                     </button>
                                 <?php elseif ($order['status'] === 'Ordered'): ?>
                                     <button class="btn btn-success btn-sm status-btn" data-id="<?= $order['id'] ?>" data-action="received">
-                                        <i class="fa fa-truck"></i> Receive
+                                        <i class="fa fa-truck"></i> Received
                                     </button>
                                 <?php elseif ($order['status'] === 'Received' || $order['status'] === 'Cancelled'): ?>
                                     <button class="btn btn-secondary btn-sm view-btn" data-id="<?= $order['id'] ?>">
@@ -236,10 +239,11 @@
                                 <?php endif; ?>
                                 <?php if ($order['status'] !== 'Received' && $order['status'] !== 'Cancelled'): ?>
                                     <button class="btn btn-danger btn-sm status-btn" data-id="<?= $order['id'] ?>" data-action="cancelled">
-                                        <i class="fa fa-times"></i> Cancel
+                                        <i class="fa fa-times"></i> Canceled
                                     </button>
                                 <?php endif; ?>
                             </td>
+                            <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -271,10 +275,7 @@
                 <label for="addOrderDate">Order Date</label>
                 <input type="date" id="addOrderDate" name="order_date" class="form-control" required>
             </div>
-            <div class="col-md-6 mb-2">
-                <label for="addExpected">Expected Delivery</label>
-                <input type="date" id="addExpected" name="expected_delivery" class="form-control" required>
-            </div>
+            <!-- Removed Expected Delivery field from Add PO Modal -->
         </div>
         <hr>
         <h6 class="mt-3">Items</h6>
@@ -290,6 +291,29 @@
       </div>
     </form>
   </div>
+</div>
+
+<!-- Expected Delivery Modal -->
+<div class="modal fade" id="expectedDeliveryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form class="modal-content" id="expectedDeliveryForm">
+            <div class="modal-header">
+                <h5 class="modal-title">Set Expected Delivery Date</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="expectedDeliveryPOId" name="po_id">
+                <div class="mb-3">
+                    <label for="expectedDeliveryDate" class="form-label">Expected Delivery Date</label>
+                    <input type="date" class="form-control" id="expectedDeliveryDate" name="expected_delivery" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Set Expected Delivery</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <!-- Hidden template for PO item row -->
@@ -458,6 +482,7 @@ $(document).ready(function() {
 
     const viewPOModal = new bootstrap.Modal(document.getElementById('viewPOModal'));
     const addPOModalEl = document.getElementById('addPOModal');
+    const expectedDeliveryModal = new bootstrap.Modal(document.getElementById('expectedDeliveryModal'));
 
     $('#addPOModal form').on('submit', function(e) {
         if ($('#po-items-container .po-item-row').length === 0) {
@@ -697,12 +722,24 @@ $(document).ready(function() {
     $('#poTable').on('click', '.status-btn', function() {
         var poId = $(this).data('id');
         var action = $(this).data('action');
+        var originalText = $(this).html();
+
+        if (action === 'ordered') {
+            // Show Expected Delivery modal instead of immediately updating status
+            $('#expectedDeliveryPOId').val(poId);
+            
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            $('#expectedDeliveryDate').attr('min', today);
+            $('#expectedDeliveryDate').val(today); // Set default to today
+            
+            expectedDeliveryModal.show();
+            return;
+        }
+
         var confirmMessage = '';
 
         switch (action) {
-            case 'ordered':
-                confirmMessage = 'Are you sure you want to mark this purchase order as Ordered?';
-                break;
             case 'received':
                 confirmMessage = 'Are you sure you want to mark this purchase order as Received?';
                 break;
@@ -743,19 +780,19 @@ $(document).ready(function() {
                         if (response.status === 'Pending') {
                             actionsHtml = `
                                 <button class="btn btn-primary btn-sm status-btn" data-id="${poId}" data-action="ordered">
-                                    <i class="fa fa-shopping-cart"></i> Order
+                                    <i class="fa fa-shopping-cart"></i> Ordered
                                 </button>
                             `;
                         } else if (response.status === 'Ordered') {
                             actionsHtml = `
                                 <button class="btn btn-success btn-sm status-btn" data-id="${poId}" data-action="received">
-                                    <i class="fa fa-truck"></i> Receive
+                                    <i class="fa fa-truck"></i> Received
                                 </button>
                             `;
                         }
                         actionsHtml += `
                             <button class="btn btn-danger btn-sm status-btn" data-id="${poId}" data-action="cancelled">
-                                <i class="fa fa-times"></i> Cancel
+                                <i class="fa fa-times"></i> Canceled
                             </button>
                         `;
 
@@ -781,6 +818,78 @@ $(document).ready(function() {
             // Enable button if canceled
             $(this).prop('disabled', false);
         }
+    });
+
+    // Handle Expected Delivery form submission
+    $('#expectedDeliveryForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const poId = $('#expectedDeliveryPOId').val();
+        const expectedDelivery = $('#expectedDeliveryDate').val();
+        const $submitBtn = $(this).find('button[type="submit"]');
+        const originalText = $submitBtn.text();
+        
+        // Show loading state
+        $submitBtn.prop('disabled', true).text('Setting...');
+
+        $.ajax({
+            url: '/purchase_order/updateStatus',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                id: poId,
+                status: 'Ordered',
+                expected_delivery: expectedDelivery
+            }),
+            success: function(response) {
+                if (response.success) {
+                    // Update the status badge and row styling
+                    var $row = $('#poTable tbody tr[data-id="' + poId + '"]');
+                    var $statusCell = $row.find('td[data-label="Status"] span.badge');
+
+                    // Remove current classes and add new ones
+                    $statusCell.removeClass('bg-success bg-info bg-danger bg-warning text-dark')
+                              .addClass(getStatusBadgeClass(response.status))
+                              .text(response.status);
+
+                    // Update row classes
+                    $row.removeClass('table-success table-warning table-info table-danger')
+                        .addClass(getStatusRowClass(response.status));
+
+                    // Update Expected Delivery column
+                    var expectedDeliveryCell = $row.find('td[data-label="Expected Delivery"]');
+                    if (expectedDelivery && expectedDelivery !== '0000-00-00') {
+                        const formattedDate = formatDate(expectedDelivery);
+                        expectedDeliveryCell.text(formattedDate);
+                    }
+
+                    // Update actions buttons
+                    var actionsHtml = `
+                        <button class="btn btn-success btn-sm status-btn" data-id="${poId}" data-action="received">
+                            <i class="fa fa-truck"></i> Received
+                        </button>
+                        <button class="btn btn-danger btn-sm status-btn" data-id="${poId}" data-action="cancelled">
+                            <i class="fa fa-times"></i> Canceled
+                        </button>
+                    `;
+
+                    $row.find('td[data-label="Actions"]').html(actionsHtml);
+
+                    // Refresh the DataTable
+                    table.row($row).invalidate().draw(false);
+
+                    expectedDeliveryModal.hide();
+                    alert('Purchase order marked as Ordered with expected delivery date set successfully!');
+                } else {
+                    alert('Error updating status: ' + (response.message || 'Unknown error'));
+                    $submitBtn.prop('disabled', false).text(originalText);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('Error updating status: ' + error);
+                $submitBtn.prop('disabled', false).text(originalText);
+            }
+        });
     });
 
     // Handle view button click

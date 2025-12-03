@@ -67,7 +67,7 @@
 <div class="row">
 
   <!-- Latest Low Stock Alerts -->
-  <div class="col-md-4 mt-4">
+  <div class="col-md-5 mt-4">
     <div class="card">
       <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
         <h5 class="card-title mb-0">
@@ -75,80 +75,61 @@
         </h5>
           <a href="/inventory/low-stock-alerts" class="btn btn-sm btn-light">View All</a>
       </div>
-      <div class="card-body">
+      <div class="card-body" style="max-height: 400px; overflow-y: auto;">
         <?php if (!empty($latestLowStockAlerts)): ?>
-          <div class="list-group">
+          <div class="list-group list-group-flush">
             <?php foreach ($latestLowStockAlerts as $alert): ?>
-              <div class="list-group-item">
-                <div class="d-flex justify-content-between">
-                  <strong><?= htmlspecialchars($alert['item_name']) ?></strong>
-                  <span><?= $alert['current_quantity'] ?> <?= htmlspecialchars($alert['unit']) ?></span>
+              <div class="list-group-item border-0">
+                <div class="row align-items-center">
+                  <div class="col-8">
+                    <div class="d-flex align-items-center">
+                      <div class="me-3">
+                        <?php if ($alert['current_quantity'] == 0): ?>
+                          <i class="fas fa-times-circle text-danger fs-5"></i>
+                        <?php elseif ($alert['current_quantity'] <= ($alert['current_quantity'] * 0.1)): ?>
+                          <i class="fas fa-exclamation-triangle text-warning fs-5"></i>
+                        <?php else: ?>
+                          <i class="fas fa-exclamation-circle text-warning fs-5"></i>
+                        <?php endif; ?>
+                      </div>
+                      <h6 class="mb-1 fw-bold text-truncate" >
+                        <?= htmlspecialchars($alert['item_name']) ?>
+                      </h6>
+                    </div>
+                  </div>
+                  <div class="col-4 text-end">
+                    <span class="<?= $alert['current_quantity'] == 0 ? 'text-danger fw-bold' : 'text-warning fw-bold' ?>">
+                      <?= $alert['current_quantity'] ?> <?= htmlspecialchars($alert['unit']) ?>
+                    </span>
+                    <br>
+                    <small class="text-muted">
+                      <?php if ($alert['current_quantity'] == 0): ?>
+                        Out of Stock
+                      <?php else: ?>
+                        Low Stock
+                      <?php endif; ?>
+                    </small>
+                  </div>
                 </div>
-                <div class="d-flex justify-content-between">
-                  <small class="text-muted"><?= htmlspecialchars(isset($alert['alert_date']) ? date('F j, Y g:i A', strtotime($alert['alert_date'])):'') ?></small>
-                  <small>
-                    <?php if ($alert['resolved'] == 1): ?>
-                      <span class="badge bg-success">Resolved</span>
-                    <?php else: ?>
-                      <span class="badge bg-warning text-dark">Pending</span>
-                    <?php endif; ?>
-                  </small>
-                </div>
+                <hr class="my-2">
               </div>
             <?php endforeach; ?>
           </div>
         <?php else: ?>
-          <div class="text-center py-3">
-            <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
-            <p class="text-muted mb-0">No low stock alerts</p>
+          <div class="text-center py-4">
+            <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
+            <h6 class="text-success mb-1">All Stocks Sufficient</h6>
+            <p class="text-muted mb-0 small">No items need immediate attention</p>
           </div>
         <?php endif; ?>
       </div>
     </div>
   </div>
 
-  <!-- Ingredient Availability Alerts -->
-  <div class="col-md-4 mt-4">
-    <div class="card">
-      <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-        <h5 class="card-title mb-0">
-          <i class="fas fa-exclamation-triangle me-2"></i>Production Capacity Alerts
-        </h5>
-        <a href="/production" class="btn btn-sm btn-light">View All</a>
-      </div>
-      <div class="card-body">
-        <?php if (!empty($ingredientAlerts)): ?>
-          <div class="list-group list-group-flush">
-            <?php foreach ($ingredientAlerts as $alert): ?>
-              <div class="list-group-item px-0">
-                <div class="d-flex justify-content-between align-items-center">
-                  <strong class="text-truncate" style="max-width: 150px;"><?= htmlspecialchars($alert['menu_name']) ?></strong>
-                  <span class="badge bg-danger">
-                    <?= $alert['max_producible'] ?? 0 ?> left
-                  </span>
-                </div>
-                <small class="text-muted">Can produce max <?= $alert['max_producible'] ?? 0 ?> units</small>
-              </div>
-            <?php endforeach; ?>
-          </div>
-        <?php else: ?>
-          <div class="text-center py-3">
-            <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
-            <p class="text-muted mb-0">All ingredients sufficient</p>
-          </div>
-        <?php endif; ?>
-        <div class="mt-2">
-          <small class="text-muted">
-            <i class="fas fa-info-circle me-1"></i>
-            Shows menu items that can produce fewer than 20 units before running out of ingredients.
-          </small>
-        </div>
-      </div>
-    </div>
-  </div>
+
 
   <!-- Inventory Pie Chart and Low Stock Alerts -->
-  <div class="col-md-4 mt-4">
+  <div class="col-md-7 mt-4">
     <div class="card">
       <div class="card-header bg-secondary text-white">
         <h5 class="card-title mb-0">

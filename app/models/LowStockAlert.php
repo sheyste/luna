@@ -19,8 +19,12 @@ class LowStockAlert extends Model
     public function getPendingAlerts()
     {
         $stmt = $this->db->prepare("
-            SELECT * FROM low_stock_alerts 
-            WHERE status = 'pending' 
+            SELECT
+                lsa.*,
+                i.quantity as current_quantity
+            FROM low_stock_alerts lsa
+            LEFT JOIN inventory i ON lsa.item_id = i.id
+            WHERE status = 'pending'
             ORDER BY alert_date ASC
         ");
         $stmt->execute();
@@ -79,17 +83,21 @@ class LowStockAlert extends Model
         try {
             // Start a transaction
             $this->db->beginTransaction();
-            
+
             // Get pending alerts with row-level locking
             $stmt = $this->db->prepare("
-                SELECT * FROM low_stock_alerts 
-                WHERE status = 'pending' 
+                SELECT
+                    lsa.*,
+                    i.quantity as current_quantity
+                FROM low_stock_alerts lsa
+                LEFT JOIN inventory i ON lsa.item_id = i.id
+                WHERE status = 'pending'
                 ORDER BY alert_date ASC
-                FOR UPDATE
+                FOR UPDATE OF lsa
             ");
             $stmt->execute();
             $alerts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+
             // Return both the alerts and a flag to indicate we're in a transaction
             return [
                 'alerts' => $alerts,
@@ -224,7 +232,11 @@ class LowStockAlert extends Model
     public function getAllAlerts()
     {
         $stmt = $this->db->prepare("
-            SELECT * FROM low_stock_alerts
+            SELECT
+                lsa.*,
+                i.quantity as current_quantity
+            FROM low_stock_alerts lsa
+            LEFT JOIN inventory i ON lsa.item_id = i.id
             ORDER BY alert_date DESC
         ");
         $stmt->execute();
