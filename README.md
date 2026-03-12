@@ -2,13 +2,17 @@
 
 A comprehensive inventory and production management system built with PHP using a Model-View-Controller (MVC) architecture. The system provides robust features for managing inventory, production, purchase orders, and low stock alerts with automated email notifications. The front-end is styled with Bootstrap 5 and uses jQuery and DataTables for dynamic table interactions.
 
+
+## System Overview
+
 <img width="1919" height="969" alt="image" src="https://github.com/user-attachments/assets/a0e36d43-ec1c-45ed-a386-762a9786a6bc" />
 <img width="1919" height="970" alt="image" src="https://github.com/user-attachments/assets/a664f162-72a4-4a0a-9c84-e058066fb876" />
 <img width="1919" height="907" alt="image" src="https://github.com/user-attachments/assets/9b2b09c8-fc15-4ddf-8bfc-92fa6e7d99af" />
 <img width="1919" height="961" alt="image" src="https://github.com/user-attachments/assets/ff8367da-e67f-4a25-a21e-dec1e4a913cb" />
 <img width="1919" height="977" alt="image" src="https://github.com/user-attachments/assets/35176ff6-f37c-4f56-a7c2-c8eccce10289" />
-<img width="1919" height="968" alt="image" src="https://github.com/user-attachments/assets/6bd4abfa-d921-4c05-a0e4-351f166df2ba" />
 <img width="1919" height="967" alt="image" src="https://github.com/user-attachments/assets/45b86adf-6c35-4a9b-8c62-17c10c57de08" />
+<img width="1919" height="968" alt="image" src="https://github.com/user-attachments/assets/6bd4abfa-d921-4c05-a0e4-351f166df2ba" />
+<img width="1919" height="965" alt="image" src="https://github.com/user-attachments/assets/09b0864b-9ffb-4e48-ba14-a5706a273ffb" />
 
 
 ## Features
