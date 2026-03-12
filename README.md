@@ -2,8 +2,9 @@
 
 A comprehensive inventory and production management system built with PHP using a Model-View-Controller (MVC) architecture. The system provides robust features for managing inventory, production, purchase orders, and low stock alerts with automated email notifications. The front-end is styled with Bootstrap 5 and uses jQuery and DataTables for dynamic table interactions.
 
-<img width="1919" height="1021" alt="image" src="https://github.com/user-attachments/assets/ac733775-f4a0-47a2-81b5-a2b768bad366" />
-<img width="1919" height="1016" alt="image" src="https://github.com/user-attachments/assets/247a82f8-5e50-41ad-b3f6-0e824cde4bc0" />
+<img width="1919" height="969" alt="image" src="https://github.com/user-attachments/assets/a0e36d43-ec1c-45ed-a386-762a9786a6bc" />
+<img width="1919" height="970" alt="image" src="https://github.com/user-attachments/assets/a664f162-72a4-4a0a-9c84-e058066fb876" />
+
 
 
 
