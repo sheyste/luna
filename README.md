@@ -14,6 +14,8 @@ A comprehensive inventory and production management system built with PHP using 
 <img width="1919" height="968" alt="image" src="https://github.com/user-attachments/assets/6bd4abfa-d921-4c05-a0e4-351f166df2ba" />
 <img width="1919" height="965" alt="image" src="https://github.com/user-attachments/assets/09b0864b-9ffb-4e48-ba14-a5706a273ffb" />
 <img width="414" height="896" alt="IMG_1608" src="https://github.com/user-attachments/assets/18348b0c-e33a-48cd-84a1-c7734f12fe0d" />
+<img width="377" height="795" alt="image" src="https://github.com/user-attachments/assets/36a3f446-c02f-46db-b415-6f6c0396d79d" />
+
 
 
 
